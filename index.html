@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Test Effort Estimator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
+
+    <script>
+        // 1. INSERT YOUR FIREBASE CONFIG HERE
+        const firebaseConfig = {
+  apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
+  authDomain: "project-estimate-79ba8.firebaseapp.com",
+  projectId: "project-estimate-79ba8",
+  storageBucket: "project-estimate-79ba8.firebasestorage.app",
+  messagingSenderId: "284338364751",
+  appId: "1:284338364751:web:53796fc4cafb8d3736653a",
+  measurementId: "G-193P6KTT9D"
+        };
+
+        function labEstimator() {
+            return {
+                db: null,
+                projectName: 'New Project',
+                history: [],
+                groupedTests: [ /* ... same as before ... */ ],
+
+                initFirebase() {
+                    firebase.initializeApp(firebaseConfig);
+                    this.db = firebase.firestore();
+                    this.loadHistory();
+                },
+
+                async loadHistory() {
+                    const snapshot = await this.db.collection('projects').orderBy('timestamp', 'desc').get();
+                    this.history = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                },
+
+                async saveToHistory() {
+                    const entry = { 
+                        name: this.projectName, 
+                        timestamp: new Date().toLocaleString(), 
+                        data: JSON.parse(JSON.stringify(this.groupedTests)) 
+                    };
+                    await this.db.collection('projects').add(entry);
+                    await this.loadHistory();
+                    alert("Project saved to Cloud!");
+                },
+
+                async deleteHistoryItem(idx) {
+                    const docId = this.history[idx].id;
+                    if(confirm("Delete this project from cloud?")) {
+                        await this.db.collection('projects').doc(docId).delete();
+                        this.loadHistory();
+                    }
+                },
+
+                // ... Keep your other functions (calculateTotal, resetAll, etc.) ...
+                
+                get netTotal() {
+                    let total = 0;
+                    this.groupedTests.forEach(g => g.items.forEach(t => {
+                        // Ensure calculation logic matches
+                        total += (t.count * (t.weight || 0)); 
+                    }));
+                    return total;
+                },
+                get grandTotal() { return (this.netTotal * 1.15).toFixed(1); }
+            }
+        }
+    </script>
+</body>
+</html>
