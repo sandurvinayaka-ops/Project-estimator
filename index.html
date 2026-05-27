@@ -104,7 +104,11 @@
                 saveProject() { alert("Project saved!"); },
                 resetAll() { 
                     if(confirm("Reset all data?")) {
-                        this.groupedTests.forEach(g => g.items.forEach(t => t.count = 0));
+                        this.groupedTests.forEach(g => g.items.forEach(t => {
+                            t.count = 0;
+                            if(t.isScale) t.ml = 0;
+                        }));
+                        this.projectName = 'New Project';
                     }
                 },
                 addNewTest(group) {
