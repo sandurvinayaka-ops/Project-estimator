@@ -6,10 +6,8 @@
     <title>Lab Test Effort Estimator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
     <style>
         [x-cloak] { display: none !important; }
         @media print { .no-print { display: none !important; } body { background: white; } }
@@ -31,18 +29,18 @@
     <div class="flex min-h-screen">
         <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-full overflow-y-auto custom-scroll">
             <div class="mb-8">
-                <button @click="isAdmin ? logout() : showLoginModal = true" 
-                        class="w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm"
-                        :class="isAdmin ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600'">
+                <button @click="isAdmin ? logout() : showLoginModal = true" class="w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm" :class="isAdmin ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600'">
                     <span x-text="isAdmin ? 'Lock Admin Mode' : 'Admin Mode'"></span>
                 </button>
             </div>
+            
             <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
             <div class="space-y-1 mb-10">
                 <template x-for="group in groupedTests" :key="group.title">
                     <button @click="scrollToGroup(group.title)" class="w-full text-left px-4 py-2 rounded-lg font-bold text-sm transition-all text-slate-600 hover:bg-blue-50 hover:text-blue-600" x-text="group.title"></button>
                 </template>
             </div>
+            
             <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Cloud Projects</h2>
             <div class="space-y-3">
                 <template x-for="(item, index) in history" :key="index">
@@ -61,9 +59,6 @@
 
         <main class="flex-1 p-6 md:p-12 lg:ml-72 lg:mr-80 min-w-0">
             </main>
-
-        <aside class="w-80 bg-white border-l border-slate-200 fixed right-0 h-full hidden xl:flex flex-col no-print shadow-xl">
-            </aside>
     </div>
 
     <script>
@@ -76,11 +71,10 @@
                 projectName: 'New Project',
                 projectNotes: '',
                 history: [],
-                groupedTests: [ /* ... paste your original array here ... */ ],
+                groupedTests: [ /* ... (your full groupedTests array) ... */ ],
 
                 initFirebase() {
                     const firebaseConfig = {
-                        // REPLACE THESE WITH YOUR KEYS FROM FIREBASE CONSOLE
   apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
   authDomain: "project-estimate-79ba8.firebaseapp.com",
   projectId: "project-estimate-79ba8",
@@ -96,13 +90,23 @@
 
                 async loadHistory() {
                     const snapshot = await this.db.collection('projects').orderBy('timestamp', 'desc').get();
-                    this.history = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    this.history = snapshot.docs.map(doc => {
+                        const data = doc.data();
+                        const formattedDate = (data.timestamp && data.timestamp.toDate) 
+                            ? data.timestamp.toDate().toLocaleString() 
+                            : data.timestamp;
+                        return { id: doc.id, ...data, timestamp: formattedDate };
+                    });
                 },
 
                 async saveToHistory() {
-                    const entry = { name: this.projectName, notes: this.projectNotes, timestamp: new Date().toLocaleString(), data: JSON.parse(JSON.stringify(this.groupedTests)) };
-                    await this.db.collection('projects').add(entry);
-                    await this.loadHistory();
+                    await this.db.collection('projects').add({ 
+                        name: this.projectName, 
+                        notes: this.projectNotes, 
+                        timestamp: new Date(), 
+                        data: JSON.parse(JSON.stringify(this.groupedTests)) 
+                    });
+                    this.loadHistory();
                     alert("Project saved to Cloud!");
                 },
 
@@ -113,19 +117,12 @@
                     }
                 },
 
-                // Include your original helper functions here
-                login() { if(this.password === 'admin123'){ this.isAdmin = true; this.showLoginModal = false; this.password = ''; } },
-                logout() { this.isAdmin = false; },
-                scrollToGroup(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); },
-                calculateScaleMeasurements(t) { /* ... */ },
-                calculateItemTotal(t) { /* ... */ },
-                loadEstimate(idx) { 
+                loadEstimate(idx) {
                     const item = this.history[idx];
                     this.projectName = item.name;
                     this.projectNotes = item.notes || '';
                     this.groupedTests = JSON.parse(JSON.stringify(item.data));
-                },
-                resetAll() { /* ... */ }
+                }
             }
         }
     </script>
