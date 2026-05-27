@@ -5,64 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Test Effort Estimator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <style>
-        [x-cloak] { display: none !important; }
-        .sticky-header { position: sticky; top: 0; z-index: 50; }
-    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
+<body class="bg-slate-50 text-slate-900 font-sans">
 
-    <main class="max-w-5xl mx-auto p-6">
-        <div class="sticky-header bg-slate-50/90 backdrop-blur-md p-4 rounded-[2rem] bg-[#0f172a] text-white shadow-2xl mb-8">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-2xl font-black text-white">Grand Total Effort</p>
-                    <p class="text-[10px] uppercase font-bold text-blue-400 mt-1 tracking-widest" x-text="projectName"></p>
-                </div>
-                <div class="flex items-center gap-8 border-l border-slate-700 pl-8">
-                    <div class="text-center">
-                        <div class="text-3xl font-black text-blue-400" x-text="grandTotal"></div>
-                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Total Hrs</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-black text-white" x-text="(grandTotal / 6.5).toFixed(1)"></div>
-                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Days (6.5h)</p>
-                    </div>
-                </div>
+    <div x-data="labEstimator()" x-init="initFirebase()">
+        <main class="max-w-5xl mx-auto p-6">
+            <div class="bg-[#0f172a] text-white p-8 rounded-[2rem] shadow-2xl mb-8">
+                <h1 class="text-2xl font-black">Grand Total Effort</h1>
+                <p class="text-blue-400 font-bold" x-text="projectName"></p>
+                <div class="mt-4 text-3xl font-black text-blue-400" x-text="grandTotal + ' Hrs'"></div>
             </div>
-        </div>
 
-        <div class="mb-10">
-            <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 w-full outline-none mb-4">
-            <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-700">Save Project to Cloud</button>
-        </div>
+            <button @click="saveToHistory()" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold mb-8">Save to Cloud</button>
 
-        <template x-for="group in groupedTests" :key="group.title">
-            <div class="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-8 mb-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
-                    <button @click="addNewTest(group)" class="text-[10px] font-black bg-blue-100 text-blue-600 px-4 py-2 rounded-lg uppercase">Add New Test</button>
-                </div>
-                <div class="space-y-4">
+            <template x-for="group in groupedTests" :key="group.title">
+                <div class="bg-white p-6 rounded-2xl border mb-6">
+                    <h2 class="font-black text-lg mb-4" x-text="group.title"></h2>
                     <template x-for="test in group.items" :key="test.id">
-                        <div class="flex items-center justify-between p-4 border rounded-xl">
-                            <span class="font-bold" x-text="test.label"></span>
-                            <div class="flex gap-4">
-                                <input type="number" step="0.1" class="w-20 p-2 border rounded" x-model.number="test.weight" placeholder="Hours">
-                                <input type="number" class="w-20 p-2 border rounded" x-model.number="test.count" placeholder="Qty">
-                            </div>
+                        <div class="flex justify-between items-center py-2 border-b">
+                            <span x-text="test.label"></span>
+                            <input type="number" class="w-16 border rounded p-1" x-model.number="test.count">
                         </div>
                     </template>
                 </div>
-            </div>
-        </template>
-    </main>
+            </template>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
     <script>
-        // REPLACE THESE WITH YOUR KEYS FROM FIREBASE SETTINGS
         const firebaseConfig = {
   apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
   authDomain: "project-estimate-79ba8.firebaseapp.com",
@@ -80,12 +54,12 @@
                 groupedTests: [
                     { title: 'Functional & Scale Accuracy', items: [{ id: '1', label: 'Scale Accuracy Test', weight: 0.05, count: 0 }] }
                 ],
-                
                 initFirebase() {
-                    firebase.initializeApp(firebaseConfig);
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                    }
                     this.db = firebase.firestore();
                 },
-
                 async saveToHistory() {
                     try {
                         await this.db.collection('projects').add({
@@ -93,23 +67,17 @@
                             data: JSON.parse(JSON.stringify(this.groupedTests)),
                             timestamp: new Date()
                         });
-                        alert("Project saved to Cloud!");
+                        alert("Saved to Cloud!");
                     } catch (e) {
-                        alert("Error saving: " + e.message);
+                        console.error(e);
+                        alert("Error: " + e.message);
                     }
                 },
-
-                addNewTest(group) {
-                    const name = prompt("Test name:");
-                    if(name) group.items.push({ id: Date.now().toString(), label: name, weight: 1.0, count: 0 });
-                },
-
-                get netTotal() {
+                get grandTotal() {
                     let total = 0;
                     this.groupedTests.forEach(g => g.items.forEach(t => total += (t.count * t.weight)));
-                    return total;
-                },
-                get grandTotal() { return (this.netTotal * 1.15).toFixed(1); }
+                    return (total * 1.15).toFixed(1);
+                }
             }
         }
     </script>
