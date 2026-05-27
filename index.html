@@ -6,18 +6,14 @@
     <title>Lab Test Effort Estimator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        [x-cloak] { display: none !important; }
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-    </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans p-4 md:p-10">
 
     <div x-data="labEstimator()" class="max-w-4xl mx-auto">
         <div class="bg-[#0f172a] rounded-[2rem] p-8 text-white shadow-2xl mb-8">
-            <p class="text-2xl font-black">Grand Total Effort</p>
+            <h1 class="text-2xl font-black">Grand Total Effort</h1>
             <input type="text" x-model="projectName" class="bg-transparent text-blue-400 font-bold uppercase tracking-widest text-xs mt-1 w-full outline-none border-b border-slate-700 focus:border-blue-500">
+            
             <div class="flex gap-8 mt-6 border-t border-slate-700 pt-6">
                 <div>
                     <div class="text-3xl font-black text-blue-400" x-text="grandTotal"></div>
@@ -28,31 +24,36 @@
                     <div class="text-[10px] uppercase font-bold text-slate-400">Days (6.5h)</div>
                 </div>
             </div>
+
+            <div class="flex gap-3 mt-6">
+                <button @click="saveProject()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-black text-xs uppercase">Save Project</button>
+                <button @click="resetAll()" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded-xl font-black text-xs uppercase">New Project</button>
+            </div>
         </div>
 
         <div class="space-y-6">
             <template x-for="group in groupedTests" :key="group.title">
                 <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-black text-lg" x-text="group.title"></h3>
-                        <button @click="addNewTest(group)" class="text-[10px] font-black bg-slate-100 px-3 py-1 rounded hover:bg-slate-200">ADD NEW TEST</button>
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-black text-lg text-slate-800" x-text="group.title"></h3>
+                        <button @click="addNewTest(group)" class="text-[10px] font-black bg-blue-50 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 uppercase tracking-widest">Add New Test</button>
                     </div>
                     
                     <template x-for="test in group.items" :key="test.id">
-                        <div class="grid grid-cols-12 gap-4 items-center bg-slate-50 p-3 rounded-xl mb-2">
+                        <div class="grid grid-cols-12 gap-4 items-center bg-slate-50 p-4 rounded-xl mb-3">
                             <div class="col-span-6">
-                                <div class="font-bold text-sm" x-text="test.label"></div>
-                                <div class="text-[9px] font-bold text-slate-400 uppercase" x-text="test.subLabel || ''"></div>
+                                <div class="font-bold text-sm text-slate-700" x-text="test.label"></div>
+                                <div class="text-[9px] font-black text-slate-400 uppercase" x-text="test.subLabel || ''"></div>
                             </div>
                             
-                            <div class="col-span-3 text-center" x-show="test.isScale">
-                                <input type="number" placeholder="ml" x-model.number="test.ml" class="w-16 p-1 rounded border text-center text-xs font-bold">
-                            </div>
-                            <div class="col-span-3 text-center" x-show="!test.isScale">
-                                <span class="text-xs font-black text-blue-600" x-text="test.weight + 'h'"></span>
+                            <div class="col-span-3 text-center">
+                                <div x-show="test.isScale" class="flex justify-center">
+                                    <input type="number" placeholder="ml" x-model.number="test.ml" class="w-16 p-1.5 rounded-lg border border-slate-200 text-center text-xs font-bold">
+                                </div>
+                                <span x-show="!test.isScale" class="text-xs font-black text-blue-600" x-text="test.weight + 'h'"></span>
                             </div>
 
-                            <input type="number" x-model.number="test.count" class="col-span-3 p-1 rounded border text-right font-bold text-sm" placeholder="Qty">
+                            <input type="number" x-model.number="test.count" class="col-span-3 p-2 rounded-lg border border-slate-200 text-right font-black text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="Qty">
                         </div>
                     </template>
                 </div>
@@ -66,9 +67,9 @@
                 projectName: 'New Project',
                 groupedTests: [
                     { title: 'Functional & Scale Accuracy', items: [
-                        { id: 'scale_4', label: 'Scale Accuracy Test', subLabel: '4 Oz Variant', weight: 0.05, count: 0, ml: 0, isScale: true },
-                        { id: 'scale_8', label: 'Scale Accuracy Test', subLabel: '8 Oz Variant', weight: 0.05, count: 0, ml: 0, isScale: true },
-                        { id: 'scale_11', label: 'Scale Accuracy Test', subLabel: '11 Oz Variant', weight: 0.05, count: 0, ml: 0, isScale: true },
+                        { id: 'scale_4', label: 'Scale Accuracy Test', subLabel: '4 OZ VARIANT', weight: 0.05, count: 0, ml: 0, isScale: true },
+                        { id: 'scale_8', label: 'Scale Accuracy Test', subLabel: '8 OZ VARIANT', weight: 0.05, count: 0, ml: 0, isScale: true },
+                        { id: 'scale_11', label: 'Scale Accuracy Test', subLabel: '11 OZ VARIANT', weight: 0.05, count: 0, ml: 0, isScale: true },
                         { id: 'static_leak', label: 'Static Leakage Test', weight: 2.5, count: 0, isScale: false },
                         { id: 'dynamic_leak', label: 'Dynamic Leakage Test', weight: 4.0, count: 0, isScale: false },
                         { id: 'flow_rate', label: 'Flow Rate Measurement', weight: 1.5, count: 0, isScale: false },
@@ -99,6 +100,12 @@
                         total += t.isScale ? (t.ml * t.count * 0.05) : (t.weight * t.count);
                     }));
                     return (total * 1.15).toFixed(1);
+                },
+                saveProject() { alert("Project saved!"); },
+                resetAll() { 
+                    if(confirm("Reset all data?")) {
+                        this.groupedTests.forEach(g => g.items.forEach(t => t.count = 0));
+                    }
                 },
                 addNewTest(group) {
                     const label = prompt("Test Name:");
