@@ -19,15 +19,11 @@
                     <div class="text-3xl font-black text-blue-400" x-text="grandTotal"></div>
                     <div class="text-[10px] uppercase font-bold text-slate-400">Total Hours</div>
                 </div>
-                <div>
-                    <div class="text-3xl font-black" x-text="(grandTotal / 6.5).toFixed(1)"></div>
-                    <div class="text-[10px] uppercase font-bold text-slate-400">Days (6.5h)</div>
-                </div>
             </div>
 
-            <div class="flex gap-3 mt-6">
-                <button @click="saveProject()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-black text-xs uppercase">Save Project</button>
-                <button @click="resetAll()" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded-xl font-black text-xs uppercase">New Project</button>
+            <div class="flex gap-4 mt-8 pt-4 border-t border-slate-800">
+                <button @click="saveProject()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase hover:bg-blue-700 shadow-lg">Save Project</button>
+                <button @click="resetAll()" class="bg-slate-700 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase hover:bg-slate-600 shadow-lg">New Project</button>
             </div>
         </div>
 
@@ -47,13 +43,11 @@
                             </div>
                             
                             <div class="col-span-3 text-center">
-                                <div x-show="test.isScale" class="flex justify-center">
-                                    <input type="number" placeholder="ml" x-model.number="test.ml" class="w-16 p-1.5 rounded-lg border border-slate-200 text-center text-xs font-bold">
-                                </div>
+                                <input type="number" placeholder="ml" x-model.number="test.ml" x-show="test.isScale" class="w-16 p-1.5 rounded-lg border border-slate-200 text-center text-xs font-bold">
                                 <span x-show="!test.isScale" class="text-xs font-black text-blue-600" x-text="test.weight + 'h'"></span>
                             </div>
 
-                            <input type="number" x-model.number="test.count" class="col-span-3 p-2 rounded-lg border border-slate-200 text-right font-black text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="Qty">
+                            <input type="number" x-model.number="test.count" class="col-span-3 p-2 rounded-lg border border-slate-200 text-right font-black text-sm" placeholder="Qty">
                         </div>
                     </template>
                 </div>
