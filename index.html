@@ -38,20 +38,35 @@
                 </button>
             </div>
             
-            <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
-            <div class="space-y-1 mb-10">
-                <template x-for="group in groupedTests" :key="group.title">
-                    <button @click="scrollToGroup(group.title)" 
-                            class="w-full text-left px-4 py-2 rounded-lg font-bold text-sm transition-all text-slate-600 hover:bg-blue-50 hover:text-blue-600" 
-                            x-text="group.title"></button>
-                </template>
+            <template x-if="currentView === 'estimator'">
+                <div>
+                    <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
+                    <div class="space-y-1 mb-10">
+                        <template x-for="group in groupedTests" :key="group.title">
+                            <button @click="scrollToGroup(group.title)" 
+                                    class="w-full text-left px-4 py-2 rounded-lg font-bold text-sm transition-all text-slate-600 hover:bg-blue-50 hover:text-blue-600" 
+                                    x-text="group.title"></button>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <div class="mb-6">
+                <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
+                        class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+                        :class="currentView === 'summary' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-900 text-white hover:bg-slate-800'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span x-text="currentView === 'estimator' ? 'View Projects Summary' : 'Back to Calculator'"></span>
+                </button>
             </div>
             
             <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Projects List</h2>
             <div class="space-y-3">
                 <template x-for="(item, index) in history" :key="index">
                     <div class="flex items-center gap-2 group">
-                        <div class="flex-1 p-3 bg-slate-50 rounded-xl border border-transparent hover:border-blue-300 cursor-pointer transition-all" @click="loadEstimate(index)">
+                        <div class="flex-1 p-3 bg-slate-50 rounded-xl border border-transparent hover:border-blue-300 cursor-pointer transition-all" @click="currentView = 'estimator'; loadEstimate(index)">
                             <p class="text-[9px] font-black text-blue-500 uppercase" x-text="item.timestamp"></p>
                             <p class="font-bold text-slate-700 text-sm truncate" x-text="item.name"></p>
                         </div>
@@ -63,105 +78,197 @@
             </div>
         </aside>
 
-        <main class="flex-1 p-6 md:p-12 lg:ml-72 lg:mr-80 min-w-0">
-            <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
-                <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
-                    <div class="flex-1">
-                        <p class="text-[10px] uppercase font-bold text-blue-400 mb-1 tracking-widest" x-text="projectName"></p>
-                        <p class="text-2xl font-black text-white">Grand Total Effort</p>
-                    </div>
-                    <div class="flex items-center gap-8 border-l border-slate-700 pl-8">
-                        <div class="text-center">
-                            <div class="text-3xl font-black text-blue-400" x-text="grandTotal"></div>
-                            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Total Hrs</p>
+        <div class="flex-1 lg:ml-72 min-w-0">
+            
+            <main x-show="currentView === 'estimator'" class="p-6 md:p-12 lg:mr-80">
+                <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
+                    <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
+                        <div class="flex-1">
+                            <p class="text-[10px] uppercase font-bold text-blue-400 mb-1 tracking-widest" x-text="projectName"></p>
+                            <p class="text-2xl font-black text-white">Grand Total Effort</p>
                         </div>
-                        <div class="text-center">
-                            <div class="text-3xl font-black text-white" x-text="(grandTotal / 6.5).toFixed(1)"></div>
-                            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Days (6.5h)</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-8 mb-10 space-y-4">
-                <div>
-                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Title</label>
-                    <div class="flex flex-col md:flex-row justify-between items-end gap-4">
-                        <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
-                        <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all no-print whitespace-nowrap">Save Project</button>
-                    </div>
-                </div>
-                <div>
-                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Notes</label>
-                    <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none h-24 resize-none"></textarea>
-                </div>
-            </div>
-
-            <div class="space-y-12 pb-32">
-                <template x-for="group in groupedTests" :key="group.title">
-                    <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
-                        <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
-                            <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
-                            
-                            <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md">
-                                <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
-                                <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
-                                <input type="number" step="0.1" placeholder="Hrs" class="px-1 py-1 bg-slate-50 rounded text-xs font-black text-center w-12 outline-none border border-transparent focus:border-blue-500" x-model.number="group.newWeight">
-                                <label class="flex items-center gap-1 text-[10px] font-bold text-slate-500 cursor-pointer select-none">
-                                    <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500" x-model="group.newHasOrientations"> Orient
-                                </label>
-                                <button @click="addNewTestItem(group)" class="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/></svg>
-                                </button>
+                        <div class="flex items-center gap-8 border-l border-slate-700 pl-8">
+                            <div class="text-center">
+                                <div class="text-3xl font-black text-blue-400" x-text="grandTotal"></div>
+                                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Total Hrs</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-black text-white" x-text="(grandTotal / 6.5).toFixed(1)"></div>
+                                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Days (6.5h)</p>
                             </div>
                         </div>
-                        <table class="w-full text-left">
-                            <thead class="bg-slate-50/30 text-[10px] uppercase font-black text-slate-400 border-b">
-                                <tr>
-                                    <th class="px-8 py-4 w-1/3">Test name</th>
-                                    <th class="px-4 py-4 text-center">Multipliers & Calibration</th>
-                                    <th class="px-8 py-4 text-right w-24">Qty</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-50">
-                                <template x-for="test in group.items" :key="test.id">
-                                    <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
-                                        <td class="px-8 py-6">
-                                            <div class="flex items-center gap-2">
-                                                <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
-                                                <button x-show="isAdmin && test.isCustom" x-cloak @click="removeCustomTestItem(group, test.id)" class="text-slate-300 hover:text-red-500 p-0.5 rounded transition-colors no-print">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                                                </button>
-                                            </div>
-                                            <div class="text-[9px] uppercase font-bold text-slate-400" x-text="test.subLabel"></div>
-                                        </td>
-                                        <td class="px-4 py-6 align-middle text-center">
-                                            <template x-if="test.id.includes('scale')">
-                                                <div class="flex gap-3 justify-center items-center">
-                                                    <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz"></div>
-                                                    <div class="text-center"><p class="text-[9px] font-black text-slate-400 mb-1">ml</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ml"></div>
-                                                    <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">UK Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ukOz"></div>
-                                                    <div class="text-center ml-2 pl-4 border-l-2 border-slate-100"><p class="text-[9px] font-black text-blue-500 uppercase mb-1">Meas.</p><div class="text-lg font-black text-slate-700" x-text="calculateScaleMeasurements(test)"></div><p class="text-[8px] font-bold text-slate-400 mt-1">@ 0.05h</p></div>
-                                                </div>
-                                            </template>
-                                            <template x-if="!test.id.includes('scale')">
-                                                <div class="flex gap-4 justify-center items-end">
-                                                    <div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom" x-model.number="test.weight"></div>
-                                                    <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations"></div></template>
-                                                </div>
-                                            </template>
-                                        </td>
-                                        <td class="px-8 py-6 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count"></td>
+                    </div>
+                </div>
+
+                <div class="mt-8 mb-10 space-y-4">
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Title</label>
+                        <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                            <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
+                            <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all no-print whitespace-nowrap">Save Project</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Notes</label>
+                        <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none h-24 resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="space-y-12 pb-32">
+                    <template x-for="group in groupedTests" :key="group.title">
+                        <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+                            <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
+                                <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
+                                
+                                <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md">
+                                    <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
+                                    <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
+                                    <input type="number" step="0.1" placeholder="Hrs" class="px-1 py-1 bg-slate-50 rounded text-xs font-black text-center w-12 outline-none border border-transparent focus:border-blue-500" x-model.number="group.newWeight">
+                                    <label class="flex items-center gap-1 text-[10px] font-bold text-slate-500 cursor-pointer select-none">
+                                        <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500" x-model="group.newHasOrientations"> Orient
+                                    </label>
+                                    <button @click="addNewTestItem(group)" class="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <table class="w-full text-left">
+                                <thead class="bg-slate-50/30 text-[10px] uppercase font-black text-slate-400 border-b">
+                                    <tr>
+                                        <th class="px-8 py-4 w-1/3">Test name</th>
+                                        <th class="px-4 py-4 text-center">Multipliers & Calibration</th>
+                                        <th class="px-8 py-4 text-right w-24">Qty</th>
                                     </tr>
-                                </template>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50">
+                                    <template x-for="test in group.items" :key="test.id">
+                                        <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
+                                            <td class="px-8 py-6">
+                                                <div class="flex items-center gap-2">
+                                                    <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
+                                                    <button x-show="isAdmin && test.isCustom" x-cloak @click="removeCustomTestItem(group, test.id)" class="text-slate-300 hover:text-red-500 p-0.5 rounded transition-colors no-print">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                                                    </button>
+                                                </div>
+                                                <div class="text-[9px] uppercase font-bold text-slate-400" x-text="test.subLabel"></div>
+                                            </td>
+                                            <td class="px-4 py-6 align-middle text-center">
+                                                <template x-if="test.id.includes('scale')">
+                                                    <div class="flex gap-3 justify-center items-center">
+                                                        <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz"></div>
+                                                        <div class="text-center"><p class="text-[9px] font-black text-slate-400 mb-1">ml</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ml"></div>
+                                                        <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">UK Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ukOz"></div>
+                                                        <div class="text-center ml-2 pl-4 border-l-2 border-slate-100"><p class="text-[9px] font-black text-blue-500 uppercase mb-1">Meas.</p><div class="text-lg font-black text-slate-700" x-text="calculateScaleMeasurements(test)"></div><p class="text-[8px] font-bold text-slate-400 mt-1">@ 0.05h</p></div>
+                                                    </div>
+                                                </template>
+                                                <template x-if="!test.id.includes('scale')">
+                                                    <div class="flex gap-4 justify-center items-end">
+                                                        <div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom" x-model.number="test.weight"></div>
+                                                        <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations"></div></template>
+                                                    </div>
+                                                </template>
+                                            </td>
+                                            <td class="px-8 py-6 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count"></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+                </div>
+            </main>
+
+            <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto animate-fade-in">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                    <div>
+                        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Saved Projects Master Directory</h1>
+                        <p class="text-sm text-slate-500 mt-1">Comprehensive breakdown mapping of hours and dynamic tests globally.</p>
+                    </div>
+                    <button @click="currentView = 'estimator'" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-all flex items-center gap-2 self-start sm:self-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                        Go Back
+                    </button>
+                </div>
+
+                <template x-if="history.length === 0">
+                    <div class="text-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-slate-200">
+                        <p class="text-slate-400 font-bold mb-2">No projects discovered inside database history matrix</p>
+                        <button @click="currentView = 'estimator'" class="text-sm font-black text-blue-500 hover:underline">Create and save your first estimation row</button>
                     </div>
                 </template>
-            </div>
-        </main>
 
-        <aside class="w-80 bg-white border-l border-slate-200 fixed right-0 h-full hidden xl:flex flex-col no-print shadow-xl">
+                <div class="space-y-8">
+                    <template x-for="(project, pIdx) in history" :key="pIdx">
+                        <div class="bg-white border border-slate-200 rounded-[2rem] shadow-sm overflow-hidden p-6 sm:p-8">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-2">
+                                <div>
+                                    <h3 class="text-xl font-black text-slate-800" x-text="project.name"></h3>
+                                    <p class="text-[10px] uppercase font-bold text-slate-400 mt-0.5 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
+                                </div>
+                                <div class="flex items-center gap-4 bg-slate-900 text-white py-2 px-5 rounded-2xl self-start sm:self-auto">
+                                    <div class="text-right">
+                                        <p class="text-[8px] uppercase tracking-widest font-bold text-slate-400">Calculated Effort</p>
+                                        <p class="text-lg font-black text-blue-400" x-text="getProjectTotals(project).grand + ' hrs'"></p>
+                                    </div>
+                                    <div class="border-l border-slate-700 h-6 pl-4">
+                                        <p class="text-[8px] uppercase tracking-widest font-bold text-slate-400">Total Days</p>
+                                        <p class="text-lg font-black text-white" x-text="getProjectTotals(project).days + 'd'"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <template x-if="project.notes">
+                                <div class="mb-4 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-slate-600 font-medium">
+                                    <strong class="text-slate-700 font-black">Project Notes:</strong> <span x-text="project.notes"></span>
+                                </div>
+                            </template>
+
+                            <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Selected Configuration Matrix</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs">
+                                    <thead>
+                                        <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-black">
+                                            <th class="p-3">Test Name Matrix</th>
+                                            <th class="p-3 text-center">Quantity</th>
+                                            <th class="p-3 text-center">Unit Variables</th>
+                                            <th class="p-3 text-right">Computed Total Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-50 font-medium text-slate-700">
+                                        <template x-for="item in getSelectedItemsFromData(project.data)" :key="item.id">
+                                            <tr class="hover:bg-slate-50/50">
+                                                <td class="p-3">
+                                                    <div class="font-bold text-slate-800" x-text="item.label"></div>
+                                                    <div class="text-[9px] text-slate-400 uppercase font-semibold" x-text="item.subLabel"></div>
+                                                </td>
+                                                <td class="p-3 text-center font-black text-slate-900" x-text="item.count"></td>
+                                                <td class="p-3 text-center text-[10px] text-slate-500">
+                                                    <template x-if="item.id.includes('scale')">
+                                                        <span x-text="'US:'+ (item.usOz || 0) + ' / ml:' + (item.ml || 0) + ' / UK:' + (item.ukOz || 0)"></span>
+                                                    </template>
+                                                    <template x-if="!item.id.includes('scale')">
+                                                        <span x-text="'Base: ' + item.weight + 'h' + (item.hasOrientations ? ' x' + item.orientations + 'orient' : '')"></span>
+                                                    </template>
+                                                </td>
+                                                <td class="p-3 text-right font-bold text-slate-900" x-text="calculateSummaryItemTotal(item).toFixed(2) + ' hrs'"></td>
+                                            </tr>
+                                        </template>
+                                        <template x-if="getSelectedItemsFromData(project.data).length === 0">
+                                            <tr>
+                                                <td colspan="4" class="p-4 text-center text-slate-400 font-bold italic">No lab operations loaded or configured during project save cycle execution.</td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </main>
+
+        </div>
+
+        <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-full hidden xl:flex flex-col no-print shadow-xl">
             <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
                 <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
                 <button @click="resetAll()" class="text-[10px] font-black text-red-500 hover:text-red-700 uppercase tracking-widest">New Project</button>
@@ -192,13 +299,14 @@
     <script>
         function labEstimator() {
             return {
-                db: null,
+                db: null, // Firestore object holder
+                currentView: 'estimator', // View switching tracking matrix state
                 isAdmin: false,
                 showLoginModal: false,
                 password: '',
                 projectName: 'New Project',
                 projectNotes: '',
-                history: [],
+                history: [], // Fed directly via Live Firebase Connection instead of local storage
                 
                 groupedTests: [
                     { title: 'Functional & Scale Accuracy', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
@@ -232,9 +340,10 @@
                     ]}
                 ],
 
+                // Initialize cloud architecture natively on page instantiation sequence
                 initFirebase() {
                     const firebaseConfig = {
-             apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
+                         apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
   authDomain: "project-estimate-79ba8.firebaseapp.com",
   projectId: "project-estimate-79ba8",
   storageBucket: "project-estimate-79ba8.firebasestorage.app",
@@ -249,11 +358,13 @@
                     this.loadHistory();
                 },
 
+                // Cloud Query Sync: Fetches real-time structured telemetry sets from cloud collection instance
                 async loadHistory() {
                     try {
                         const snapshot = await this.db.collection('projects').orderBy('timestamp', 'desc').get();
                         this.history = snapshot.docs.map(doc => {
                             const data = doc.data();
+                            // Handle formatting timestamp from native Firestore instance types down to locally legible formats
                             const formattedDate = (data.timestamp && data.timestamp.toDate) 
                                 ? data.timestamp.toDate().toLocaleString() 
                                 : data.timestamp;
@@ -265,6 +376,7 @@
                     }
                 },
 
+                // Cloud Insert Routine
                 async saveToHistory() {
                     try {
                         await this.db.collection('projects').add({ 
@@ -280,6 +392,7 @@
                     }
                 },
 
+                // Cloud Destruction Query Targeted Matcher Routine
                 async deleteHistoryItem(idx) {
                     if(confirm("Permanently delete this project calculation template from cloud database storage?")) {
                         try {
@@ -296,6 +409,7 @@
                     this.projectName = item.name;
                     this.projectNotes = item.notes || '';
                     
+                    // Remap database array entries carefully to retain application runtime state variables
                     this.groupedTests.forEach((g, gIdx) => {
                         const savedGroup = item.data[gIdx];
                         if (savedGroup) {
@@ -327,6 +441,7 @@
 
                     group.items.push(newTestObj);
                     
+                    // Reset inline inputs
                     group.newLabel = '';
                     group.newSubLabel = '';
                     group.newWeight = 1.0;
@@ -342,26 +457,61 @@
                 login() { if(this.password === 'admin123'){ this.isAdmin = true; this.showLoginModal = false; this.password = ''; } },
                 logout() { this.isAdmin = false; },
                 scrollToGroup(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); },
-                calculateScaleMeasurements(t) { return ((Number(t.usOz) || 0) + (Number(t.ukOz) || 0) + (Number(t.ml) || 0)) * (Number(t.count) || 0); },
+
+                calculateScaleMeasurements(t) {
+                    const unitsSum = (Number(t.usOz) || 0) + (Number(t.ukOz) || 0) + (Number(t.ml) || 0);
+                    return unitsSum * (Number(t.count) || 0);
+                },
+
                 calculateItemTotal(t) {
-                    if(t.id.includes('scale')) return this.calculateScaleMeasurements(t) * 0.05;
+                    if(t.id.includes('scale')) {
+                        return this.calculateScaleMeasurements(t) * 0.05;
+                    }
                     if(t.hasOrientations) return (t.count * t.weight * (t.orientations || 1));
                     return (t.count * t.weight);
                 },
+
+                calculateSummaryItemTotal(t) {
+                    return this.calculateItemTotal(t);
+                },
+
                 get selectedItems() {
                     let sel = [];
                     this.groupedTests.forEach(g => g.items.forEach(t => { if(t.count > 0) sel.push(t); }));
                     return sel;
                 },
+
                 get netTotal() {
                     let total = 0;
                     this.groupedTests.forEach(g => g.items.forEach(t => total += this.calculateItemTotal(t)));
                     return total.toFixed(1);
                 },
+
                 get grandTotal() { return (parseFloat(this.netTotal) * 1.15).toFixed(1); },
+
+                getSelectedItemsFromData(dataArray) {
+                    let items = [];
+                    if (!dataArray || !Array.isArray(dataArray)) return items;
+                    dataArray.forEach(g => g.items.forEach(t => { if(t.count > 0) items.push(t); }));
+                    return items;
+                },
+
+                getProjectTotals(project) {
+                    let net = 0;
+                    if(project.data && Array.isArray(project.data)) {
+                        project.data.forEach(g => g.items.forEach(t => {
+                            net += this.calculateSummaryItemTotal(t);
+                        }));
+                    }
+                    const grand = (net * 1.15).toFixed(1);
+                    const days = (grand / 6.5).toFixed(1);
+                    return { grand, days };
+                },
+
                 resetAll() {
                     if(confirm("Clear current project data?")) {
                         this.groupedTests.forEach(g => {
+                            // Purge out custom tests to return structural state properties to system defaults
                             g.items = g.items.filter(t => !t.isCustom);
                             g.items.forEach(t => {
                                 t.count = 0;
