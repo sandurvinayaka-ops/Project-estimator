@@ -118,7 +118,7 @@
                         <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none h-24 resize-none"></textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                         <div>
                             <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Test Lead Name</label>
                             <input type="text" x-model="testLeadName" placeholder="Type lead engineer name..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
@@ -130,9 +130,17 @@
                         <div>
                             <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block flex items-center gap-1.5">
                                 Expected End Date 
-                                <span class="bg-slate-100 text-slate-500 rounded px-1 text-[8px] font-bold normal-case">5d Work week + Holidays</span>
                             </label>
                             <div class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-black text-blue-600 h-[46px] flex items-center" x-text="expectedEndDate"></div>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Project Status</label>
+                            <select x-model="projectStatus" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer">
+                                <option value="Not Started">Not Started</option>
+                                <option value="In-Progress">In-Progress</option>
+                                <option value="On Hold">On Hold</option>
+                                <option value="Shipment not recd">Shipment not recd</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -158,24 +166,29 @@
                             <table class="w-full text-left">
                                 <thead class="bg-slate-50/30 text-[10px] uppercase font-black text-slate-400 border-b">
                                     <tr>
-                                        <th class="px-8 py-4 w-1/3">Test name</th>
+                                        <th class="px-8 py-4 w-1/3">Test Name & Tester</th>
                                         <th class="px-4 py-4 text-center">Multipliers & Calibration</th>
+                                        <th class="px-4 py-4 text-center w-36">Test Status</th>
                                         <th class="px-8 py-4 text-right w-24">Qty</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-50">
                                     <template x-for="test in group.items" :key="test.id">
                                         <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
-                                            <td class="px-8 py-6">
+                                            <td class="px-8 py-5">
                                                 <div class="flex items-center gap-2">
                                                     <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
                                                     <button x-show="isAdmin && test.isCustom" x-cloak @click="removeCustomTestItem(group, test.id)" class="text-slate-300 hover:text-red-500 p-0.5 rounded transition-colors no-print">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                                                     </button>
                                                 </div>
-                                                <div class="text-[9px] uppercase font-bold text-slate-400" x-text="test.subLabel"></div>
+                                                <div class="text-[9px] uppercase font-bold text-slate-400 mb-2" x-text="test.subLabel"></div>
+                                                
+                                                <div class="w-full max-w-xs">
+                                                    <input type="text" x-model="test.testerName" placeholder="Assign tester..." class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-600 outline-none focus:border-blue-500 transition-colors">
+                                                </div>
                                             </td>
-                                            <td class="px-4 py-6 align-middle text-center">
+                                            <td class="px-4 py-5 align-middle text-center">
                                                 <template x-if="test.id.includes('scale')">
                                                     <div class="flex gap-3 justify-center items-center">
                                                         <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz"></div>
@@ -191,7 +204,14 @@
                                                     </div>
                                                 </template>
                                             </td>
-                                            <td class="px-8 py-6 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count"></td>
+                                            <td class="px-4 py-5 align-middle text-center">
+                                                <select x-model="test.status" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-slate-600 outline-none focus:border-blue-500 cursor-pointer">
+                                                    <option value="Not Started">Not Started</option>
+                                                    <option value="In-Progress">In-Progress</option>
+                                                    <option value="On Hold">On Hold</option>
+                                                </select>
+                                            </td>
+                                            <td class="px-8 py-5 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count"></td>
                                         </tr>
                                     </template>
                                 </tbody>
@@ -228,8 +248,15 @@
                                     <div class="flex items-center gap-2">
                                         <h3 class="text-xl font-black text-slate-800" x-text="project.name"></h3>
                                         <span x-show="selectedProjectId === project.id" class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded text-[10px]">Active Workspace</span>
+                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider"
+                                              :class="{
+                                                 'bg-amber-100 text-amber-700': project.projectStatus === 'In-Progress',
+                                                 'bg-slate-100 text-slate-600': project.projectStatus === 'Not Started' || !project.projectStatus,
+                                                 'bg-red-100 text-red-700': project.projectStatus === 'On Hold',
+                                                 'bg-purple-100 text-purple-700': project.projectStatus === 'Shipment not recd'
+                                              }" x-text="project.projectStatus || 'Not Started'"></span>
                                     </div>
-                                    <p class="text-[10px] uppercase font-bold text-slate-400 mt-0.5 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
+                                    <p class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
                                     
                                     <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                                         <div>Lead: <span class="text-slate-900 font-bold" x-text="project.testLeadName || 'Unassigned'"></span></div>
@@ -265,7 +292,8 @@
                                 <table class="w-full text-left text-xs">
                                     <thead>
                                         <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-black">
-                                            <th class="p-3">Test Name Matrix</th>
+                                            <th class="p-3">Test Name Matrix / Tester</th>
+                                            <th class="p-3 text-center">Status</th>
                                             <th class="p-3 text-center">Quantity</th>
                                             <th class="p-3 text-center">Unit Variables</th>
                                             <th class="p-3 text-right">Computed Total Time</th>
@@ -277,6 +305,15 @@
                                                 <td class="p-3">
                                                     <div class="font-bold text-slate-800" x-text="item.label"></div>
                                                     <div class="text-[9px] text-slate-400 uppercase font-semibold" x-text="item.subLabel"></div>
+                                                    <div x-show="item.testerName" class="text-[10px] text-slate-500 mt-0.5">Tester: <span class="font-bold text-slate-700" x-text="item.testerName"></span></div>
+                                                </td>
+                                                <td class="p-3 text-center">
+                                                    <span class="px-2 py-0.5 rounded text-[9px] font-bold"
+                                                          :class="{
+                                                             'bg-amber-100 text-amber-700': item.status === 'In-Progress',
+                                                             'bg-slate-100 text-slate-600': item.status === 'Not Started' || !item.status,
+                                                             'bg-red-100 text-red-700': item.status === 'On Hold'
+                                                          }" x-text="item.status || 'Not Started'"></span>
                                                 </td>
                                                 <td class="p-3 text-center font-black text-slate-900" x-text="item.count"></td>
                                                 <td class="p-3 text-center text-[10px] text-slate-500">
@@ -292,7 +329,7 @@
                                         </template>
                                         <template x-if="getSelectedItemsFromData(project.data).length === 0">
                                             <tr>
-                                                <td colspan="4" class="p-4 text-center text-slate-400 font-bold italic">No lab operations loaded or configured during project save cycle execution.</td>
+                                                <td colspan="5" class="p-4 text-center text-slate-400 font-bold italic">No lab operations loaded or configured during project save cycle execution.</td>
                                             </tr>
                                         </template>
                                     </tbody>
@@ -345,41 +382,42 @@
                 projectName: 'New Project',
                 projectNotes: '',
                 
-                // NEW: State trackers for Chronology Schedule Data Models
+                // Project Chronology & Configuration Status Fields
                 testLeadName: '',
-                startDate: new Date().toISOString().split('T')[0], // Default initialization to current calendar slot
+                startDate: new Date().toISOString().split('T')[0], 
+                projectStatus: 'Not Started',
                 
                 history: [], 
                 
                 groupedTests: [
                     { title: 'Functional & Scale Accuracy', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
-                        { id: 'scale_4', label: 'Scale Accuracy Test', subLabel: '4 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0 },
-                        { id: 'scale_8', label: 'Scale Accuracy Test', subLabel: '8 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0 },
-                        { id: 'scale_11', label: 'Scale Accuracy Test', subLabel: '11 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0 },
-                        { id: 'static_leak', label: 'Static Leakage Test', weight: 2.5, count: 0 },
-                        { id: 'dynamic_leak', label: 'Dynamic Leakage Test', weight: 4.0, count: 0 },
-                        { id: 'flow_rate', label: 'Flow Rate Measurement', weight: 1.5, count: 0 },
-                        { id: 'vacuum_test', label: 'Vacuum Performance Test - Breast Pump', weight: 2.0, count: 0 }
+                        { id: 'scale_4', label: 'Scale Accuracy Test', subLabel: '4 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0, testerName: '', status: 'Not Started' },
+                        { id: 'scale_8', label: 'Scale Accuracy Test', subLabel: '8 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0, testerName: '', status: 'Not Started' },
+                        { id: 'scale_11', label: 'Scale Accuracy Test', subLabel: '11 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0, testerName: '', status: 'Not Started' },
+                        { id: 'static_leak', label: 'Static Leakage Test', weight: 2.5, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'dynamic_leak', label: 'Dynamic Leakage Test', weight: 4.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'flow_rate', label: 'Flow Rate Measurement', weight: 1.5, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'vacuum_test', label: 'Vacuum Performance Test - Breast Pump', weight: 2.0, count: 0, testerName: '', status: 'Not Started' }
                     ]},
                     { title: 'Environmental Conditioning', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
-                        { id: 'boil', label: 'Boiling Test', weight: 2.0, count: 0 },
-                        { id: 'dish', label: 'Dishwashing Test', weight: 1.5, count: 0 },
-                        { id: 'mw_ster', label: 'Microwave Sterilization', weight: 1.0, count: 0 },
-                        { id: 'steam_ster', label: 'Steam Sterilization', weight: 1.0, count: 0 },
-                        { id: 'uv_exposure', label: 'UV Exposure Stability', weight: 5.0, count: 0 }
+                        { id: 'boil', label: 'Boiling Test', weight: 2.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'dish', label: 'Dishwashing Test', weight: 1.5, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'mw_ster', label: 'Microwave Sterilization', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'steam_ster', label: 'Steam Sterilization', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'uv_exposure', label: 'UV Exposure Stability', weight: 5.0, count: 0, testerName: '', status: 'Not Started' }
                     ]},
                     { title: 'Mechanical & Durability', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
-                        { id: 'drop_test', label: 'Drop Impact Test', weight: 0.4, count: 0, hasOrientations: true, orientations: 5 },
-                        { id: 'dormal_asm', label: 'Dormal Assembly/Disassembly', weight: 1.0, count: 0 },
-                        { id: 'steam_test', label: 'Steam Sterilization Test', weight: 1.0, count: 0 },
-                        { id: 'mw_test', label: 'Microwave Sterilization Test', weight: 1.0, count: 0 },
-                        { id: 'bite', label: 'Bite Endurance Test', weight: 4.0, count: 0 },
-                        { id: 'tensile', label: 'Tensile Strength', weight: 1.5, count: 0 },
-                        { id: 'torque', label: 'Torque/Closure Test', weight: 1.2, count: 0 },
-                        { id: 'comp_test', label: 'Compression Test', weight: 1.8, count: 0 }
+                        { id: 'drop_test', label: 'Drop Impact Test', weight: 0.4, count: 0, hasOrientations: true, orientations: 5, testerName: '', status: 'Not Started' },
+                        { id: 'dormal_asm', label: 'Dormal Assembly/Disassembly', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'steam_test', label: 'Steam Sterilization Test', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'mw_test', label: 'Microwave Sterilization Test', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'bite', label: 'Bite Endurance Test', weight: 4.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'tensile', label: 'Tensile Strength', weight: 1.5, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'torque', label: 'Torque/Closure Test', weight: 1.2, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'comp_test', label: 'Compression Test', weight: 1.8, count: 0, testerName: '', status: 'Not Started' }
                     ]},
                     { title: 'Chemical & Safety', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
-                        { id: 'print_adhesion', label: 'Print Adhesion Test', weight: 2.0, count: 0 }
+                        { id: 'print_adhesion', label: 'Print Adhesion Test', weight: 2.0, count: 0, testerName: '', status: 'Not Started' }
                     ]}
                 ],
 
@@ -416,12 +454,9 @@
                     }
                 },
 
-                // NEW: Dynamic evaluation engine checking standard federal / calendar legal fixed holidays Matrix
                 isHoliday(date) {
-                    const month = date.getMonth() + 1; // 1-indexed conversion
+                    const month = date.getMonth() + 1;
                     const day = date.getDate();
-                    
-                    // Fixed Holiday Rule Definitions Matrix
                     const fixedHolidays = [
                         { m: 1, d: 1 },   // New Year's Day
                         { m: 6, d: 19 },  // Juneteenth
@@ -429,21 +464,18 @@
                         { m: 11, d: 11 }, // Veterans Day
                         { m: 12, d: 25 }  // Christmas Day
                     ];
-
                     return fixedHolidays.some(h => h.m === month && h.d === day);
                 },
 
-                // NEW: Chronology Sequence Core engine calculating precise working day jumps skipping weekends/holidays
                 calculateBusinessEndDate(startDateString, targetDaysAmount) {
                     if (!startDateString || isNaN(targetDaysAmount) || targetDaysAmount <= 0) return 'Select start date';
                     
                     let currentDate = new Date(startDateString + 'T00:00:00');
                     let daysRemaining = Math.ceil(targetDaysAmount);
 
-                    // Step iteratively through calendar nodes jumping over weekends and fixed holiday flags
                     while (daysRemaining > 0) {
                         const dayOfWeek = currentDate.getDay();
-                        const weekendMatch = (dayOfWeek === 0 || dayOfWeek === 6); // 0=Sunday, 6=Saturday
+                        const weekendMatch = (dayOfWeek === 0 || dayOfWeek === 6);
                         
                         if (!weekendMatch && !this.isHoliday(currentDate)) {
                             daysRemaining--;
@@ -457,7 +489,6 @@
                     return currentDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
                 },
 
-                // Alpine Getter Computed Interface for real-time Live field sync updates
                 get expectedEndDate() {
                     return this.calculateBusinessEndDate(this.startDate, parseFloat(this.grandTotalDays));
                 },
@@ -470,6 +501,7 @@
                             testLeadName: this.testLeadName,
                             startDate: this.startDate,
                             computedEndDate: this.expectedEndDate,
+                            projectStatus: this.projectStatus,
                             timestamp: new Date(), 
                             data: JSON.parse(JSON.stringify(this.groupedTests)) 
                         };
@@ -506,7 +538,7 @@
                             }
                             await this.loadHistory();
                         } catch (e) {
-                            console.error("Failed cloud deletion parameter query target matching: ", e);
+                            console.error("Failed cloud deletion target matching: ", e);
                         }
                     }
                 },
@@ -517,14 +549,21 @@
                     this.projectNotes = item.notes || '';
                     this.selectedProjectId = item.id; 
                     
-                    // NEW: Reload persistent Chronology Metadata back into memory metrics properties
                     this.testLeadName = item.testLeadName || '';
                     this.startDate = item.startDate || new Date().toISOString().split('T')[0];
+                    this.projectStatus = item.projectStatus || 'Not Started';
 
                     this.groupedTests.forEach((g, gIdx) => {
                         const savedGroup = item.data[gIdx];
                         if (savedGroup) {
-                            g.items = JSON.parse(JSON.stringify(savedGroup.items));
+                            // Map over saved configurations ensuring assignments and status strings fall back safely
+                            g.items = savedGroup.items.map(savedItem => {
+                                return {
+                                    ...savedItem,
+                                    testerName: savedItem.testerName || '',
+                                    status: savedItem.status || 'Not Started'
+                                };
+                            });
                         }
                     });
                 },
@@ -542,7 +581,9 @@
                         subLabel: group.newSubLabel.trim() || 'Custom Added component',
                         weight: Number(group.newWeight) || 0,
                         count: 0,
-                        isCustom: true
+                        isCustom: true,
+                        testerName: '',
+                        status: 'Not Started'
                     };
 
                     if (group.newHasOrientations) {
@@ -598,8 +639,6 @@
                 },
 
                 get grandTotal() { return (parseFloat(this.netTotal) * 1.15).toFixed(1); },
-                
-                // Helper property computing total active working day weights based off 6.5 hour standard division blocks
                 get grandTotalDays() { return (this.grandTotal / 6.5).toFixed(1); },
 
                 getSelectedItemsFromData(dataArray) {
@@ -627,6 +666,8 @@
                             g.items = g.items.filter(t => !t.isCustom);
                             g.items.forEach(t => {
                                 t.count = 0;
+                                t.testerName = '';
+                                t.status = 'Not Started';
                                 if(t.usOz !== undefined) { t.usOz = 0; t.ml = 0; t.ukOz = 0; }
                             });
                         });
@@ -634,6 +675,7 @@
                         this.projectNotes = "";
                         this.testLeadName = "";
                         this.startDate = new Date().toISOString().split('T')[0];
+                        this.projectStatus = 'Not Started';
                         this.selectedProjectId = null; 
                     }
                 }
