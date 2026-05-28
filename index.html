@@ -98,7 +98,7 @@
                                 <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Total Hrs</p>
                             </div>
                             <div class="text-center">
-                                <div class="text-3xl font-black text-white" x-text="(grandTotal / 6.5).toFixed(1)"></div>
+                                <div class="text-3xl font-black text-white" x-text="grandTotalDays"></div>
                                 <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Days (6.5h)</p>
                             </div>
                         </div>
@@ -116,6 +116,24 @@
                     <div>
                         <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Notes</label>
                         <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none h-24 resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Test Lead Name</label>
+                            <input type="text" x-model="testLeadName" placeholder="Type lead engineer name..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Start Date</label>
+                            <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block flex items-center gap-1.5">
+                                Expected End Date 
+                                <span class="bg-slate-100 text-slate-500 rounded px-1 text-[8px] font-bold normal-case">5d Work week + Holidays</span>
+                            </label>
+                            <div class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-black text-blue-600 h-[46px] flex items-center" x-text="expectedEndDate"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -212,6 +230,14 @@
                                         <span x-show="selectedProjectId === project.id" class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded text-[10px]">Active Workspace</span>
                                     </div>
                                     <p class="text-[10px] uppercase font-bold text-slate-400 mt-0.5 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
+                                    
+                                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                        <div>Lead: <span class="text-slate-900 font-bold" x-text="project.testLeadName || 'Unassigned'"></span></div>
+                                        <div class="text-slate-300">|</div>
+                                        <div>Start: <span class="text-slate-900 font-bold" x-text="project.startDate || 'Not Set'"></span></div>
+                                        <div class="text-slate-300">|</div>
+                                        <div>End: <span class="text-blue-600 font-black" x-text="project.computedEndDate || 'N/A'"></span></div>
+                                    </div>
                                 </div>
                                 <div class="flex items-center gap-4 bg-slate-900 text-white py-2 px-5 rounded-2xl self-start sm:self-auto">
                                     <div class="text-right">
@@ -312,12 +338,17 @@
             return {
                 db: null, 
                 currentView: 'estimator', 
-                selectedProjectId: null, // Tracks if we are editing an already existing project
+                selectedProjectId: null, 
                 isAdmin: false,
                 showLoginModal: false,
                 password: '',
                 projectName: 'New Project',
                 projectNotes: '',
+                
+                // NEW: State trackers for Chronology Schedule Data Models
+                testLeadName: '',
+                startDate: new Date().toISOString().split('T')[0], // Default initialization to current calendar slot
+                
                 history: [], 
                 
                 groupedTests: [
@@ -354,7 +385,7 @@
 
                 initFirebase() {
                     const firebaseConfig = {
-                         apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
+                          apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
   authDomain: "project-estimate-79ba8.firebaseapp.com",
   projectId: "project-estimate-79ba8",
   storageBucket: "project-estimate-79ba8.firebasestorage.app",
@@ -385,34 +416,79 @@
                     }
                 },
 
+                // NEW: Dynamic evaluation engine checking standard federal / calendar legal fixed holidays Matrix
+                isHoliday(date) {
+                    const month = date.getMonth() + 1; // 1-indexed conversion
+                    const day = date.getDate();
+                    
+                    // Fixed Holiday Rule Definitions Matrix
+                    const fixedHolidays = [
+                        { m: 1, d: 1 },   // New Year's Day
+                        { m: 6, d: 19 },  // Juneteenth
+                        { m: 7, d: 4 },   // Independence Day
+                        { m: 11, d: 11 }, // Veterans Day
+                        { m: 12, d: 25 }  // Christmas Day
+                    ];
+
+                    return fixedHolidays.some(h => h.m === month && h.d === day);
+                },
+
+                // NEW: Chronology Sequence Core engine calculating precise working day jumps skipping weekends/holidays
+                calculateBusinessEndDate(startDateString, targetDaysAmount) {
+                    if (!startDateString || isNaN(targetDaysAmount) || targetDaysAmount <= 0) return 'Select start date';
+                    
+                    let currentDate = new Date(startDateString + 'T00:00:00');
+                    let daysRemaining = Math.ceil(targetDaysAmount);
+
+                    // Step iteratively through calendar nodes jumping over weekends and fixed holiday flags
+                    while (daysRemaining > 0) {
+                        const dayOfWeek = currentDate.getDay();
+                        const weekendMatch = (dayOfWeek === 0 || dayOfWeek === 6); // 0=Sunday, 6=Saturday
+                        
+                        if (!weekendMatch && !this.isHoliday(currentDate)) {
+                            daysRemaining--;
+                        }
+                        
+                        if (daysRemaining > 0) {
+                            currentDate.setDate(currentDate.getDate() + 1);
+                        }
+                    }
+
+                    return currentDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                },
+
+                // Alpine Getter Computed Interface for real-time Live field sync updates
+                get expectedEndDate() {
+                    return this.calculateBusinessEndDate(this.startDate, parseFloat(this.grandTotalDays));
+                },
+
                 async saveToHistory() {
                     try {
                         const payload = {
                             name: this.projectName, 
                             notes: this.projectNotes, 
+                            testLeadName: this.testLeadName,
+                            startDate: this.startDate,
+                            computedEndDate: this.expectedEndDate,
                             timestamp: new Date(), 
                             data: JSON.parse(JSON.stringify(this.groupedTests)) 
                         };
 
-                        // Check if we are modifying an existing item
                         if (this.selectedProjectId) {
                             if (confirm("Modified, would you like to Save?")) {
-                                // Overwrite existing document
                                 await this.db.collection('projects').doc(this.selectedProjectId).set(payload);
                                 alert("Project successfully updated in Cloud storage!");
                                 await this.loadHistory();
                                 return;
                             } else {
-                                // If user chooses Cancel, offer creating a brand new clone copy instead
                                 if (!confirm("Save as a new separate project entry instead?")) {
                                     return;
                                 }
                             }
                         }
 
-                        // Save as new document row
                         const docRef = await this.db.collection('projects').add(payload);
-                        this.selectedProjectId = docRef.id; // Mark current document as active context
+                        this.selectedProjectId = docRef.id; 
                         alert("Project successfully saved to Cloud storage!");
                         await this.loadHistory();
                     } catch (e) {
@@ -439,8 +515,12 @@
                     const item = this.history[idx];
                     this.projectName = item.name;
                     this.projectNotes = item.notes || '';
-                    this.selectedProjectId = item.id; // Track the loaded database document ID
+                    this.selectedProjectId = item.id; 
                     
+                    // NEW: Reload persistent Chronology Metadata back into memory metrics properties
+                    this.testLeadName = item.testLeadName || '';
+                    this.startDate = item.startDate || new Date().toISOString().split('T')[0];
+
                     this.groupedTests.forEach((g, gIdx) => {
                         const savedGroup = item.data[gIdx];
                         if (savedGroup) {
@@ -518,6 +598,9 @@
                 },
 
                 get grandTotal() { return (parseFloat(this.netTotal) * 1.15).toFixed(1); },
+                
+                // Helper property computing total active working day weights based off 6.5 hour standard division blocks
+                get grandTotalDays() { return (this.grandTotal / 6.5).toFixed(1); },
 
                 getSelectedItemsFromData(dataArray) {
                     let items = [];
@@ -549,7 +632,9 @@
                         });
                         this.projectName = "New Project";
                         this.projectNotes = "";
-                        this.selectedProjectId = null; // Reset tracker back to pristine status
+                        this.testLeadName = "";
+                        this.startDate = new Date().toISOString().split('T')[0];
+                        this.selectedProjectId = null; 
                     }
                 }
             }
