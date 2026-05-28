@@ -66,8 +66,13 @@
             <div class="space-y-3">
                 <template x-for="(item, index) in history" :key="index">
                     <div class="flex items-center gap-2 group">
-                        <div class="flex-1 p-3 bg-slate-50 rounded-xl border border-transparent hover:border-blue-300 cursor-pointer transition-all" @click="currentView = 'estimator'; loadEstimate(index)">
-                            <p class="text-[9px] font-black text-blue-500 uppercase" x-text="item.timestamp"></p>
+                        <div class="flex-1 p-3 bg-slate-50 rounded-xl border border-transparent hover:border-blue-300 cursor-pointer transition-all" 
+                             :class="selectedProjectId === item.id ? 'border-blue-500 bg-blue-50/30' : ''"
+                             @click="currentView = 'estimator'; loadEstimate(index)">
+                            <p class="text-[9px] font-black text-blue-500 uppercase flex justify-between items-center">
+                                <span x-text="item.timestamp"></span>
+                                <span x-show="selectedProjectId === item.id" class="text-[8px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full lowercase font-normal">editing</span>
+                            </p>
                             <p class="font-bold text-slate-700 text-sm truncate" x-text="item.name"></p>
                         </div>
                         <button @click.stop="deleteHistoryItem(index)" class="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-red-500 transition-all">
@@ -105,7 +110,7 @@
                         <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Title</label>
                         <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                             <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
-                            <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all no-print whitespace-nowrap">Save Project</button>
+                            <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all no-print whitespace-nowrap" x-text="selectedProjectId ? 'Update Project' : 'Save Project'"></button>
                         </div>
                     </div>
                     <div>
@@ -199,10 +204,13 @@
 
                 <div class="space-y-8">
                     <template x-for="(project, pIdx) in history" :key="pIdx">
-                        <div class="bg-white border border-slate-200 rounded-[2rem] shadow-sm overflow-hidden p-6 sm:p-8">
+                        <div class="bg-white border border-slate-200 rounded-[2rem] shadow-sm overflow-hidden p-6 sm:p-8" :class="selectedProjectId === project.id ? 'ring-2 ring-blue-500' : ''">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-2">
                                 <div>
-                                    <h3 class="text-xl font-black text-slate-800" x-text="project.name"></h3>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="text-xl font-black text-slate-800" x-text="project.name"></h3>
+                                        <span x-show="selectedProjectId === project.id" class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded text-[10px]">Active Workspace</span>
+                                    </div>
                                     <p class="text-[10px] uppercase font-bold text-slate-400 mt-0.5 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
                                 </div>
                                 <div class="flex items-center gap-4 bg-slate-900 text-white py-2 px-5 rounded-2xl self-start sm:self-auto">
@@ -223,7 +231,10 @@
                                 </div>
                             </template>
 
-                            <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">Selected Configuration Matrix</h4>
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Selected Configuration Matrix</h4>
+                                <button @click="currentView = 'estimator'; loadEstimate(pIdx)" class="text-xs text-blue-600 font-bold hover:underline">Load into Editor</button>
+                            </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-xs">
                                     <thead>
@@ -299,14 +310,15 @@
     <script>
         function labEstimator() {
             return {
-                db: null, // Firestore object holder
-                currentView: 'estimator', // View switching tracking matrix state
+                db: null, 
+                currentView: 'estimator', 
+                selectedProjectId: null, // Tracks if we are editing an already existing project
                 isAdmin: false,
                 showLoginModal: false,
                 password: '',
                 projectName: 'New Project',
                 projectNotes: '',
-                history: [], // Fed directly via Live Firebase Connection instead of local storage
+                history: [], 
                 
                 groupedTests: [
                     { title: 'Functional & Scale Accuracy', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
@@ -340,7 +352,6 @@
                     ]}
                 ],
 
-                // Initialize cloud architecture natively on page instantiation sequence
                 initFirebase() {
                     const firebaseConfig = {
                          apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
@@ -358,13 +369,11 @@
                     this.loadHistory();
                 },
 
-                // Cloud Query Sync: Fetches real-time structured telemetry sets from cloud collection instance
                 async loadHistory() {
                     try {
                         const snapshot = await this.db.collection('projects').orderBy('timestamp', 'desc').get();
                         this.history = snapshot.docs.map(doc => {
                             const data = doc.data();
-                            // Handle formatting timestamp from native Firestore instance types down to locally legible formats
                             const formattedDate = (data.timestamp && data.timestamp.toDate) 
                                 ? data.timestamp.toDate().toLocaleString() 
                                 : data.timestamp;
@@ -376,15 +385,34 @@
                     }
                 },
 
-                // Cloud Insert Routine
                 async saveToHistory() {
                     try {
-                        await this.db.collection('projects').add({ 
+                        const payload = {
                             name: this.projectName, 
                             notes: this.projectNotes, 
                             timestamp: new Date(), 
                             data: JSON.parse(JSON.stringify(this.groupedTests)) 
-                        });
+                        };
+
+                        // Check if we are modifying an existing item
+                        if (this.selectedProjectId) {
+                            if (confirm("Modified, would you like to Save?")) {
+                                // Overwrite existing document
+                                await this.db.collection('projects').doc(this.selectedProjectId).set(payload);
+                                alert("Project successfully updated in Cloud storage!");
+                                await this.loadHistory();
+                                return;
+                            } else {
+                                // If user chooses Cancel, offer creating a brand new clone copy instead
+                                if (!confirm("Save as a new separate project entry instead?")) {
+                                    return;
+                                }
+                            }
+                        }
+
+                        // Save as new document row
+                        const docRef = await this.db.collection('projects').add(payload);
+                        this.selectedProjectId = docRef.id; // Mark current document as active context
                         alert("Project successfully saved to Cloud storage!");
                         await this.loadHistory();
                     } catch (e) {
@@ -392,11 +420,14 @@
                     }
                 },
 
-                // Cloud Destruction Query Targeted Matcher Routine
                 async deleteHistoryItem(idx) {
+                    const TargetId = this.history[idx].id;
                     if(confirm("Permanently delete this project calculation template from cloud database storage?")) {
                         try {
-                            await this.db.collection('projects').doc(this.history[idx].id).delete();
+                            await this.db.collection('projects').doc(TargetId).delete();
+                            if (this.selectedProjectId === TargetId) {
+                                this.selectedProjectId = null;
+                            }
                             await this.loadHistory();
                         } catch (e) {
                             console.error("Failed cloud deletion parameter query target matching: ", e);
@@ -408,8 +439,8 @@
                     const item = this.history[idx];
                     this.projectName = item.name;
                     this.projectNotes = item.notes || '';
+                    this.selectedProjectId = item.id; // Track the loaded database document ID
                     
-                    // Remap database array entries carefully to retain application runtime state variables
                     this.groupedTests.forEach((g, gIdx) => {
                         const savedGroup = item.data[gIdx];
                         if (savedGroup) {
@@ -441,7 +472,6 @@
 
                     group.items.push(newTestObj);
                     
-                    // Reset inline inputs
                     group.newLabel = '';
                     group.newSubLabel = '';
                     group.newWeight = 1.0;
@@ -511,7 +541,6 @@
                 resetAll() {
                     if(confirm("Clear current project data?")) {
                         this.groupedTests.forEach(g => {
-                            // Purge out custom tests to return structural state properties to system defaults
                             g.items = g.items.filter(t => !t.isCustom);
                             g.items.forEach(t => {
                                 t.count = 0;
@@ -520,6 +549,7 @@
                         });
                         this.projectName = "New Project";
                         this.projectNotes = "";
+                        this.selectedProjectId = null; // Reset tracker back to pristine status
                     }
                 }
             }
