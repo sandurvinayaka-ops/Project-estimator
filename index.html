@@ -100,13 +100,25 @@
             <div class="space-y-12 pb-32">
                 <template x-for="group in groupedTests" :key="group.title">
                     <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
-                        <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100">
+                        <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
                             <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
+                            
+                            <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md">
+                                <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
+                                <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
+                                <input type="number" step="0.1" placeholder="Hrs" class="px-1 py-1 bg-slate-50 rounded text-xs font-black text-center w-12 outline-none border border-transparent focus:border-blue-500" x-model.number="group.newWeight">
+                                <label class="flex items-center gap-1 text-[10px] font-bold text-slate-500 cursor-pointer select-none">
+                                    <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500" x-model="group.newHasOrientations"> Orient
+                                </label>
+                                <button @click="addNewTestItem(group)" class="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/></svg>
+                                </button>
+                            </div>
                         </div>
                         <table class="w-full text-left">
                             <thead class="bg-slate-50/30 text-[10px] uppercase font-black text-slate-400 border-b">
                                 <tr>
-                                    <th class="px-8 py-4 w-1/3">Lab Component</th>
+                                    <th class="px-8 py-4 w-1/3">Test name</th>
                                     <th class="px-4 py-4 text-center">Multipliers & Calibration</th>
                                     <th class="px-8 py-4 text-right w-24">Qty</th>
                                 </tr>
@@ -115,7 +127,12 @@
                                 <template x-for="test in group.items" :key="test.id">
                                     <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
                                         <td class="px-8 py-6">
-                                            <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
+                                            <div class="flex items-center gap-2">
+                                                <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
+                                                <button x-show="isAdmin && test.isCustom" x-cloak @click="removeCustomTestItem(group, test.id)" class="text-slate-300 hover:text-red-500 p-0.5 rounded transition-colors no-print">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                                                </button>
+                                            </div>
                                             <div class="text-[9px] uppercase font-bold text-slate-400" x-text="test.subLabel"></div>
                                         </td>
                                         <td class="px-4 py-6 align-middle text-center">
@@ -129,7 +146,7 @@
                                             </template>
                                             <template x-if="!test.id.includes('scale')">
                                                 <div class="flex gap-4 justify-center items-end">
-                                                    <div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.weight"></div>
+                                                    <div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom" x-model.number="test.weight"></div>
                                                     <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations"></div></template>
                                                 </div>
                                             </template>
@@ -181,10 +198,10 @@
                 password: '',
                 projectName: 'New Project',
                 projectNotes: '',
-                history: [], // Fed directly from Firestore Cloud instead of LocalStorage
+                history: [],
                 
                 groupedTests: [
-                    { title: 'Functional & Scale Accuracy', items: [
+                    { title: 'Functional & Scale Accuracy', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
                         { id: 'scale_4', label: 'Scale Accuracy Test', subLabel: '4 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0 },
                         { id: 'scale_8', label: 'Scale Accuracy Test', subLabel: '8 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0 },
                         { id: 'scale_11', label: 'Scale Accuracy Test', subLabel: '11 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0 },
@@ -193,14 +210,14 @@
                         { id: 'flow_rate', label: 'Flow Rate Measurement', weight: 1.5, count: 0 },
                         { id: 'vacuum_test', label: 'Vacuum Performance Test - Breast Pump', weight: 2.0, count: 0 }
                     ]},
-                    { title: 'Environmental Conditioning', items: [
+                    { title: 'Environmental Conditioning', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
                         { id: 'boil', label: 'Boiling Test', weight: 2.0, count: 0 },
                         { id: 'dish', label: 'Dishwashing Test', weight: 1.5, count: 0 },
                         { id: 'mw_ster', label: 'Microwave Sterilization', weight: 1.0, count: 0 },
                         { id: 'steam_ster', label: 'Steam Sterilization', weight: 1.0, count: 0 },
                         { id: 'uv_exposure', label: 'UV Exposure Stability', weight: 5.0, count: 0 }
                     ]},
-                    { title: 'Mechanical & Durability', items: [
+                    { title: 'Mechanical & Durability', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
                         { id: 'drop_test', label: 'Drop Impact Test', weight: 0.4, count: 0, hasOrientations: true, orientations: 5 },
                         { id: 'dormal_asm', label: 'Dormal Assembly/Disassembly', weight: 1.0, count: 0 },
                         { id: 'steam_test', label: 'Steam Sterilization Test', weight: 1.0, count: 0 },
@@ -210,14 +227,14 @@
                         { id: 'torque', label: 'Torque/Closure Test', weight: 1.2, count: 0 },
                         { id: 'comp_test', label: 'Compression Test', weight: 1.8, count: 0 }
                     ]},
-                    { title: 'Chemical & Safety', items: [
+                    { title: 'Chemical & Safety', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
                         { id: 'print_adhesion', label: 'Print Adhesion Test', weight: 2.0, count: 0 }
                     ]}
                 ],
 
                 initFirebase() {
                     const firebaseConfig = {
-  apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
+             apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
   authDomain: "project-estimate-79ba8.firebaseapp.com",
   projectId: "project-estimate-79ba8",
   storageBucket: "project-estimate-79ba8.firebasestorage.app",
@@ -237,7 +254,6 @@
                         const snapshot = await this.db.collection('projects').orderBy('timestamp', 'desc').get();
                         this.history = snapshot.docs.map(doc => {
                             const data = doc.data();
-                            // Resolves display mapping issues by converting raw db items to local date strings
                             const formattedDate = (data.timestamp && data.timestamp.toDate) 
                                 ? data.timestamp.toDate().toLocaleString() 
                                 : data.timestamp;
@@ -279,7 +295,48 @@
                     const item = this.history[idx];
                     this.projectName = item.name;
                     this.projectNotes = item.notes || '';
-                    this.groupedTests = JSON.parse(JSON.stringify(item.data));
+                    
+                    this.groupedTests.forEach((g, gIdx) => {
+                        const savedGroup = item.data[gIdx];
+                        if (savedGroup) {
+                            g.items = JSON.parse(JSON.stringify(savedGroup.items));
+                        }
+                    });
+                },
+
+                addNewTestItem(group) {
+                    if (!group.newLabel.trim()) {
+                        alert("Please provide a test label before adding.");
+                        return;
+                    }
+                    
+                    const customId = 'custom_' + Date.now();
+                    const newTestObj = {
+                        id: customId,
+                        label: group.newLabel.trim(),
+                        subLabel: group.newSubLabel.trim() || 'Custom Added component',
+                        weight: Number(group.newWeight) || 0,
+                        count: 0,
+                        isCustom: true
+                    };
+
+                    if (group.newHasOrientations) {
+                        newTestObj.hasOrientations = true;
+                        newTestObj.orientations = 1;
+                    }
+
+                    group.items.push(newTestObj);
+                    
+                    group.newLabel = '';
+                    group.newSubLabel = '';
+                    group.newWeight = 1.0;
+                    group.newHasOrientations = false;
+                },
+
+                removeCustomTestItem(group, testId) {
+                    if(confirm("Remove this custom test from this category?")) {
+                        group.items = group.items.filter(item => item.id !== testId);
+                    }
                 },
 
                 login() { if(this.password === 'admin123'){ this.isAdmin = true; this.showLoginModal = false; this.password = ''; } },
@@ -304,10 +361,13 @@
                 get grandTotal() { return (parseFloat(this.netTotal) * 1.15).toFixed(1); },
                 resetAll() {
                     if(confirm("Clear current project data?")) {
-                        this.groupedTests.forEach(g => g.items.forEach(t => {
-                            t.count = 0;
-                            if(t.usOz !== undefined) { t.usOz = 0; t.ml = 0; t.ukOz = 0; }
-                        }));
+                        this.groupedTests.forEach(g => {
+                            g.items = g.items.filter(t => !t.isCustom);
+                            g.items.forEach(t => {
+                                t.count = 0;
+                                if(t.usOz !== undefined) { t.usOz = 0; t.ml = 0; t.ukOz = 0; }
+                            });
+                        });
                         this.projectName = "New Project";
                         this.projectNotes = "";
                     }
