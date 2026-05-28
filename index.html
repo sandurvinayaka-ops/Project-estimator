@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
+    <!-- Firebase Legacy Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
@@ -20,6 +21,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
 
+    <!-- Admin Login Modal -->
     <div x-show="showLoginModal" x-cloak x-transition class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm no-print">
         <div @click.away="showLoginModal = false" class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl text-center">
             <h3 class="text-xl font-black text-slate-800 mb-6">Admin Access</h3>
@@ -29,6 +31,7 @@
     </div>
 
     <div class="flex min-h-screen">
+        <!-- Sidebar -->
         <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-full overflow-y-auto custom-scroll">
             <div class="mb-8">
                 <button @click="isAdmin ? logout() : showLoginModal = true" 
@@ -38,6 +41,7 @@
                 </button>
             </div>
             
+            <!-- Conditional Navigation Sidebar links based on Active View State -->
             <template x-if="currentView === 'estimator'">
                 <div>
                     <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
@@ -51,6 +55,7 @@
                 </div>
             </template>
 
+            <!-- Projects Summary Master Action Button -->
             <div class="mb-6">
                 <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
                         class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
@@ -83,8 +88,10 @@
             </div>
         </aside>
 
+        <!-- Dynamic Main Content Wrapper -->
         <div class="flex-1 lg:ml-72 min-w-0">
             
+            <!-- View 1: Main Effort Effort Estimator Calculator Workspace -->
             <main x-show="currentView === 'estimator'" class="p-6 md:p-12 lg:mr-80">
                 <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
                     <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
@@ -105,6 +112,7 @@
                     </div>
                 </div>
 
+                <!-- Project Context Form Fields -->
                 <div class="mt-8 mb-10 space-y-4">
                     <div>
                         <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Title</label>
@@ -118,6 +126,7 @@
                         <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none h-24 resize-none"></textarea>
                     </div>
 
+                    <!-- Test Lead, Chronology Dates, and Global Project Status Row Configuration -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                         <div>
                             <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Test Lead Name</label>
@@ -146,12 +155,14 @@
                     </div>
                 </div>
 
+                <!-- Test Category Operations Tables -->
                 <div class="space-y-12 pb-32">
                     <template x-for="group in groupedTests" :key="group.title">
                         <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
                             <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
                                 <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
                                 
+                                <!-- Inline Add Test Interface (Visible only to Admin) -->
                                 <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md">
                                     <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
                                     <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
@@ -225,10 +236,12 @@
                 </div>
             </main>
 
+            <!-- View 2: Global Projects Dashboard Breakdown Sheet Summary Component -->
             <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto animate-fade-in">
+                <!-- Header Component -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
                     <div>
-                        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Saved Projects Master Directory</h1>
+                        <h1 class="text-3xl font-black text-slate-900 tracking-tight">T&V Projects summary</h1>
                         <p class="text-sm text-slate-500 mt-1">Comprehensive breakdown mapping of hours and dynamic tests globally.</p>
                     </div>
                     <button @click="currentView = 'estimator'" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-all flex items-center gap-2 self-start sm:self-auto">
@@ -237,6 +250,7 @@
                     </button>
                 </div>
 
+                <!-- Empty State Block -->
                 <template x-if="history.length === 0">
                     <div class="text-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-slate-200">
                         <p class="text-slate-400 font-bold mb-2">No projects discovered inside database history matrix</p>
@@ -244,6 +258,7 @@
                     </div>
                 </template>
 
+                <!-- Summary Breakdown Grid Dashboard Mapping -->
                 <div class="space-y-8">
                     <template x-for="(project, pIdx) in history" :key="pIdx">
                         <div class="bg-white border border-slate-200 rounded-[2rem] shadow-sm overflow-hidden p-6 sm:p-8" :class="selectedProjectId === project.id ? 'ring-2 ring-blue-500' : ''">
@@ -263,6 +278,7 @@
                                     </div>
                                     <p class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
                                     
+                                    <!-- Operational Metadata Banner Inside Summary Grid Matrix -->
                                     <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                                         <div>Lead: <span class="text-slate-900 font-bold" x-text="project.testLeadName || 'Unassigned'"></span></div>
                                         <div class="text-slate-300">|</div>
@@ -283,12 +299,14 @@
                                 </div>
                             </div>
 
+                            <!-- Project Custom Observations Notes -->
                             <template x-if="project.notes">
                                 <div class="mb-4 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-slate-600 font-medium">
                                     <strong class="text-slate-700 font-black">Project Notes:</strong> <span x-text="project.notes"></span>
                                 </div>
                             </template>
 
+                            <!-- Tests List Matrix inside this project instance block row -->
                             <div class="flex justify-between items-center mb-2">
                                 <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Selected Configuration Matrix</h4>
                                 <button @click="currentView = 'estimator'; loadEstimate(pIdx)" class="text-xs text-blue-600 font-bold hover:underline">Load into Editor</button>
@@ -349,6 +367,7 @@
 
         </div>
 
+        <!-- Right Summary Sidebar (Visible only on Calculator View layout) -->
         <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-full hidden xl:flex flex-col no-print shadow-xl">
             <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
                 <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
