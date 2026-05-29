@@ -114,24 +114,36 @@
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div class="lg:col-span-2">
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Notes</label>
-                            <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none h-24 resize-none shadow-sm"></textarea>
+                    <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
+                        <div class="xl:col-span-5">
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Project Notes</label>
+                            <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none h-[88px] resize-none"></textarea>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-2">
+                        
+                        <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-0.5 block">RFS #</label>
-                                <input type="text" x-model="rfsNumber" placeholder="e.g. RFS-1042" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">RFS #</label>
+                                <input type="text" x-model="rfsNumber" placeholder="e.g. RFS-1042" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
                             </div>
                             <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-0.5 block">Test Design #</label>
-                                <input type="text" x-model="testDesignNumber" placeholder="e.g. TD-9921" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Test Design #</label>
+                                <input type="text" x-model="testDesignNumber" placeholder="e.g. TD-9921" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
                             </div>
                             <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-0.5 block">Test Record #</label>
-                                <input type="text" x-model="testRecordNumber" placeholder="e.g. TR-5540" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Test Record #</label>
+                                <input type="text" x-model="testRecordNumber" placeholder="e.g. TR-5540" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
                             </div>
+                        </div>
+
+                        <div class="xl:col-span-2">
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Sub_Business</label>
+                            <select x-model="subBusiness" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer h-[44px]">
+                                <option value="">Select Option...</option>
+                                <option value="Infant Feeding">Infant Feeding</option>
+                                <option value="Comforting">Comforting</option>
+                                <option value="Breast feeding">Breast feeding</option>
+                                <option value="Healthy feeding">Healthy feeding</option>
+                            </select>
                         </div>
                     </div>
 
@@ -293,8 +305,10 @@
                                     </div>
                                     <p class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
                                     
-                                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 gap-y-2">
+                                    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                                         <div>Lead: <span class="text-slate-900 font-bold" x-text="project.testLeadName || 'Unassigned'"></span></div>
+                                        <div class="text-slate-300">|</div>
+                                        <div>Business: <span class="text-slate-900 font-bold" x-text="project.subBusiness || 'N/A'"></span></div>
                                         <div class="text-slate-300">|</div>
                                         <div>RFS: <span class="text-slate-900 font-bold" x-text="project.rfsNumber || 'N/A'"></span></div>
                                         <div class="text-slate-300">|</div>
@@ -423,12 +437,13 @@
                 showLoginModal: false,
                 password: '',
                 projectName: 'New Project',
-                projectNotes: '',
                 
-                // Trackers
+                // Trackers & New Configuration Variables
+                projectNotes: '',
                 rfsNumber: '',
                 testDesignNumber: '',
                 testRecordNumber: '',
+                subBusiness: '',
                 
                 // Project Chronology & Configuration Status Fields
                 testLeadName: '',
@@ -549,6 +564,7 @@
                             rfsNumber: this.rfsNumber,
                             testDesignNumber: this.testDesignNumber,
                             testRecordNumber: this.testRecordNumber,
+                            subBusiness: this.subBusiness,
                             testLeadName: this.testLeadName,
                             startDate: this.startDate,
                             computedEndDate: this.expectedEndDate,
@@ -601,6 +617,7 @@
                     this.rfsNumber = item.rfsNumber || '';
                     this.testDesignNumber = item.testDesignNumber || '';
                     this.testRecordNumber = item.testRecordNumber || '';
+                    this.subBusiness = item.subBusiness || '';
                     this.selectedProjectId = item.id; 
                     
                     this.testLeadName = item.testLeadName || '';
@@ -752,6 +769,7 @@
                         this.rfsNumber = "";
                         this.testDesignNumber = "";
                         this.testRecordNumber = "";
+                        this.subBusiness = "";
                         this.testLeadName = "";
                         this.startDate = new Date().toISOString().split('T')[0];
                         this.projectStatus = 'Not Started';
