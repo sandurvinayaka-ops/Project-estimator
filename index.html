@@ -619,16 +619,24 @@
                 },
 
                 duplicateTestItem(group, testRow) {
-                    const duplicateId = 'duplicate_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+                    const dynamicStamp = Date.now() + '_' + Math.random().toString(36).substr(2, 4);
                     
-                    // Deep copy ensures all existing values (including multipliers and scale numbers) are perfectly copied
+                    // Explicit deep copy
                     const duplicatedObj = JSON.parse(JSON.stringify(testRow));
                     
-                    duplicatedObj.id = duplicateId;
-                    duplicatedObj.isDuplicated = true;
-                    duplicatedObj.subLabel = 'Duplicated Row Component';
+                    // Crucial structural patch: Ensure 'scale' stays inside the ID string matrix if it is a scale metric test
+                    if (testRow.id.includes('scale')) {
+                        duplicatedObj.id = 'scale_duplicate_' + dynamicStamp;
+                    } else {
+                        duplicatedObj.id = 'duplicate_' + dynamicStamp;
+                    }
                     
-                    // Locate parent index position inside dataset array matrix to inject right underneath
+                    duplicatedObj.isDuplicated = true;
+                    if (!duplicatedObj.subLabel.includes('Duplicated')) {
+                        duplicatedObj.subLabel += ' (Duplicated)';
+                    }
+                    
+                    // Locate parent row index position inside category template dataset to inject right underneath
                     const parentIndex = group.items.findIndex(item => item.id === testRow.id);
                     if (parentIndex !== -1) {
                         group.items.splice(parentIndex + 1, 0, duplicatedObj);
