@@ -353,6 +353,7 @@
                                             </tr>
                                         </template>
                                     </tbody>
+                                end tracking configuration layout mapping components -->
                                 </table>
                             </div>
                         </div>
@@ -443,13 +444,13 @@
 
                 initFirebase() {
                     const firebaseConfig = {
-  apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
-  authDomain: "project-estimate-79ba8.firebaseapp.com",
-  projectId: "project-estimate-79ba8",
-  storageBucket: "project-estimate-79ba8.firebasestorage.app",
-  messagingSenderId: "284338364751",
-  appId: "1:284338364751:web:53796fc4cafb8d3736653a",
-  measurementId: "G-193P6KTT9D"
+                          apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
+                          authDomain: "project-estimate-79ba8.firebaseapp.com",
+                          projectId: "project-estimate-79ba8",
+                          storageBucket: "project-estimate-79ba8.firebasestorage.app",
+                          messagingSenderId: "284338364751",
+                          appId: "1:284338364751:web:53796fc4cafb8d3736653a",
+                          measurementId: "G-193P6KTT9D"
                     };
                     if (!firebase.apps.length) {
                         firebase.initializeApp(firebaseConfig);
@@ -478,11 +479,11 @@
                     const month = date.getMonth() + 1;
                     const day = date.getDate();
                     const fixedHolidays = [
-                        { m: 1, d: 1 },   // New Year's Day
-                        { m: 6, d: 19 },  // Juneteenth
-                        { m: 7, d: 4 },   // Independence Day
-                        { m: 11, d: 11 }, // Veterans Day
-                        { m: 12, d: 25 }  // Christmas Day
+                        { m: 1, d: 1 },
+                        { m: 6, d: 19 },
+                        { m: 7, d: 4 },
+                        { m: 11, d: 11 },
+                        { m: 12, d: 25 }
                     ];
                     return fixedHolidays.some(h => h.m === month && h.d === day);
                 },
@@ -619,24 +620,24 @@
                 },
 
                 duplicateTestItem(group, testRow) {
-                    const dynamicStamp = Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+                    const dynamicStamp = Date.now() + '_' + Math.floor(Math.random() * 100000);
                     
-                    // Explicit deep copy
+                    // Explicit Deep Copy of values
                     const duplicatedObj = JSON.parse(JSON.stringify(testRow));
                     
-                    // Crucial structural patch: Ensure 'scale' stays inside the ID string matrix if it is a scale metric test
+                    // Structural Identifier Fix: Assign unique template tracking IDs
                     if (testRow.id.includes('scale')) {
                         duplicatedObj.id = 'scale_duplicate_' + dynamicStamp;
                     } else {
-                        duplicatedObj.id = 'duplicate_' + dynamicStamp;
+                        duplicatedObj.id = testRow.id + '_duplicate_' + dynamicStamp;
                     }
                     
                     duplicatedObj.isDuplicated = true;
-                    if (!duplicatedObj.subLabel.includes('Duplicated')) {
-                        duplicatedObj.subLabel += ' (Duplicated)';
+                    if (!duplicatedObj.subLabel || !duplicatedObj.subLabel.includes('Duplicated')) {
+                        duplicatedObj.subLabel = (duplicatedObj.subLabel ? duplicatedObj.subLabel + ' ' : '') + '(Duplicated)';
                     }
                     
-                    // Locate parent row index position inside category template dataset to inject right underneath
+                    // Locate target insertion row index position context inside layout template
                     const parentIndex = group.items.findIndex(item => item.id === testRow.id);
                     if (parentIndex !== -1) {
                         group.items.splice(parentIndex + 1, 0, duplicatedObj);
@@ -661,7 +662,7 @@
                 },
 
                 calculateItemTotal(t) {
-                    if(t.id.includes('scale')) {
+                    if(t.id && t.id.includes('scale')) {
                         return this.calculateScaleMeasurements(t) * 0.05;
                     }
                     if(t.hasOrientations) return (t.count * t.weight * (t.orientations || 1));
