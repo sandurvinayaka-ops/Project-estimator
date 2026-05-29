@@ -620,6 +620,8 @@
 
                 duplicateTestItem(group, testRow) {
                     const duplicateId = 'duplicate_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+                    
+                    // Deep copy ensures all existing values (including multipliers and scale numbers) are perfectly copied
                     const duplicatedObj = JSON.parse(JSON.stringify(testRow));
                     
                     duplicatedObj.id = duplicateId;
