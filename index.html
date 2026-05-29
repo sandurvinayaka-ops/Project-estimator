@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- Firebase Legacy Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
@@ -21,7 +20,6 @@
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
 
-    <!-- Admin Login Modal -->
     <div x-show="showLoginModal" x-cloak x-transition class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm no-print">
         <div @click.away="showLoginModal = false" class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl text-center">
             <h3 class="text-xl font-black text-slate-800 mb-6">Admin Access</h3>
@@ -31,7 +29,6 @@
     </div>
 
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
         <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-full overflow-y-auto custom-scroll">
             <div class="mb-8">
                 <button @click="isAdmin ? logout() : showLoginModal = true" 
@@ -41,7 +38,6 @@
                 </button>
             </div>
             
-            <!-- Conditional Navigation Sidebar links based on Active View State -->
             <template x-if="currentView === 'estimator'">
                 <div>
                     <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
@@ -55,7 +51,6 @@
                 </div>
             </template>
 
-            <!-- Projects Summary Master Action Button -->
             <div class="mb-6">
                 <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
                         class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
@@ -88,10 +83,8 @@
             </div>
         </aside>
 
-        <!-- Dynamic Main Content Wrapper -->
         <div class="flex-1 lg:ml-72 min-w-0">
             
-            <!-- View 1: Main Effort Effort Estimator Calculator Workspace -->
             <main x-show="currentView === 'estimator'" class="p-6 md:p-12 lg:mr-80">
                 <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
                     <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
@@ -112,7 +105,6 @@
                     </div>
                 </div>
 
-                <!-- Project Context Form Fields -->
                 <div class="mt-8 mb-10 space-y-4">
                     <div>
                         <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Title</label>
@@ -126,7 +118,6 @@
                         <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-white border border-slate-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none h-24 resize-none"></textarea>
                     </div>
 
-                    <!-- Test Lead, Chronology Dates, and Global Project Status Row Configuration -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                         <div>
                             <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Test Lead Name</label>
@@ -155,14 +146,12 @@
                     </div>
                 </div>
 
-                <!-- Test Category Operations Tables -->
                 <div class="space-y-12 pb-32">
                     <template x-for="group in groupedTests" :key="group.title">
                         <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
                             <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
                                 <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
                                 
-                                <!-- Inline Add Test Interface (Visible only to Admin) -->
                                 <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md">
                                     <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
                                     <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
@@ -176,27 +165,28 @@
                                 </div>
                             </div>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left min-w-[800px]">
+                                <table class="w-full text-left min-w-[850px]">
                                     <thead class="bg-slate-50/30 text-[10px] uppercase font-black text-slate-400 border-b">
                                         <tr>
                                             <th class="px-8 py-4 w-1/4">Test Name</th>
                                             <th class="px-4 py-4 w-1/5">Tester</th>
                                             <th class="px-4 py-4 text-center">Multipliers & Calibration</th>
                                             <th class="px-4 py-4 text-center w-36">Test Status</th>
-                                            <th class="px-8 py-4 text-right w-24">Qty</th>
+                                            <th class="px-4 py-4 text-right w-20">Qty</th>
+                                            <th class="px-6 py-4 text-center w-24 no-print">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-50">
                                         <template x-for="test in group.items" :key="test.id">
                                             <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
                                                 <td class="px-8 py-5">
-                                                    <div class="flex items-center gap-2">
+                                                    <template x-if="test.isCustom || test.isDuplicated">
+                                                        <input type="text" x-model="test.label" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-black text-slate-800 outline-none focus:border-blue-500 w-full shadow-sm">
+                                                    </template>
+                                                    <template x-if="!test.isCustom && !test.isDuplicated">
                                                         <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
-                                                        <button x-show="isAdmin && test.isCustom" x-cloak @click="removeCustomTestItem(group, test.id)" class="text-slate-300 hover:text-red-500 p-0.5 rounded transition-colors no-print">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                                                        </button>
-                                                    </div>
-                                                    <div class="text-[9px] uppercase font-bold text-slate-400" x-text="test.subLabel"></div>
+                                                    </template>
+                                                    <div class="text-[9px] uppercase font-bold text-slate-400 mt-0.5" x-text="test.subLabel"></div>
                                                 </td>
                                                 <td class="px-4 py-5 align-middle">
                                                     <input type="text" x-model="test.testerName" placeholder="Assign tester..." class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors">
@@ -212,7 +202,7 @@
                                                     </template>
                                                     <template x-if="!test.id.includes('scale')">
                                                         <div class="flex gap-4 justify-center items-end">
-                                                            <div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom" x-model.number="test.weight"></div>
+                                                            <div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight"></div>
                                                             <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations"></div></template>
                                                         </div>
                                                     </template>
@@ -225,7 +215,19 @@
                                                         <option value="Completed">Completed</option>
                                                     </select>
                                                 </td>
-                                                <td class="px-8 py-5 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count"></td>
+                                                <td class="px-4 py-5 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count"></td>
+                                                <td class="px-6 py-5 align-middle text-center no-print">
+                                                    <div class="flex items-center justify-center gap-1.5">
+                                                        <button @click="duplicateTestItem(group, test)" title="Duplicate Row" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all shadow-sm">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                                                            </svg>
+                                                        </button>
+                                                        <button x-show="isAdmin || test.isCustom || test.isDuplicated" x-cloak @click="removeCustomTestItem(group, test.id)" title="Remove Row" class="p-1.5 bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                                                        </button>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </template>
                                     </tbody>
@@ -236,9 +238,7 @@
                 </div>
             </main>
 
-            <!-- View 2: Global Projects Dashboard Breakdown Sheet Summary Component -->
             <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto animate-fade-in">
-                <!-- Header Component -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
                     <div>
                         <h1 class="text-3xl font-black text-slate-900 tracking-tight">T&V Projects summary</h1>
@@ -250,7 +250,6 @@
                     </button>
                 </div>
 
-                <!-- Empty State Block -->
                 <template x-if="history.length === 0">
                     <div class="text-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-slate-200">
                         <p class="text-slate-400 font-bold mb-2">No projects discovered inside database history matrix</p>
@@ -258,7 +257,6 @@
                     </div>
                 </template>
 
-                <!-- Summary Breakdown Grid Dashboard Mapping -->
                 <div class="space-y-8">
                     <template x-for="(project, pIdx) in history" :key="pIdx">
                         <div class="bg-white border border-slate-200 rounded-[2rem] shadow-sm overflow-hidden p-6 sm:p-8" :class="selectedProjectId === project.id ? 'ring-2 ring-blue-500' : ''">
@@ -278,7 +276,6 @@
                                     </div>
                                     <p class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
                                     
-                                    <!-- Operational Metadata Banner Inside Summary Grid Matrix -->
                                     <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                                         <div>Lead: <span class="text-slate-900 font-bold" x-text="project.testLeadName || 'Unassigned'"></span></div>
                                         <div class="text-slate-300">|</div>
@@ -299,14 +296,12 @@
                                 </div>
                             </div>
 
-                            <!-- Project Custom Observations Notes -->
                             <template x-if="project.notes">
                                 <div class="mb-4 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-slate-600 font-medium">
                                     <strong class="text-slate-700 font-black">Project Notes:</strong> <span x-text="project.notes"></span>
                                 </div>
                             </template>
 
-                            <!-- Tests List Matrix inside this project instance block row -->
                             <div class="flex justify-between items-center mb-2">
                                 <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Selected Configuration Matrix</h4>
                                 <button @click="currentView = 'estimator'; loadEstimate(pIdx)" class="text-xs text-blue-600 font-bold hover:underline">Load into Editor</button>
@@ -367,7 +362,6 @@
 
         </div>
 
-        <!-- Right Summary Sidebar (Visible only on Calculator View layout) -->
         <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-full hidden xl:flex flex-col no-print shadow-xl">
             <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
                 <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
@@ -624,8 +618,25 @@
                     group.newHasOrientations = false;
                 },
 
+                duplicateTestItem(group, testRow) {
+                    const duplicateId = 'duplicate_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+                    const duplicatedObj = JSON.parse(JSON.stringify(testRow));
+                    
+                    duplicatedObj.id = duplicateId;
+                    duplicatedObj.isDuplicated = true;
+                    duplicatedObj.subLabel = 'Duplicated Row Component';
+                    
+                    // Locate parent index position inside dataset array matrix to inject right underneath
+                    const parentIndex = group.items.findIndex(item => item.id === testRow.id);
+                    if (parentIndex !== -1) {
+                        group.items.splice(parentIndex + 1, 0, duplicatedObj);
+                    } else {
+                        group.items.push(duplicatedObj);
+                    }
+                },
+
                 removeCustomTestItem(group, testId) {
-                    if(confirm("Remove this custom test from this category?")) {
+                    if(confirm("Remove this test row option from this category?")) {
                         group.items = group.items.filter(item => item.id !== testId);
                     }
                 },
@@ -688,7 +699,7 @@
                 resetAll() {
                     if(confirm("Clear current project data?")) {
                         this.groupedTests.forEach(g => {
-                            g.items = g.items.filter(t => !t.isCustom);
+                            g.items = g.items.filter(t => !t.isCustom && !t.isDuplicated);
                             g.items.forEach(t => {
                                 t.count = 0;
                                 t.testerName = '';
