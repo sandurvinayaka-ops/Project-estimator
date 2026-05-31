@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- Firebase Legacy Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
@@ -21,7 +20,6 @@
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
 
-    <!-- Global App Access Control Shield Layer -->
     <div x-show="!authenticated" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900" x-transition>
         <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl mx-4">
             <div class="text-center mb-8">
@@ -55,9 +53,7 @@
         </div>
     </div>
 
-    <!-- Protected Main Workspace Layout Application Layer -->
     <div x-show="authenticated" x-cloak class="flex min-h-screen">
-        <!-- Sidebar -->
         <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-full overflow-y-auto custom-scroll">
             <div class="mb-8 flex flex-col gap-2">
                 <button @click="isAdmin ? logout() : showLoginModal = true" 
@@ -70,7 +66,6 @@
                 </button>
             </div>
             
-            <!-- Conditional Navigation Sidebar links based on Active View State -->
             <template x-if="currentView === 'estimator'">
                 <div>
                     <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
@@ -84,7 +79,6 @@
                 </div>
             </template>
 
-            <!-- Projects Summary Master Action Button -->
             <div class="mb-6">
                 <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
                         class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
@@ -117,7 +111,6 @@
             </div>
         </aside>
 
-        <!-- Admin Login Modal Inside Secure Layout -->
         <div x-show="showLoginModal" x-cloak x-transition class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm no-print">
             <div @click.away="showLoginModal = false" class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl text-center">
                 <h3 class="text-xl font-black text-slate-800 mb-6">Admin Access</h3>
@@ -126,10 +119,8 @@
             </div>
         </div>
 
-        <!-- Dynamic Main Content Wrapper -->
         <div class="flex-1 lg:ml-72 min-w-0">
             
-            <!-- View 1: Main Effort Effort Estimator Calculator Workspace -->
             <main x-show="currentView === 'estimator'" class="p-6 md:p-12 lg:mr-80">
                 <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
                     <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
@@ -150,14 +141,12 @@
                     </div>
                 </div>
 
-                <!-- Project Context Form Fields -->
                 <div class="mt-8 mb-10 space-y-4">
                     <div>
                         <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Title</label>
                         <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                             <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
                             
-                            <!-- Save & Duplicate Option Actions Group -->
                             <div class="flex items-center gap-2 no-print">
                                 <button @click="duplicateEntireProject()" 
                                         x-show="selectedProjectId" 
@@ -174,7 +163,6 @@
                         </div>
                     </div>
                     
-                    <!-- ROW ABOVE: Notes, Tracking Fields, and Sub_Business Dropdown -->
                     <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                         <div class="xl:col-span-5">
                             <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Project Notes</label>
@@ -208,7 +196,6 @@
                         </div>
                     </div>
 
-                    <!-- IMAGE BASE ROW: Test Lead, Chronology Dates, and Global Project Status Row Configuration -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                         <div>
                             <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Test Lead Name</label>
@@ -245,7 +232,6 @@
                     </div>
                 </div>
 
-                <!-- Test Category Operations Tables -->
                 <div class="space-y-12 pb-32">
                     <template x-for="group in groupedTests" :key="group.title">
                         <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
@@ -345,7 +331,6 @@
                 </div>
             </main>
 
-            <!-- View 2: Global Projects Dashboard Breakdown Sheet Summary Component -->
             <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto animate-fade-in">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
                     <div>
@@ -478,7 +463,6 @@
 
         </div>
 
-        <!-- Right Summary Sidebar -->
         <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-full hidden xl:flex flex-col no-print shadow-xl">
             <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
                 <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
@@ -549,17 +533,15 @@
                         { id: 'vacuum_test', label: 'Vacuum Performance Test - Breast Pump', weight: 2.0, count: 0, testerName: '', status: 'Not Started' }
                     ]},
                     { title: 'Environmental Conditioning', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
-                        { id: 'boil', label: 'Boiling Test', weight: 2.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'boil', label: 'Boiling Test', weight: 2.5, count: 0, testerName: '', status: 'Not Started' },
                         { id: 'dish', label: 'Dishwashing Test', weight: 1.5, count: 0, testerName: '', status: 'Not Started' },
-                        { id: 'mw_ster', label: 'Microwave Sterilization', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
-                        { id: 'steam_ster', label: 'Steam Sterilization', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'mw_ster', label: 'Microwave Sterilization', weight: 2.5, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'steam_ster', label: 'Steam Sterilization', weight: 2.5, count: 0, testerName: '', status: 'Not Started' },
                         { id: 'uv_exposure', label: 'UV Exposure Stability', weight: 5.0, count: 0, testerName: '', status: 'Not Started' }
                     ]},
                     { title: 'Mechanical & Durability', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
                         { id: 'drop_test', label: 'Drop Impact Test', weight: 0.4, count: 0, hasOrientations: true, orientations: 5, testerName: '', status: 'Not Started' },
-                        { id: 'dormal_asm', label: 'Dormal Assembly/Disassembly', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
-                        { id: 'steam_test', label: 'Steam Sterilization Test', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
-                        { id: 'mw_test', label: 'Microwave Sterilization Test', weight: 1.0, count: 0, testerName: '', status: 'Not Started' },
+                        { id: 'dormal_asm', label: 'Dormal Assembly/Disassembly', weight: 2.0, count: 0, testerName: '', status: 'Not Started' },
                         { id: 'bite', label: 'Bite Endurance Test', weight: 4.0, count: 0, testerName: '', status: 'Not Started' },
                         { id: 'tensile', label: 'Tensile Strength', weight: 1.5, count: 0, testerName: '', status: 'Not Started' },
                         { id: 'torque', label: 'Torque/Closure Test', weight: 1.2, count: 0, testerName: '', status: 'Not Started' },
