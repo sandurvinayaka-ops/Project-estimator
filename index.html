@@ -58,9 +58,9 @@
     <!-- Protected Main Workspace Layout Application Layer -->
     <div x-show="authenticated" x-cloak class="flex flex-col min-h-screen">
         
-        <!-- Top Application Header Bar - Styled according to image_b1ef1e.png -->
+        <!-- Top Application Header Bar -->
         <header class="bg-orange-500 border-b border-orange-600 px-6 py-4 lg:pl-[20rem] flex items-center justify-center text-center shadow-md z-30">
-            <h1 class="text-xl font-black text-purple-900 tracking-tight uppercase w-full text-center">MCC T&V Projects home page</h1>
+            <h1 class="text-xl font-black text-black tracking-tight uppercase w-full text-center">MCC T&V Projects home page</h1>
         </header>
 
         <div class="flex flex-1 pt-0">
@@ -97,7 +97,7 @@
                             class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
                             :class="currentView === 'summary' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-900 text-white hover:bg-slate-800'">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1.0 item.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         <span x-text="currentView === 'estimator' ? 'View Projects Summary' : 'Back to Calculator'"></span>
                     </button>
@@ -596,7 +596,7 @@
 
                 initFirebase() {
                     const firebaseConfig = {
-  apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
+                         apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
   authDomain: "project-estimate-79ba8.firebaseapp.com",
   projectId: "project-estimate-79ba8",
   storageBucket: "project-estimate-79ba8.firebasestorage.app",
