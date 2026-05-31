@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
+    <!-- Firebase Legacy Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
@@ -20,6 +21,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
 
+    <!-- Global App Access Control Shield Layer -->
     <div x-show="!authenticated" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900" x-transition>
         <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl mx-4">
             <div class="text-center mb-8">
@@ -53,13 +55,16 @@
         </div>
     </div>
 
+    <!-- Protected Main Workspace Layout Application Layer -->
     <div x-show="authenticated" x-cloak class="flex flex-col min-h-screen">
         
-        <header class="bg-white border-b border-slate-200 px-6 py-4 lg:pl-[20rem] flex items-center shadow-sm z-30">
-            <h1 class="text-xl font-black text-slate-800 tracking-tight uppercase">MCC T&V Projects home page</h1>
+        <!-- Top Application Header Bar - Styled according to image_b1ef1e.png -->
+        <header class="bg-orange-500 border-b border-orange-600 px-6 py-4 lg:pl-[20rem] flex items-center justify-center text-center shadow-md z-30">
+            <h1 class="text-xl font-black text-purple-900 tracking-tight uppercase w-full text-center">MCC T&V Projects home page</h1>
         </header>
 
         <div class="flex flex-1 pt-0">
+            <!-- Sidebar -->
             <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-[calc(100vh-61px)] overflow-y-auto custom-scroll top-[61px]">
                 <div class="mb-8 flex flex-col gap-2">
                     <button @click="isAdmin ? logout() : showLoginModal = true" 
@@ -72,6 +77,7 @@
                     </button>
                 </div>
                 
+                <!-- Conditional Navigation Sidebar links based on Active View State -->
                 <template x-if="currentView === 'estimator'">
                     <div>
                         <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
@@ -85,6 +91,7 @@
                     </div>
                 </template>
 
+                <!-- Projects Summary Master Action Button -->
                 <div class="mb-6">
                     <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
                             class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
@@ -117,6 +124,7 @@
                 </div>
             </aside>
 
+            <!-- Admin Login Modal Inside Secure Layout -->
             <div x-show="showLoginModal" x-cloak x-transition class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm no-print">
                 <div @click.away="showLoginModal = false" class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl text-center">
                     <h3 class="text-xl font-black text-slate-800 mb-6">Admin Access</h3>
@@ -125,8 +133,10 @@
                 </div>
             </div>
 
+            <!-- Dynamic Main Content Wrapper -->
             <div class="flex-1 lg:ml-72 min-w-0">
                 
+                <!-- View 1: Main Effort Effort Estimator Calculator Workspace -->
                 <main x-show="currentView === 'estimator'" class="p-6 md:p-12 lg:mr-80">
                     <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
                         <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
@@ -147,12 +157,14 @@
                         </div>
                     </div>
 
+                    <!-- Project Context Form Fields -->
                     <div class="mt-8 mb-10 space-y-4">
                         <div>
                             <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1 inline-block">Project Title</label>
                             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                                 <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
                                 
+                                <!-- Save & Duplicate Option Actions Group -->
                                 <div class="flex items-center gap-2 no-print">
                                     <button @click="duplicateEntireProject()" 
                                             x-show="selectedProjectId" 
@@ -169,6 +181,7 @@
                             </div>
                         </div>
                         
+                        <!-- Form Header Row Context -->
                         <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                             <div class="xl:col-span-5">
                                 <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Project Notes</label>
@@ -202,6 +215,7 @@
                             </div>
                         </div>
 
+                        <!-- Chronology Row Config: Test Lead, Dates, and Project Status -->
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                             <div>
                                 <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Test Lead Name</label>
@@ -238,6 +252,7 @@
                         </div>
                     </div>
 
+                    <!-- Test Category Operations Tables -->
                     <div class="space-y-12 pb-32">
                         <template x-for="group in groupedTests" :key="group.title">
                             <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
@@ -337,7 +352,8 @@
                     </div>
                 </main>
 
-                <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto animate-fade-in">
+                <!-- View 2: Global Projects Dashboard Breakdown Sheet Summary Component -->
+                <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
                         <div>
                             <h1 class="text-3xl font-black text-slate-900 tracking-tight">T&V Projects summary</h1>
@@ -357,7 +373,7 @@
                     </template>
 
                     <div class="space-y-8">
-                        <template x-for="(project, pIdx) in history" :key="pIdx">
+                        <template x-for="project in history">
                             <div class="bg-white border border-slate-200 rounded-[2rem] shadow-sm overflow-hidden p-6 sm:p-8" :class="selectedProjectId === project.id ? 'ring-2 ring-blue-500' : ''">
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-2">
                                     <div>
@@ -411,7 +427,7 @@
 
                                 <div class="flex justify-between items-center mb-2">
                                     <h4 class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded tracking-wider">Selected Configuration Matrix</h4>
-                                    <button @click="currentView = 'estimator'; loadEstimate(pIdx)" class="text-xs text-blue-600 font-bold hover:underline">Load into Editor</button>
+                                    <button @click="currentView = 'estimator'; loadEstimate(history.indexOf(project))" class="text-xs text-blue-600 font-bold hover:underline">Load into Editor</button>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left text-xs min-w-[700px]">
@@ -469,6 +485,7 @@
 
             </div>
 
+            <!-- Right Summary Sidebar -->
             <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-[calc(100vh-61px)] top-[61px] hidden xl:flex flex-col no-print shadow-xl">
                 <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
                     <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
@@ -579,7 +596,7 @@
 
                 initFirebase() {
                     const firebaseConfig = {
-      apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
+  apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
   authDomain: "project-estimate-79ba8.firebaseapp.com",
   projectId: "project-estimate-79ba8",
   storageBucket: "project-estimate-79ba8.firebasestorage.app",
