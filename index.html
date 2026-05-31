@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- Firebase Legacy Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
@@ -21,7 +20,6 @@
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
 
-    <!-- Global App Access Control Shield Layer -->
     <div x-show="!authenticated" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900" x-transition>
         <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl mx-4">
             <div class="text-center mb-8">
@@ -36,11 +34,11 @@
             
             <div class="space-y-4">
                 <div>
-                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Username</label>
+                    <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Username</label>
                     <input type="text" x-model="loginUser" @keyup.enter="handleGlobalAccessLogin()" placeholder="Enter identity..." class="w-full px-5 py-3.5 bg-slate-50 border-2 border-slate-100 focus:border-blue-500 focus:bg-white rounded-2xl outline-none font-bold text-sm transition-all text-slate-700">
                 </div>
                 <div>
-                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Security Password</label>
+                    <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Security Password</label>
                     <input type="password" x-model="loginPass" @keyup.enter="handleGlobalAccessLogin()" placeholder="••••••••" class="w-full px-5 py-3.5 bg-slate-50 border-2 border-slate-100 focus:border-blue-500 focus:bg-white rounded-2xl outline-none font-bold text-sm transition-all text-slate-700">
                 </div>
                 
@@ -55,16 +53,13 @@
         </div>
     </div>
 
-    <!-- Protected Main Workspace Layout Application Layer -->
     <div x-show="authenticated" x-cloak class="flex flex-col min-h-screen">
         
-        <!-- Top Application Header Bar -->
         <header class="bg-white border-b border-slate-200 px-6 py-4 lg:pl-[20rem] flex items-center shadow-sm z-30">
             <h1 class="text-xl font-black text-slate-800 tracking-tight uppercase">MCC T&V Projects home page</h1>
         </header>
 
         <div class="flex flex-1 pt-0">
-            <!-- Sidebar -->
             <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-[calc(100vh-61px)] overflow-y-auto custom-scroll top-[61px]">
                 <div class="mb-8 flex flex-col gap-2">
                     <button @click="isAdmin ? logout() : showLoginModal = true" 
@@ -77,7 +72,6 @@
                     </button>
                 </div>
                 
-                <!-- Conditional Navigation Sidebar links based on Active View State -->
                 <template x-if="currentView === 'estimator'">
                     <div>
                         <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
@@ -91,7 +85,6 @@
                     </div>
                 </template>
 
-                <!-- Projects Summary Master Action Button -->
                 <div class="mb-6">
                     <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
                             class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
@@ -124,7 +117,6 @@
                 </div>
             </aside>
 
-            <!-- Admin Login Modal Inside Secure Layout -->
             <div x-show="showLoginModal" x-cloak x-transition class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm no-print">
                 <div @click.away="showLoginModal = false" class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl text-center">
                     <h3 class="text-xl font-black text-slate-800 mb-6">Admin Access</h3>
@@ -133,15 +125,12 @@
                 </div>
             </div>
 
-            <!-- Dynamic Main Content Wrapper -->
             <div class="flex-1 lg:ml-72 min-w-0">
                 
-                <!-- View 1: Main Effort Effort Estimator Calculator Workspace -->
                 <main x-show="currentView === 'estimator'" class="p-6 md:p-12 lg:mr-80">
                     <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
                         <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
                             <div class="flex-1 space-y-1">
-                                <!-- Equal sized title components adjusted per image_b271c6.png -->
                                 <p class="text-2xl font-black text-blue-400 tracking-wide uppercase truncate max-w-xl" x-text="projectName"></p>
                                 <p class="text-2xl font-black text-white tracking-tight">Grand Total Effort</p>
                             </div>
@@ -158,14 +147,12 @@
                         </div>
                     </div>
 
-                    <!-- Project Context Form Fields -->
                     <div class="mt-8 mb-10 space-y-4">
                         <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Title</label>
+                            <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1 inline-block">Project Title</label>
                             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                                 <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
                                 
-                                <!-- Save & Duplicate Option Actions Group -->
                                 <div class="flex items-center gap-2 no-print">
                                     <button @click="duplicateEntireProject()" 
                                             x-show="selectedProjectId" 
@@ -182,30 +169,29 @@
                             </div>
                         </div>
                         
-                        <!-- ROW ABOVE: Notes, Tracking Fields, and Sub_Business Dropdown -->
                         <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                             <div class="xl:col-span-5">
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Project Notes</label>
+                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Project Notes</label>
                                 <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none h-[88px] resize-none"></textarea>
                             </div>
                             
                             <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div>
-                                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">RFS #</label>
+                                    <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">RFS #</label>
                                     <input type="text" x-model="rfsNumber" placeholder="e.g. RFS-1042" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
                                 </div>
                                 <div>
-                                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Test Design #</label>
+                                    <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Test Design #</label>
                                     <input type="text" x-model="testDesignNumber" placeholder="e.g. TD-9921" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
                                 </div>
                                 <div>
-                                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Test Record #</label>
+                                    <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Test Record #</label>
                                     <input type="text" x-model="testRecordNumber" placeholder="e.g. TR-5540" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
-                                }</div>
+                                </div>
                             </div>
 
                             <div class="xl:col-span-2">
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Sub_Business</label>
+                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Sub_Business</label>
                                 <select x-model="subBusiness" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer h-[44px]">
                                     <option value="">Select Option...</option>
                                     <option value="Infant Feeding">Infant Feeding</option>
@@ -216,24 +202,23 @@
                             </div>
                         </div>
 
-                        <!-- IMAGE BASE ROW: Test Lead, Chronology Dates, and Global Project Status Row Configuration -->
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                             <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Test Lead Name</label>
+                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Test Lead Name</label>
                                 <input type="text" x-model="testLeadName" placeholder="Type lead engineer name..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
                             <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Start Date</label>
+                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Start Date</label>
                                 <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                             </div>
                             <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block flex items-center gap-1.5">
+                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block flex items-center gap-1.5 w-max">
                                     Expected End Date 
                                 </label>
                                 <div class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-black text-blue-600 h-[46px] flex items-center" x-text="expectedEndDate"></div>
                             </div>
                             <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Project Status</label>
+                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Project Status</label>
                                 <select x-model="projectStatus" 
                                         class="w-full border-0 rounded-xl px-4 py-2.5 text-sm font-black outline-none transition-all cursor-pointer shadow-sm"
                                         :class="{
@@ -253,7 +238,6 @@
                         </div>
                     </div>
 
-                    <!-- Test Category Operations Tables -->
                     <div class="space-y-12 pb-32">
                         <template x-for="group in groupedTests" :key="group.title">
                             <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
@@ -302,16 +286,16 @@
                                                     <td class="px-4 py-5 align-middle text-center">
                                                         <template x-if="test.id.includes('scale')">
                                                             <div class="flex gap-3 justify-center items-center">
-                                                                <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz"></div>
-                                                                <div class="text-center"><p class="text-[9px] font-black text-slate-400 mb-1">ml</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ml"></div>
-                                                                <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">UK Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ukOz"></div>
+                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz"></div>
+                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded mb-1">ml</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ml"></div>
+                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">UK Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ukOz"></div>
                                                                 <div class="text-center ml-2 pl-4 border-l-2 border-slate-100"><p class="text-[9px] font-black text-blue-500 uppercase mb-1">Meas.</p><div class="text-lg font-black text-slate-700" x-text="calculateScaleMeasurements(test)"></div><p class="text-[8px] font-bold text-slate-400 mt-1">@ 0.05h</p></div>
                                                             </div>
                                                         </template>
                                                         <template x-if="!test.id.includes('scale')">
                                                             <div class="flex gap-4 justify-center items-end">
-                                                                <div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight"></div>
-                                                                <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations"></div></template>
+                                                                <div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight"></div>
+                                                                <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations"></div></template>
                                                             </div>
                                                         </template>
                                                     </td>
@@ -353,7 +337,6 @@
                     </div>
                 </main>
 
-                <!-- View 2: Global Projects Dashboard Breakdown Sheet Summary Component -->
                 <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto animate-fade-in">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
                         <div>
@@ -427,7 +410,7 @@
                                 </template>
 
                                 <div class="flex justify-between items-center mb-2">
-                                    <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Selected Configuration Matrix</h4>
+                                    <h4 class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded tracking-wider">Selected Configuration Matrix</h4>
                                     <button @click="currentView = 'estimator'; loadEstimate(pIdx)" class="text-xs text-blue-600 font-bold hover:underline">Load into Editor</button>
                                 </div>
                                 <div class="overflow-x-auto">
@@ -486,7 +469,6 @@
 
             </div>
 
-            <!-- Right Summary Sidebar -->
             <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-[calc(100vh-61px)] top-[61px] hidden xl:flex flex-col no-print shadow-xl">
                 <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
                     <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
@@ -597,7 +579,7 @@
 
                 initFirebase() {
                     const firebaseConfig = {
-  apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
+      apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
   authDomain: "project-estimate-79ba8.firebaseapp.com",
   projectId: "project-estimate-79ba8",
   storageBucket: "project-estimate-79ba8.firebasestorage.app",
