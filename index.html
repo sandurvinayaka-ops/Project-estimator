@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
+    <!-- Firebase Legacy Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
@@ -20,6 +21,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
 
+    <!-- Global App Access Control Shield Layer -->
     <div x-show="!authenticated" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900" x-transition>
         <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl mx-4">
             <div class="text-center mb-8">
@@ -53,442 +55,465 @@
         </div>
     </div>
 
-    <div x-show="authenticated" x-cloak class="flex min-h-screen">
-        <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-full overflow-y-auto custom-scroll">
-            <div class="mb-8 flex flex-col gap-2">
-                <button @click="isAdmin ? logout() : showLoginModal = true" 
-                        class="w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm"
-                        :class="isAdmin ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600'">
-                    <span x-text="isAdmin ? 'Lock Admin Mode' : 'Admin Mode'"></span>
-                </button>
-                <button @click="logoutGlobalAccess()" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
-                    Exit Platform
-                </button>
-            </div>
-            
-            <template x-if="currentView === 'estimator'">
-                <div>
-                    <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
-                    <div class="space-y-1 mb-10">
-                        <template x-for="group in groupedTests" :key="group.title">
-                            <button @click="scrollToGroup(group.title)" 
-                                    class="w-full text-left px-4 py-2 rounded-lg font-bold text-sm transition-all text-slate-600 hover:bg-blue-50 hover:text-blue-600" 
-                                    x-text="group.title"></button>
-                        </template>
-                    </div>
-                </div>
-            </template>
+    <!-- Protected Main Workspace Layout Application Layer -->
+    <div x-show="authenticated" x-cloak class="flex flex-col min-h-screen">
+        
+        <!-- Top Application Header Bar -->
+        <header class="bg-white border-b border-slate-200 px-6 py-4 lg:pl-[20rem] flex items-center shadow-sm z-30">
+            <h1 class="text-xl font-black text-slate-800 tracking-tight uppercase">MCC T&V Projects home page</h1>
+        </header>
 
-            <div class="mb-6">
-                <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
-                        class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
-                        :class="currentView === 'summary' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-900 text-white hover:bg-slate-800'">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span x-text="currentView === 'estimator' ? 'View Projects Summary' : 'Back to Calculator'"></span>
-                </button>
-            </div>
-            
-            <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Projects List</h2>
-            <div class="space-y-3">
-                <template x-for="(item, index) in history" :key="index">
-                    <div class="flex items-center gap-2 group">
-                        <div class="flex-1 p-3 bg-slate-50 rounded-xl border border-transparent hover:border-blue-300 cursor-pointer transition-all" 
-                             :class="selectedProjectId === item.id ? 'border-blue-500 bg-blue-50/30' : ''"
-                             @click="currentView = 'estimator'; loadEstimate(index)">
-                            <p class="text-[9px] font-black text-blue-500 uppercase flex justify-between items-center">
-                                <span x-text="item.timestamp"></span>
-                                <span x-show="selectedProjectId === item.id" class="text-[8px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full lowercase font-normal">editing</span>
-                            </p>
-                            <p class="font-bold text-slate-700 text-sm truncate" x-text="item.name"></p>
-                        </div>
-                        <button @click.stop="deleteHistoryItem(index)" class="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-red-500 transition-all">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                    </div>
-                </template>
-            </div>
-        </aside>
-
-        <div x-show="showLoginModal" x-cloak x-transition class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm no-print">
-            <div @click.away="showLoginModal = false" class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl text-center">
-                <h3 class="text-xl font-black text-slate-800 mb-6">Admin Access</h3>
-                <input type="password" x-model="password" @keyup.enter="login()" placeholder="Password" class="w-full px-5 py-3 bg-slate-100 border-2 border-transparent focus:border-blue-500 rounded-xl outline-none font-bold text-center mb-4">
-                <button @click="login()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors">Unlock Admin</button>
-            </div>
-        </div>
-
-        <div class="flex-1 lg:ml-72 min-w-0">
-            
-            <main x-show="currentView === 'estimator'" class="p-6 md:p-12 lg:mr-80">
-                <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
-                    <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
-                        <div class="flex-1">
-                            <p class="text-[10px] uppercase font-bold text-blue-400 mb-1 tracking-widest" x-text="projectName"></p>
-                            <p class="text-2xl font-black text-white">Grand Total Effort</p>
-                        </div>
-                        <div class="flex items-center gap-8 border-l border-slate-700 pl-8">
-                            <div class="text-center">
-                                <div class="text-3xl font-black text-blue-400" x-text="grandTotal"></div>
-                                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Total Hrs</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-3xl font-black text-white" x-text="grandTotalDays"></div>
-                                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Days (6.5h)</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-8 mb-10 space-y-4">
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Title</label>
-                        <div class="flex flex-col md:flex-row justify-between items-end gap-4">
-                            <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
-                            
-                            <div class="flex items-center gap-2 no-print">
-                                <button @click="duplicateEntireProject()" 
-                                        x-show="selectedProjectId" 
-                                        x-cloak
-                                        title="Copy this entire project layout as a new workspace instance"
-                                        class="px-5 py-3 bg-slate-800 text-slate-200 rounded-2xl font-bold shadow-md hover:bg-slate-700 hover:text-white transition-all flex items-center gap-2 text-sm whitespace-nowrap">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                                    </svg>
-                                    Duplicate Project
-                                </button>
-                                <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all whitespace-nowrap" x-text="selectedProjectId ? 'Update Project' : 'Save Project'"></button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
-                        <div class="xl:col-span-5">
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Project Notes</label>
-                            <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none h-[88px] resize-none"></textarea>
-                        </div>
-                        
-                        <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">RFS #</label>
-                                <input type="text" x-model="rfsNumber" placeholder="e.g. RFS-1042" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Test Design #</label>
-                                <input type="text" x-model="testDesignNumber" placeholder="e.g. TD-9921" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Test Record #</label>
-                                <input type="text" x-model="testRecordNumber" placeholder="e.g. TR-5540" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
-                            </div>
-                        </div>
-
-                        <div class="xl:col-span-2">
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Sub_Business</label>
-                            <select x-model="subBusiness" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer h-[44px]">
-                                <option value="">Select Option...</option>
-                                <option value="Infant Feeding">Infant Feeding</option>
-                                <option value="Comforting">Comforting</option>
-                                <option value="Breast feeding">Breast feeding</option>
-                                <option value="Healthy feeding">Healthy feeding</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Test Lead Name</label>
-                            <input type="text" x-model="testLeadName" placeholder="Type lead engineer name..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Start Date</label>
-                            <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block flex items-center gap-1.5">
-                                Expected End Date 
-                            </label>
-                            <div class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-black text-blue-600 h-[46px] flex items-center" x-text="expectedEndDate"></div>
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Project Status</label>
-                            <select x-model="projectStatus" 
-                                    class="w-full border-0 rounded-xl px-4 py-2.5 text-sm font-black outline-none transition-all cursor-pointer shadow-sm"
-                                    :class="{
-                                        'bg-yellow-400 text-yellow-950': projectStatus === 'Not Started',
-                                        'bg-orange-500 text-white': projectStatus === 'In-Progress',
-                                        'bg-green-600 text-white': projectStatus === 'Completed',
-                                        'bg-red-600 text-white': projectStatus === 'On Hold',
-                                        'bg-purple-600 text-white': projectStatus === 'Shipment not recd'
-                                    }">
-                                <option class="bg-white text-slate-900 font-medium" value="Not Started">Not Started</option>
-                                <option class="bg-white text-slate-900 font-medium" value="In-Progress">In-Progress</option>
-                                <option class="bg-white text-slate-900 font-medium" value="On Hold">On Hold</option>
-                                <option class="bg-white text-slate-900 font-medium" value="Shipment not recd">Shipment not recd</option>
-                                <option class="bg-white text-slate-900 font-medium" value="Completed">Completed</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-12 pb-32">
-                    <template x-for="group in groupedTests" :key="group.title">
-                        <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
-                            <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
-                                <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
-                                
-                                <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md">
-                                    <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
-                                    <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
-                                    <input type="number" step="0.1" placeholder="Hrs" class="px-1 py-1 bg-slate-50 rounded text-xs font-black text-center w-12 outline-none border border-transparent focus:border-blue-500" x-model.number="group.newWeight">
-                                    <label class="flex items-center gap-1 text-[10px] font-bold text-slate-500 cursor-pointer select-none">
-                                        <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500" x-model="group.newHasOrientations"> Orient
-                                    </label>
-                                    <button @click="addNewTestItem(group)" class="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/></svg>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left min-w-[850px]">
-                                    <thead class="bg-slate-50/30 text-[10px] uppercase font-black text-slate-400 border-b">
-                                        <tr>
-                                            <th class="px-8 py-4 w-1/4">Test Name</th>
-                                            <th class="px-4 py-4 w-1/5">Tester</th>
-                                            <th class="px-4 py-4 text-center">Multipliers & Calibration</th>
-                                            <th class="px-4 py-4 text-center w-40">Test Status</th>
-                                            <th class="px-4 py-4 text-right w-20">Qty</th>
-                                            <th class="px-6 py-4 text-center w-24 no-print">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-50">
-                                        <template x-for="test in group.items" :key="test.id">
-                                            <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
-                                                <td class="px-8 py-5">
-                                                    <template x-if="test.isCustom || test.isDuplicated">
-                                                        <input type="text" x-model="test.label" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-black text-slate-800 outline-none focus:border-blue-500 w-full shadow-sm">
-                                                    </template>
-                                                    <template x-if="!test.isCustom && !test.isDuplicated">
-                                                        <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
-                                                    </template>
-                                                    <div class="text-[9px] uppercase font-bold text-slate-400 mt-0.5" x-text="test.subLabel"></div>
-                                                </td>
-                                                <td class="px-4 py-5 align-middle">
-                                                    <input type="text" x-model="test.testerName" placeholder="Assign tester..." class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors">
-                                                </td>
-                                                <td class="px-4 py-5 align-middle text-center">
-                                                    <template x-if="test.id.includes('scale')">
-                                                        <div class="flex gap-3 justify-center items-center">
-                                                            <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz"></div>
-                                                            <div class="text-center"><p class="text-[9px] font-black text-slate-400 mb-1">ml</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ml"></div>
-                                                            <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">UK Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ukOz"></div>
-                                                            <div class="text-center ml-2 pl-4 border-l-2 border-slate-100"><p class="text-[9px] font-black text-blue-500 uppercase mb-1">Meas.</p><div class="text-lg font-black text-slate-700" x-text="calculateScaleMeasurements(test)"></div><p class="text-[8px] font-bold text-slate-400 mt-1">@ 0.05h</p></div>
-                                                        </div>
-                                                    </template>
-                                                    <template x-if="!test.id.includes('scale')">
-                                                        <div class="flex gap-4 justify-center items-end">
-                                                            <div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight"></div>
-                                                            <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations"></div></template>
-                                                        </div>
-                                                    </template>
-                                                </td>
-                                                <td class="px-4 py-5 align-middle text-center">
-                                                    <select x-model="test.status" 
-                                                            class="border-0 rounded-lg px-2 py-1.5 text-xs font-black outline-none transition-all cursor-pointer shadow-sm w-36"
-                                                            :class="{
-                                                                'bg-yellow-400 text-yellow-950': test.status === 'Not Started' || !test.status,
-                                                                'bg-orange-500 text-white': test.status === 'In-Progress',
-                                                                'bg-green-600 text-white': test.status === 'Completed',
-                                                                'bg-red-600 text-white': test.status === 'On Hold'
-                                                            }">
-                                                        <option class="bg-white text-slate-900 font-medium" value="Not Started">Not Started</option>
-                                                        <option class="bg-white text-slate-900 font-medium" value="In-Progress">In-Progress</option>
-                                                        <option class="bg-white text-slate-900 font-medium" value="On Hold">On Hold</option>
-                                                        <option class="bg-white text-slate-900 font-medium" value="Completed">Completed</option>
-                                                    </select>
-                                                </td>
-                                                <td class="px-4 py-5 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count"></td>
-                                                <td class="px-6 py-5 align-middle text-center no-print">
-                                                    <div class="flex items-center justify-center gap-1.5">
-                                                        <button @click="duplicateTestItem(group, test)" title="Duplicate Row" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all shadow-sm">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                                                            </svg>
-                                                        </button>
-                                                        <button x-show="isAdmin || test.isCustom || test.isDuplicated" x-cloak @click="removeCustomTestItem(group, test.id)" title="Remove Row" class="p-1.5 bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </main>
-
-            <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto animate-fade-in">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
-                    <div>
-                        <h1 class="text-3xl font-black text-slate-900 tracking-tight">T&V Projects summary</h1>
-                        <p class="text-sm text-slate-500 mt-1">Comprehensive breakdown mapping of hours and dynamic tests globally.</p>
-                    </div>
-                    <button @click="currentView = 'estimator'" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-all flex items-center gap-2 self-start sm:self-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                        Go Back
+        <div class="flex flex-1 pt-0">
+            <!-- Sidebar -->
+            <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-[calc(100vh-61px)] overflow-y-auto custom-scroll top-[61px]">
+                <div class="mb-8 flex flex-col gap-2">
+                    <button @click="isAdmin ? logout() : showLoginModal = true" 
+                            class="w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm"
+                            :class="isAdmin ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600'">
+                        <span x-text="isAdmin ? 'Lock Admin Mode' : 'Admin Mode'"></span>
+                    </button>
+                    <button @click="logoutGlobalAccess()" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+                        Exit Platform
                     </button>
                 </div>
-
-                <template x-if="history.length === 0">
-                    <div class="text-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-slate-200">
-                        <p class="text-slate-400 font-bold mb-2">No projects discovered inside database history matrix</p>
-                        <button @click="currentView = 'estimator'" class="text-sm font-black text-blue-500 hover:underline">Create and save your first estimation row</button>
+                
+                <!-- Conditional Navigation Sidebar links based on Active View State -->
+                <template x-if="currentView === 'estimator'">
+                    <div>
+                        <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
+                        <div class="space-y-1 mb-10">
+                            <template x-for="group in groupedTests" :key="group.title">
+                                <button @click="scrollToGroup(group.title)" 
+                                        class="w-full text-left px-4 py-2 rounded-lg font-bold text-sm transition-all text-slate-600 hover:bg-blue-50 hover:text-blue-600" 
+                                        x-text="group.title"></button>
+                            </template>
+                        </div>
                     </div>
                 </template>
 
-                <div class="space-y-8">
-                    <template x-for="(project, pIdx) in history" :key="pIdx">
-                        <div class="bg-white border border-slate-200 rounded-[2rem] shadow-sm overflow-hidden p-6 sm:p-8" :class="selectedProjectId === project.id ? 'ring-2 ring-blue-500' : ''">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-2">
+                <!-- Projects Summary Master Action Button -->
+                <div class="mb-6">
+                    <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
+                            class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+                            :class="currentView === 'summary' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-900 text-white hover:bg-slate-800'">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span x-text="currentView === 'estimator' ? 'View Projects Summary' : 'Back to Calculator'"></span>
+                    </button>
+                </div>
+                
+                <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Projects List</h2>
+                <div class="space-y-3">
+                    <template x-for="(item, index) in history" :key="index">
+                        <div class="flex items-center gap-2 group">
+                            <div class="flex-1 p-3 bg-slate-50 rounded-xl border border-transparent hover:border-blue-300 cursor-pointer transition-all" 
+                                 :class="selectedProjectId === item.id ? 'border-blue-500 bg-blue-50/30' : ''"
+                                 @click="currentView = 'estimator'; loadEstimate(index)">
+                                <p class="text-[9px] font-black text-blue-500 uppercase flex justify-between items-center">
+                                    <span x-text="item.timestamp"></span>
+                                    <span x-show="selectedProjectId === item.id" class="text-[8px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full lowercase font-normal">editing</span>
+                                </p>
+                                <p class="font-bold text-slate-700 text-sm truncate" x-text="item.name"></p>
+                            </div>
+                            <button @click.stop="deleteHistoryItem(index)" class="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-red-500 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </aside>
+
+            <!-- Admin Login Modal Inside Secure Layout -->
+            <div x-show="showLoginModal" x-cloak x-transition class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm no-print">
+                <div @click.away="showLoginModal = false" class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl text-center">
+                    <h3 class="text-xl font-black text-slate-800 mb-6">Admin Access</h3>
+                    <input type="password" x-model="password" @keyup.enter="login()" placeholder="Password" class="w-full px-5 py-3 bg-slate-100 border-2 border-transparent focus:border-blue-500 rounded-xl outline-none font-bold text-center mb-4">
+                    <button @click="login()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors">Unlock Admin</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Main Content Wrapper -->
+            <div class="flex-1 lg:ml-72 min-w-0">
+                
+                <!-- View 1: Main Effort Effort Estimator Calculator Workspace -->
+                <main x-show="currentView === 'estimator'" class="p-6 md:p-12 lg:mr-80">
+                    <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
+                        <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
+                            <div class="flex-1 space-y-1">
+                                <!-- Equal sized title components adjusted per image_b271c6.png -->
+                                <p class="text-2xl font-black text-blue-400 tracking-wide uppercase truncate max-w-xl" x-text="projectName"></p>
+                                <p class="text-2xl font-black text-white tracking-tight">Grand Total Effort</p>
+                            </div>
+                            <div class="flex items-center gap-8 border-l border-slate-700 pl-8">
+                                <div class="text-center">
+                                    <div class="text-3xl font-black text-blue-400" x-text="grandTotal"></div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Total Hrs</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-black text-white" x-text="grandTotalDays"></div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Days (6.5h)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Context Form Fields -->
+                    <div class="mt-8 mb-10 space-y-4">
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Project Title</label>
+                            <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                                <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
+                                
+                                <!-- Save & Duplicate Option Actions Group -->
+                                <div class="flex items-center gap-2 no-print">
+                                    <button @click="duplicateEntireProject()" 
+                                            x-show="selectedProjectId" 
+                                            x-cloak
+                                            title="Copy this entire project layout as a new workspace instance"
+                                            class="px-5 py-3 bg-slate-800 text-slate-200 rounded-2xl font-bold shadow-md hover:bg-slate-700 hover:text-white transition-all flex items-center gap-2 text-sm whitespace-nowrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h5.586a1 1.0 item.707.293l5.414 5.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                                        </svg>
+                                        Duplicate Project
+                                    </button>
+                                    <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all whitespace-nowrap" x-text="selectedProjectId ? 'Update Project' : 'Save Project'"></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- ROW ABOVE: Notes, Tracking Fields, and Sub_Business Dropdown -->
+                        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
+                            <div class="xl:col-span-5">
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Project Notes</label>
+                                <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none h-[88px] resize-none"></textarea>
+                            </div>
+                            
+                            <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div>
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="text-xl font-black text-slate-800" x-text="project.name"></h3>
-                                        <span x-show="selectedProjectId === project.id" class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded text-[10px]">Active Workspace</span>
-                                        <span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider"
-                                              :class="{
-                                                 'bg-yellow-400 text-yellow-950': project.projectStatus === 'Not Started' || !project.projectStatus,
-                                                 'bg-orange-500 text-white': project.projectStatus === 'In-Progress',
-                                                 'bg-green-600 text-white': project.projectStatus === 'Completed',
-                                                 'bg-red-100 text-red-700': project.projectStatus === 'On Hold',
-                                                 'bg-purple-100 text-purple-700': project.projectStatus === 'Shipment not recd'
-                                              }" x-text="project.projectStatus || 'Not Started'"></span>
-                                    </div>
-                                    <p class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
+                                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">RFS #</label>
+                                    <input type="text" x-model="rfsNumber" placeholder="e.g. RFS-1042" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Test Design #</label>
+                                    <input type="text" x-model="testDesignNumber" placeholder="e.g. TD-9921" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Test Record #</label>
+                                    <input type="text" x-model="testRecordNumber" placeholder="e.g. TR-5540" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
+                                }</div>
+                            </div>
+
+                            <div class="xl:col-span-2">
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Sub_Business</label>
+                                <select x-model="subBusiness" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer h-[44px]">
+                                    <option value="">Select Option...</option>
+                                    <option value="Infant Feeding">Infant Feeding</option>
+                                    <option value="Comforting">Comforting</option>
+                                    <option value="Breast feeding">Breast feeding</option>
+                                    <option value="Healthy feeding">Healthy feeding</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- IMAGE BASE ROW: Test Lead, Chronology Dates, and Global Project Status Row Configuration -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Test Lead Name</label>
+                                <input type="text" x-model="testLeadName" placeholder="Type lead engineer name..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Start Date</label>
+                                <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block flex items-center gap-1.5">
+                                    Expected End Date 
+                                </label>
+                                <div class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-black text-blue-600 h-[46px] flex items-center" x-text="expectedEndDate"></div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block">Project Status</label>
+                                <select x-model="projectStatus" 
+                                        class="w-full border-0 rounded-xl px-4 py-2.5 text-sm font-black outline-none transition-all cursor-pointer shadow-sm"
+                                        :class="{
+                                            'bg-yellow-400 text-yellow-950': projectStatus === 'Not Started',
+                                            'bg-orange-500 text-white': projectStatus === 'In-Progress',
+                                            'bg-green-600 text-white': projectStatus === 'Completed',
+                                            'bg-red-600 text-white': projectStatus === 'On Hold',
+                                            'bg-purple-600 text-white': projectStatus === 'Shipment not recd'
+                                        }">
+                                    <option class="bg-white text-slate-900 font-medium" value="Not Started">Not Started</option>
+                                    <option class="bg-white text-slate-900 font-medium" value="In-Progress">In-Progress</option>
+                                    <option class="bg-white text-slate-900 font-medium" value="On Hold">On Hold</option>
+                                    <option class="bg-white text-slate-900 font-medium" value="Shipment not recd">Shipment not recd</option>
+                                    <option class="bg-white text-slate-900 font-medium" value="Completed">Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Test Category Operations Tables -->
+                    <div class="space-y-12 pb-32">
+                        <template x-for="group in groupedTests" :key="group.title">
+                            <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+                                <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
+                                    <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
                                     
-                                    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
-                                        <div>Lead: <span class="text-slate-900 font-bold" x-text="project.testLeadName || 'Unassigned'"></span></div>
-                                        <div class="text-slate-300">|</div>
-                                        <div>Business: <span class="text-slate-900 font-bold" x-text="project.subBusiness || 'N/A'"></span></div>
-                                        <div class="text-slate-300">|</div>
-                                        <div>RFS: <span class="text-slate-900 font-bold" x-text="project.rfsNumber || 'N/A'"></span></div>
-                                        <div class="text-slate-300">|</div>
-                                        <div>Design: <span class="text-slate-900 font-bold" x-text="project.testDesignNumber || 'N/A'"></span></div>
-                                        <div class="text-slate-300">|</div>
-                                        <div>Record: <span class="text-slate-900 font-bold" x-text="project.testRecordNumber || 'N/A'"></span></div>
-                                        <div class="text-slate-300">|</div>
-                                        <div>Start: <span class="text-slate-900 font-bold" x-text="project.startDate || 'Not Set'"></span></div>
-                                        <div class="text-slate-300">|</div>
-                                        <div>End: <span class="text-blue-600 font-black" x-text="project.computedEndDate || 'N/A'"></span></div>
+                                    <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md">
+                                        <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
+                                        <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
+                                        <input type="number" step="0.1" placeholder="Hrs" class="px-1 py-1 bg-slate-50 rounded text-xs font-black text-center w-12 outline-none border border-transparent focus:border-blue-500" x-model.number="group.newWeight">
+                                        <label class="flex items-center gap-1 text-[10px] font-bold text-slate-500 cursor-pointer select-none">
+                                            <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500" x-model="group.newHasOrientations"> Orient
+                                        </label>
+                                        <button @click="addNewTestItem(group)" class="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/></svg>
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-4 bg-slate-900 text-white py-2 px-5 rounded-2xl self-start sm:self-auto">
-                                    <div class="text-right">
-                                        <p class="text-[8px] uppercase tracking-widest font-bold text-slate-400">Calculated Effort</p>
-                                        <p class="text-lg font-black text-blue-400" x-text="getProjectTotals(project).grand + ' hrs'"></p>
-                                    </div>
-                                    <div class="border-l border-slate-700 h-6 pl-4">
-                                        <p class="text-[8px] uppercase tracking-widest font-bold text-slate-400">Total Days</p>
-                                        <p class="text-lg font-black text-white" x-text="getProjectTotals(project).days + 'd'"></p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <template x-if="project.notes">
-                                <div class="mb-4 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-slate-600 font-medium">
-                                    <strong class="text-slate-700 font-black">Project Notes:</strong> <span x-text="project.notes"></span>
-                                </div>
-                            </template>
-
-                            <div class="flex justify-between items-center mb-2">
-                                <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Selected Configuration Matrix</h4>
-                                <button @click="currentView = 'estimator'; loadEstimate(pIdx)" class="text-xs text-blue-600 font-bold hover:underline">Load into Editor</button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-xs min-w-[700px]">
-                                    <thead>
-                                        <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-black">
-                                            <th class="p-3">Test Name Matrix</th>
-                                            <th class="p-3">Assigned Tester</th>
-                                            <th class="p-3 text-center">Status</th>
-                                            <th class="p-3 text-center">Quantity</th>
-                                            <th class="p-3 text-center">Unit Variables</th>
-                                            <th class="p-3 text-right">Computed Total Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-50 font-medium text-slate-700">
-                                        <template x-for="item in getSelectedItemsFromData(project.data)" :key="item.id">
-                                            <tr class="hover:bg-slate-50/50">
-                                                <td class="p-3">
-                                                    <div class="font-bold text-slate-800" x-text="item.label"></div>
-                                                    <div class="text-[9px] text-slate-400 uppercase font-semibold" x-text="item.subLabel"></div>
-                                                </td>
-                                                <td class="p-3 font-semibold text-slate-700" x-text="item.testerName || 'Unassigned'"></td>
-                                                <td class="p-3 text-center">
-                                                    <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider"
-                                                          :class="{
-                                                             'bg-yellow-400 text-yellow-950': item.status === 'Not Started' || !item.status,
-                                                             'bg-orange-500 text-white': item.status === 'In-Progress',
-                                                             'bg-green-600 text-white': item.status === 'Completed',
-                                                             'bg-red-100 text-red-700': item.status === 'On Hold'
-                                                          }" x-text="item.status || 'Not Started'"></span>
-                                                </td>
-                                                <td class="p-3 text-center font-black text-slate-900" x-text="item.count"></td>
-                                                <td class="p-3 text-center text-[10px] text-slate-500">
-                                                    <template x-if="item.id.includes('scale')">
-                                                        <span x-text="'US:'+ (item.usOz || 0) + ' / ml:' + (item.ml || 0) + ' / UK:' + (item.ukOz || 0)"></span>
-                                                    </template>
-                                                    <template x-if="!item.id.includes('scale')">
-                                                        <span x-text="'Base: ' + item.weight + 'h' + (item.hasOrientations ? ' x' + item.orientations + 'orient' : '')"></span>
-                                                    </template>
-                                                </td>
-                                                <td class="p-3 text-right font-bold text-slate-900" x-text="calculateSummaryItemTotal(item).toFixed(2) + ' hrs'"></td>
-                                            </tr>
-                                        </template>
-                                        <template x-if="getSelectedItemsFromData(project.data).length === 0">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left min-w-[850px]">
+                                        <thead class="bg-slate-50/30 text-[10px] uppercase font-black text-slate-400 border-b">
                                             <tr>
-                                                <td colspan="6" class="p-4 text-center text-slate-400 font-bold italic">No lab operations loaded or configured during project save cycle execution.</td>
+                                                <th class="px-8 py-4 w-1/4">Test Name</th>
+                                                <th class="px-4 py-4 w-1/5">Tester</th>
+                                                <th class="px-4 py-4 text-center">Multipliers & Calibration</th>
+                                                <th class="px-4 py-4 text-center w-40">Test Status</th>
+                                                <th class="px-4 py-4 text-right w-20">Qty</th>
+                                                <th class="px-6 py-4 text-center w-24 no-print">Actions</th>
                                             </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-50">
+                                            <template x-for="test in group.items" :key="test.id">
+                                                <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
+                                                    <td class="px-8 py-5">
+                                                        <template x-if="test.isCustom || test.isDuplicated">
+                                                            <input type="text" x-model="test.label" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-black text-slate-800 outline-none focus:border-blue-500 w-full shadow-sm">
+                                                        </template>
+                                                        <template x-if="!test.isCustom && !test.isDuplicated">
+                                                            <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
+                                                        </template>
+                                                        <div class="text-[9px] uppercase font-bold text-slate-400 mt-0.5" x-text="test.subLabel"></div>
+                                                    </td>
+                                                    <td class="px-4 py-5 align-middle">
+                                                        <input type="text" x-model="test.testerName" placeholder="Assign tester..." class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors">
+                                                    </td>
+                                                    <td class="px-4 py-5 align-middle text-center">
+                                                        <template x-if="test.id.includes('scale')">
+                                                            <div class="flex gap-3 justify-center items-center">
+                                                                <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz"></div>
+                                                                <div class="text-center"><p class="text-[9px] font-black text-slate-400 mb-1">ml</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ml"></div>
+                                                                <div class="text-center"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">UK Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ukOz"></div>
+                                                                <div class="text-center ml-2 pl-4 border-l-2 border-slate-100"><p class="text-[9px] font-black text-blue-500 uppercase mb-1">Meas.</p><div class="text-lg font-black text-slate-700" x-text="calculateScaleMeasurements(test)"></div><p class="text-[8px] font-bold text-slate-400 mt-1">@ 0.05h</p></div>
+                                                            </div>
+                                                        </template>
+                                                        <template x-if="!test.id.includes('scale')">
+                                                            <div class="flex gap-4 justify-center items-end">
+                                                                <div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight"></div>
+                                                                <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-slate-400 uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations"></div></template>
+                                                            </div>
+                                                        </template>
+                                                    </td>
+                                                    <td class="px-4 py-5 align-middle text-center">
+                                                        <select x-model="test.status" 
+                                                                class="border-0 rounded-lg px-2 py-1.5 text-xs font-black outline-none transition-all cursor-pointer shadow-sm w-36"
+                                                                :class="{
+                                                                    'bg-yellow-400 text-yellow-950': test.status === 'Not Started' || !test.status,
+                                                                    'bg-orange-500 text-white': test.status === 'In-Progress',
+                                                                    'bg-green-600 text-white': test.status === 'Completed',
+                                                                    'bg-red-600 text-white': test.status === 'On Hold'
+                                                                }">
+                                                            <option class="bg-white text-slate-900 font-medium" value="Not Started">Not Started</option>
+                                                            <option class="bg-white text-slate-900 font-medium" value="In-Progress">In-Progress</option>
+                                                            <option class="bg-white text-slate-900 font-medium" value="On Hold">On Hold</option>
+                                                            <option class="bg-white text-slate-900 font-medium" value="Completed">Completed</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="px-4 py-5 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count"></td>
+                                                    <td class="px-6 py-5 align-middle text-center no-print">
+                                                        <div class="flex items-center justify-center gap-1.5">
+                                                            <button @click="duplicateTestItem(group, test)" title="Duplicate Row" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all shadow-sm">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                                                                </svg>
+                                                            </button>
+                                                            <button x-show="isAdmin || test.isCustom || test.isDuplicated" x-cloak @click="removeCustomTestItem(group, test.id)" title="Remove Row" class="p-1.5 bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </main>
+
+                <!-- View 2: Global Projects Dashboard Breakdown Sheet Summary Component -->
+                <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto animate-fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                        <div>
+                            <h1 class="text-3xl font-black text-slate-900 tracking-tight">T&V Projects summary</h1>
+                            <p class="text-sm text-slate-500 mt-1">Comprehensive breakdown mapping of hours and dynamic tests globally.</p>
+                        </div>
+                        <button @click="currentView = 'estimator'" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-all flex items-center gap-2 self-start sm:self-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                            Go Back
+                        </button>
+                    </div>
+
+                    <template x-if="history.length === 0">
+                        <div class="text-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-slate-200">
+                            <p class="text-slate-400 font-bold mb-2">No projects discovered inside database history matrix</p>
+                            <button @click="currentView = 'estimator'" class="text-sm font-black text-blue-500 hover:underline">Create and save your first estimation row</button>
+                        </div>
+                    </template>
+
+                    <div class="space-y-8">
+                        <template x-for="(project, pIdx) in history" :key="pIdx">
+                            <div class="bg-white border border-slate-200 rounded-[2rem] shadow-sm overflow-hidden p-6 sm:p-8" :class="selectedProjectId === project.id ? 'ring-2 ring-blue-500' : ''">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-2">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="text-xl font-black text-slate-800" x-text="project.name"></h3>
+                                            <span x-show="selectedProjectId === project.id" class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded text-[10px]">Active Workspace</span>
+                                            <span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider"
+                                                  :class="{
+                                                     'bg-yellow-400 text-yellow-950': project.projectStatus === 'Not Started' || !project.projectStatus,
+                                                     'bg-orange-500 text-white': project.projectStatus === 'In-Progress',
+                                                     'bg-green-600 text-white': project.projectStatus === 'Completed',
+                                                     'bg-red-100 text-red-700': project.projectStatus === 'On Hold',
+                                                     'bg-purple-100 text-purple-700': project.projectStatus === 'Shipment not recd'
+                                                  }" x-text="project.projectStatus || 'Not Started'"></span>
+                                        </div>
+                                        <p class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
+                                        
+                                        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                            <div>Lead: <span class="text-slate-900 font-bold" x-text="project.testLeadName || 'Unassigned'"></span></div>
+                                            <div class="text-slate-300">|</div>
+                                            <div>Business: <span class="text-slate-900 font-bold" x-text="project.subBusiness || 'N/A'"></span></div>
+                                            <div class="text-slate-300">|</div>
+                                            <div>RFS: <span class="text-slate-900 font-bold" x-text="project.rfsNumber || 'N/A'"></span></div>
+                                            <div class="text-slate-300">|</div>
+                                            <div>Design: <span class="text-slate-900 font-bold" x-text="project.testDesignNumber || 'N/A'"></span></div>
+                                            <div class="text-slate-300">|</div>
+                                            <div>Record: <span class="text-slate-900 font-bold" x-text="project.testRecordNumber || 'N/A'"></span></div>
+                                            <div class="text-slate-300">|</div>
+                                            <div>Start: <span class="text-slate-900 font-bold" x-text="project.startDate || 'Not Set'"></span></div>
+                                            <div class="text-slate-300">|</div>
+                                            <div>End: <span class="text-blue-600 font-black" x-text="project.computedEndDate || 'N/A'"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 bg-slate-900 text-white py-2 px-5 rounded-2xl self-start sm:self-auto">
+                                        <div class="text-right">
+                                            <p class="text-[8px] uppercase tracking-widest font-bold text-slate-400">Calculated Effort</p>
+                                            <p class="text-lg font-black text-blue-400" x-text="getProjectTotals(project).grand + ' hrs'"></p>
+                                        </div>
+                                        <div class="border-l border-slate-700 h-6 pl-4">
+                                            <p class="text-[8px] uppercase tracking-widest font-bold text-slate-400">Total Days</p>
+                                            <p class="text-lg font-black text-white" x-text="getProjectTotals(project).days + 'd'"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <template x-if="project.notes">
+                                    <div class="mb-4 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-slate-600 font-medium">
+                                        <strong class="text-slate-700 font-black">Project Notes:</strong> <span x-text="project.notes"></span>
+                                    </div>
+                                </template>
+
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Selected Configuration Matrix</h4>
+                                    <button @click="currentView = 'estimator'; loadEstimate(pIdx)" class="text-xs text-blue-600 font-bold hover:underline">Load into Editor</button>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-xs min-w-[700px]">
+                                        <thead>
+                                            <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-black">
+                                                <th class="p-3">Test Name Matrix</th>
+                                                <th class="p-3">Assigned Tester</th>
+                                                <th class="p-3 text-center">Status</th>
+                                                <th class="p-3 text-center">Quantity</th>
+                                                <th class="p-3 text-center">Unit Variables</th>
+                                                <th class="p-3 text-right">Computed Total Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-50 font-medium text-slate-700">
+                                            <template x-for="item in getSelectedItemsFromData(project.data)" :key="item.id">
+                                                <tr class="hover:bg-slate-50/50">
+                                                    <td class="p-3">
+                                                        <div class="font-bold text-slate-800" x-text="item.label"></div>
+                                                        <div class="text-[9px] text-slate-400 uppercase font-semibold" x-text="item.subLabel"></div>
+                                                    </td>
+                                                    <td class="p-3 font-semibold text-slate-700" x-text="item.testerName || 'Unassigned'"></td>
+                                                    <td class="p-3 text-center">
+                                                        <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider"
+                                                              :class="{
+                                                                 'bg-yellow-400 text-yellow-950': item.status === 'Not Started' || !item.status,
+                                                                 'bg-orange-500 text-white': item.status === 'In-Progress',
+                                                                 'bg-green-600 text-white': item.status === 'Completed',
+                                                                 'bg-red-100 text-red-700': item.status === 'On Hold'
+                                                              }" x-text="item.status || 'Not Started'"></span>
+                                                    </td>
+                                                    <td class="p-3 text-center font-black text-slate-900" x-text="item.count"></td>
+                                                    <td class="p-3 text-center text-[10px] text-slate-500">
+                                                        <template x-if="item.id.includes('scale')">
+                                                            <span x-text="'US:'+ (item.usOz || 0) + ' / ml:' + (item.ml || 0) + ' / UK:' + (item.ukOz || 0)"></span>
+                                                        </template>
+                                                        <template x-if="!item.id.includes('scale')">
+                                                            <span x-text="'Base: ' + item.weight + 'h' + (item.hasOrientations ? ' x' + item.orientations + 'orient' : '')"></span>
+                                                        </template>
+                                                    </td>
+                                                    <td class="p-3 text-right font-bold text-slate-900" x-text="calculateSummaryItemTotal(item).toFixed(2) + ' hrs'"></td>
+                                                </tr>
+                                            </template>
+                                            <template x-if="getSelectedItemsFromData(project.data).length === 0">
+                                                <tr>
+                                                    <td colspan="6" class="p-4 text-center text-slate-400 font-bold italic">No lab operations loaded or configured during project save cycle execution.</td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </main>
+
+            </div>
+
+            <!-- Right Summary Sidebar -->
+            <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-[calc(100vh-61px)] top-[61px] hidden xl:flex flex-col no-print shadow-xl">
+                <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
+                    <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
+                    <button @click="resetAll()" class="text-[10px] font-black text-red-500 hover:text-red-700 uppercase tracking-widest">New Project</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll">
+                    <template x-for="item in selectedItems" :key="item.id">
+                        <div class="p-4 bg-green-50/50 border border-green-100 rounded-2xl">
+                            <div class="flex justify-between font-black text-xs text-green-700 mb-1">
+                                <span x-text="item.label"></span>
+                                <span class="bg-green-600 text-white px-1.5 rounded text-[10px]" x-text="'x' + item.count"></span>
+                            </div>
+                            <div class="flex justify-between items-end text-[9px] font-bold text-slate-400 uppercase">
+                                <span x-text="item.id.includes('scale') ? 'Scale Calc' : 'Base: ' + item.weight + 'h'"></span>
+                                <span class="text-xs font-black text-slate-700" x-text="calculateItemTotal(item).toFixed(2) + 'h'"></span>
                             </div>
                         </div>
                     </template>
                 </div>
-            </main>
-
-        </div>
-
-        <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-full hidden xl:flex flex-col no-print shadow-xl">
-            <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
-                <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
-                <button @click="resetAll()" class="text-[10px] font-black text-red-500 hover:text-red-700 uppercase tracking-widest">New Project</button>
-            </div>
-            <div class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll">
-                <template x-for="item in selectedItems" :key="item.id">
-                    <div class="p-4 bg-green-50/50 border border-green-100 rounded-2xl">
-                        <div class="flex justify-between font-black text-xs text-green-700 mb-1">
-                            <span x-text="item.label"></span>
-                            <span class="bg-green-600 text-white px-1.5 rounded text-[10px]" x-text="'x' + item.count"></span>
-                        </div>
-                        <div class="flex justify-between items-end text-[9px] font-bold text-slate-400 uppercase">
-                            <span x-text="item.id.includes('scale') ? 'Scale Calc' : 'Base: ' + item.weight + 'h'"></span>
-                            <span class="text-xs font-black text-slate-700" x-text="calculateItemTotal(item).toFixed(2) + 'h'"></span>
-                        </div>
+                <div class="p-6 bg-[#0f172a] text-white rounded-t-[2.5rem]">
+                    <div class="flex justify-between items-center text-blue-400 border-t border-slate-700 pt-4">
+                        <span class="text-xs font-black uppercase tracking-widest">Grand Total (+15%)</span>
+                        <span class="text-3xl font-black" x-text="grandTotal + 'h'"></span>
                     </div>
-                </template>
-            </div>
-            <div class="p-6 bg-[#0f172a] text-white rounded-t-[2.5rem]">
-                <div class="flex justify-between items-center text-blue-400 border-t border-slate-700 pt-4">
-                    <span class="text-xs font-black uppercase tracking-widest">Grand Total (+15%)</span>
-                    <span class="text-3xl font-black" x-text="grandTotal + 'h'"></span>
                 </div>
-            </div>
-        </aside>
+            </aside>
+        </div>
     </div>
 
     <script>
