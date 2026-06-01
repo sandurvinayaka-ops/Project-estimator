@@ -280,11 +280,11 @@
                                                 <th class="px-4 py-4 text-center">Multipliers & Calibration</th>
                                                 <th class="px-4 py-4 text-center w-40">Test Status</th>
                                                 <th class="px-4 py-4 text-right w-20">Qty</th>
-                                                <th class="px-6 py-4 text-center w-24 no-print">Actions</th>
+                                                <th class="px-6 py-4 text-center w-36 no-print">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-slate-50">
-                                            <template x-for="test in group.items" :key="test.id">
+                                            <template x-for="(test, index) in group.items" :key="test.id">
                                                 <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
                                                     <td class="px-8 py-5">
                                                         <template x-if="test.isCustom || test.isDuplicated">
@@ -332,6 +332,15 @@
                                                     <td class="px-4 py-5 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count"></td>
                                                     <td class="px-6 py-5 align-middle text-center no-print">
                                                         <div class="flex items-center justify-center gap-1.5">
+                                                            <!-- Reorder Action Buttons Block -->
+                                                            <div class="flex flex-col gap-0.5 mr-1">
+                                                                <button @click="moveRow(group, index, -1)" :disabled="index === 0" title="Move Up" class="p-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-slate-100 rounded text-slate-600 transition-all">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7" /></svg>
+                                                                </button>
+                                                                <button @click="moveRow(group, index, 1)" :disabled="index === group.items.length - 1" title="Move Down" class="p-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-slate-100 rounded text-slate-600 transition-all">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
+                                                                </button>
+                                                            </div>
                                                             <button @click="duplicateTestItem(group, test)" title="Duplicate Row" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all shadow-sm">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
@@ -813,6 +822,15 @@
                 removeCustomTestItem(group, testId) {
                     if(confirm("Remove this test row option from this category?")) {
                         group.items = group.items.filter(item => item.id !== testId);
+                    }
+                },
+
+                moveRow(group, index, direction) {
+                    const targetIndex = index + direction;
+                    if (targetIndex >= 0 && targetIndex < group.items.length) {
+                        const temp = group.items[index];
+                        group.items[index] = group.items[targetIndex];
+                        group.items[targetIndex] = temp;
                     }
                 },
 
