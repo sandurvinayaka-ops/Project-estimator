@@ -16,38 +16,9 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .sticky-header { position: sticky; top: 0; z-index: 50; padding: 1.5rem 0; margin-top: -1.5rem; }
-
-        /* DYNAMIC BACKGROUND COLOR ROTATION (EVERY 10 SECONDS) */
-        @keyframes dynamicBg {
-            0%, 100% { background-color: #4a3728; border-color: #36271c; } /* Deep Brown */
-            25% { background-color: #1e1e1e; border-color: #111111; }      /* Charcoal Dark */
-            50% { background-color: #1e293b; border-color: #0f172a; }      /* Slate Dark */
-            75% { background-color: #0b132b; border-color: #050a18; }      /* Navy Dark */
-        }
-        .animated-header {
-            animation: dynamicBg 40s infinite ease-in-out;
-        }
-
-        /* HIGH CONTRAST 3D ATTRACTIVE GOLD TEXT */
-        .gold-text-3d {
-            color: #fff3cc;
-            background: linear-gradient(to bottom, #fff3cc 0%, #f3c641 45%, #ca9618 55%, #f9d976 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-family: 'Arial Black', Impact, sans-serif;
-            text-shadow: 
-                0 1px 0 #b38600,
-                0 2px 0 #997300,
-                0 3px 0 #806000,
-                0 4px 0 #664d00,
-                0 5px 0 #4d3a00,
-                0 6px 1px rgba(0,0,0,0.6),
-                0 0 5px rgba(0,0,0,0.4),
-                0 2px 10px rgba(0,0,0,0.8);
-        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans" x-data=\"labEstimator()\" x-init=\"initFirebase()\">
+<body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
 
     <div x-show="!authenticated" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900" x-transition>
         <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl mx-4">
@@ -84,10 +55,10 @@
 
     <div x-show="authenticated" x-cloak class="flex flex-col min-h-screen">
         
-        <header class="animated-header border-b px-6 py-5 flex items-center justify-center text-center shadow-lg relative z-30 transition-all duration-1000">
-            <div class="flex items-center justify-center gap-4">
+        <header class="bg-[#4a3728] border-b border-[#36271c] px-6 py-4 flex items-center justify-center text-center shadow-lg relative z-30">
+            <div class="flex items-center justify-center gap-3">
                 <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse"></span>
-                <h1 class="gold-text-3d text-lg font-black tracking-[0.18em] uppercase pb-1">
+                <h1 class="text-base font-black text-[#face5c] drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-[0.15em] uppercase">
                     MTAT - MCC Tests Application Tool
                 </h1>
                 <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse"></span>
@@ -95,7 +66,7 @@
         </header>
 
         <div class="flex flex-1 pt-0">
-            <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-[calc(100vh-65px)] overflow-y-auto custom-scroll top-[65px]">
+            <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden lg:flex flex-col no-print fixed h-[calc(100vh-57px)] overflow-y-auto custom-scroll top-[57px]">
                 <div class="mb-8 flex flex-col gap-2">
                     <button @click="isAdmin ? logout() : showLoginModal = true" 
                             class="w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm"
@@ -615,7 +586,7 @@
 
             </div>
 
-            <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-[calc(100vh-65px)] top-[65px] hidden xl:flex flex-col no-print shadow-xl">
+            <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-[calc(100vh-57px)] top-[57px] hidden xl:flex flex-col no-print shadow-xl">
                 <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
                     <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
                     <button @click="resetAll()" class="text-[10px] font-black text-red-500 hover:text-red-700 uppercase tracking-widest">New Project</button>
