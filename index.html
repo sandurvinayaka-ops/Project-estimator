@@ -55,14 +55,13 @@
 
     <div x-show="authenticated" x-cloak class="flex flex-col min-h-screen">
         
-        <!-- NEW COMPACT FLUID APP HEADER ALIGNED WITH image_a96e55.png STYLE VIEWPORTS -->
-        <header class="bg-[#111827] border-b border-slate-800 px-6 py-4 flex items-center justify-center text-center shadow-lg relative z-30">
+        <header class="bg-[#4a3728] border-b border-[#36271c] px-6 py-4 flex items-center justify-center text-center shadow-lg relative z-30">
             <div class="flex items-center justify-center gap-3">
-                <span class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_10px_#6366f1] animate-pulse"></span>
-                <h1 class="text-base font-extrabold text-white tracking-[0.15em] uppercase">
-                    4T - T&amp;V Test Tracker Tool
+                <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse"></span>
+                <h1 class="text-base font-black text-[#face5c] drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-[0.15em] uppercase">
+                    MTAT - MCC Tests Application Tool
                 </h1>
-                <span class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_10px_#6366f1] animate-pulse"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse"></span>
             </div>
         </header>
 
@@ -531,7 +530,7 @@
                                                         </template>
                                                     </td>
                                                     <td class="p-3 text-center">
-                                                        <template x-if="!isAdmin"><span class="font-black text-slate-900" x-text="item.count"></span></template>
+                                                        <template x-if="!isAdmin"><span class="font-black text-slate-900" x-text="project.count"></span></template>
                                                         <template x-if="isAdmin"><input type="number" min="0" x-model.number="item.count" @input="recomputeProjectDatesInPlace(project)" class="p-1 border rounded text-xs w-14 font-black text-center"></template>
                                                     </td>
                                                     <td class="p-3 text-center text-[10px] text-slate-500">
@@ -617,7 +616,7 @@
                                 <button @click="moveLiveSummaryItem(idx, -1)" :disabled="idx === 0" title="Move Up Summary Order" class="p-0.5 hover:bg-slate-100 disabled:opacity-20 text-slate-600 rounded">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7" /></svg>
                                 </button>
-                                <button @click="moveLiveSummaryItem(idx, 1)" :disabled="idx === selectedItems.length - 1" title="Move Down Summary Order" class="p-0.5 hover:bg-slate-100 disabled:opacity-20 text-slate-600 rounded">
+                                <button @click="moveLiveSummaryItem(idx, 1)" :disabled="idx === this.selectedItems.length - 1" title="Move Down Summary Order" class="p-0.5 hover:bg-slate-100 disabled:opacity-20 text-slate-600 rounded">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
                                 </button>
                             </div>
