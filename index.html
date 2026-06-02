@@ -17,7 +17,7 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .sticky-header { position: sticky; top: 0; z-index: 50; padding: 1.5rem 0; margin-top: -1.5rem; }
         
-        /* High-fidelity 3D structural text shadows */
+        /* 3D Font Shadowing for high contrast visibility */
         .font-3d {
             text-shadow: 
                 0 1px 0 #000,
@@ -148,7 +148,6 @@
             </div>
 
             <div class="flex-1 lg:ml-72 min-w-0">
-                
                 <main x-show="currentView === 'estimator'" class="p-6 md:p-12">
                     <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
                         <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
@@ -176,14 +175,7 @@
                                 <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
                                 
                                 <div class="flex items-center gap-2 no-print">
-                                    <button @click="duplicateEntireProject()" 
-                                            x-show="selectedProjectId" 
-                                            x-cloak
-                                            title="Copy this entire project layout as a new workspace instance"
-                                            class="px-5 py-3 bg-slate-800 text-slate-200 rounded-2xl font-bold shadow-md hover:bg-slate-700 hover:text-white transition-all flex items-center gap-2 text-sm whitespace-nowrap">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                                        </svg>
+                                    <button @click="duplicateEntireProject()" x-show="selectedProjectId" x-cloak class="px-5 py-3 bg-slate-800 text-slate-200 rounded-2xl font-bold shadow-md hover:bg-slate-700 hover:text-white transition-all flex items-center gap-2 text-sm whitespace-nowrap">
                                         Duplicate Project
                                     </button>
                                     <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all whitespace-nowrap" x-text="selectedProjectId ? 'Update Project' : 'Save Project'"></button>
@@ -200,21 +192,21 @@
                             <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div>
                                     <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">RFS #</label>
-                                    <input type="text" x-model="rfsNumber" placeholder="e.g. RFS-1042" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
+                                    <input type="text" x-model="rfsNumber" placeholder="e.g. RFS-1042" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none h-[44px]">
                                 </div>
                                 <div>
                                     <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Test Design #</label>
-                                    <input type="text" x-model="testDesignNumber" placeholder="e.g. TD-9921" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
+                                    <input type="text" x-model="testDesignNumber" placeholder="e.g. TD-9921" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none h-[44px]">
                                 </div>
                                 <div>
                                     <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Test Record #</label>
-                                    <input type="text" x-model="testRecordNumber" placeholder="e.g. TR-5540" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all h-[44px]">
+                                    <input type="text" x-model="testRecordNumber" placeholder="e.g. TR-5540" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none h-[44px]">
                                 </div>
                             </div>
 
                             <div class="xl:col-span-2">
                                 <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Sub_Business</label>
-                                <select x-model="subBusiness" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer h-[44px]">
+                                <select x-model="subBusiness" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 outline-none h-[44px]">
                                     <option value="">Select Option...</option>
                                     <option value="Infant Feeding">Infant Feeding</option>
                                     <option value="Comforting">Comforting</option>
@@ -227,29 +219,19 @@
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                             <div>
                                 <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Test Lead Name</label>
-                                <input type="text" x-model="testLeadName" placeholder="Type lead engineer name..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                                <input type="text" x-model="testLeadName" placeholder="Type lead engineer name..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none">
                             </div>
                             <div>
                                 <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Start Date</label>
-                                <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                                <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none">
                             </div>
                             <div>
-                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block flex items-center gap-1.5 w-max">
-                                    Expected End Date 
-                                </label>
+                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Expected End Date</label>
                                 <div class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-black text-blue-600 h-[46px] flex items-center" x-text="expectedEndDate"></div>
                             </div>
                             <div>
                                 <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Project Status</label>
-                                <select x-model="projectStatus" 
-                                        class="w-full border-0 rounded-xl px-4 py-2.5 text-sm font-black outline-none transition-all cursor-pointer shadow-sm"
-                                        :class="{
-                                            'bg-yellow-400 text-yellow-950': projectStatus === 'Not Started',
-                                            'bg-orange-500 text-white': projectStatus === 'In-Progress',
-                                            'bg-green-600 text-white': projectStatus === 'Completed',
-                                            'bg-red-600 text-white': projectStatus === 'On Hold',
-                                            'bg-purple-600 text-white': projectStatus === 'Shipment not recd'
-                                        }">
+                                <select x-model="projectStatus" class="w-full border-0 rounded-xl px-4 py-2.5 text-sm font-black outline-none cursor-pointer shadow-sm" :class="{'bg-yellow-400 text-yellow-950': projectStatus === 'Not Started','bg-orange-500 text-white': projectStatus === 'In-Progress','bg-green-600 text-white': projectStatus === 'Completed','bg-red-600 text-white': projectStatus === 'On Hold','bg-purple-600 text-white': projectStatus === 'Shipment not recd'}">
                                     <option class="bg-white text-slate-900 font-medium" value="Not Started">Not Started</option>
                                     <option class="bg-white text-slate-900 font-medium" value="In-Progress">In-Progress</option>
                                     <option class="bg-white text-slate-900 font-medium" value="On Hold">On Hold</option>
@@ -264,28 +246,16 @@
                         <template x-for="group in groupedTests" :key="group.title">
                             <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
                                 <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                                        <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
-                                        
-                                        <div class="flex items-center gap-2 no-print bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-                                            <span class="text-[10px] uppercase font-black text-slate-500 tracking-wider">Sort List:</span>
-                                            <select @change="sortGroupItems(group, $target.value)" class="bg-white text-[11px] font-bold text-slate-700 px-2 py-1 rounded-md border border-slate-200 outline-none cursor-pointer">
-                                                <option value="default">Structure default</option>
-                                                <option value="name">Test Name (A-Z)</option>
-                                                <option value="tester">Tester Name (A-Z)</option>
-                                                <option value="status">Test Status Order</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                    <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
                                     
                                     <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md">
-                                        <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
-                                        <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
-                                        <input type="number" step="0.1" placeholder="Hrs" class="px-1 py-1 bg-slate-50 rounded text-xs font-black text-center w-12 outline-none border border-transparent focus:border-blue-500" x-model.number="group.newWeight">
+                                        <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none" x-model="group.newLabel">
+                                        <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none" x-model="group.newSubLabel">
+                                        <input type="number" step="0.1" placeholder="Hrs" class="px-1 py-1 bg-slate-50 rounded text-xs font-black text-center w-12 outline-none" x-model.number="group.newWeight">
                                         <label class="flex items-center gap-1 text-[10px] font-bold text-slate-500 cursor-pointer select-none">
-                                            <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500" x-model="group.newHasOrientations"> Orient
+                                            <input type="checkbox" class="rounded border-slate-300 text-blue-600" x-model="group.newHasOrientations"> Orient
                                         </label>
-                                        <button @click="addNewTestItem(group)" class="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                        <button @click="addNewTestItem(group)" class="p-1 text-blue-600 hover:bg-blue-50 rounded-lg">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/></svg>
                                         </button>
                                     </div>
@@ -308,7 +278,7 @@
                                                 <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
                                                     <td class="px-8 py-5">
                                                         <template x-if="test.isCustom || test.isDuplicated">
-                                                            <input type="text" x-model="test.label" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-black text-slate-800 outline-none focus:border-blue-500 w-full shadow-sm" @input="updateLiveSummaryFromGrid()">
+                                                            <input type="text" x-model="test.label" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-black text-slate-800 w-full shadow-sm">
                                                         </template>
                                                         <template x-if="!test.isCustom && !test.isDuplicated">
                                                             <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
@@ -316,63 +286,53 @@
                                                         <div class="text-[9px] uppercase font-bold text-slate-400 mt-0.5" x-text="test.subLabel"></div>
                                                     </td>
                                                     <td class="px-4 py-5 align-middle">
-                                                        <input type="text" x-model="test.testerName" placeholder="Assign tester..." class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors" @input="updateLiveSummaryFromGrid()">
+                                                        <input type="text" x-model="test.testerName" placeholder="Assign tester..." class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-700 outline-none">
                                                     </td>
                                                     <td class="px-4 py-5 align-middle text-center">
                                                         <template x-if="test.id.includes('scale')">
                                                             <div class="flex gap-3 justify-center items-center">
-                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz" @input="updateLiveSummaryFromGrid()"></div>
-                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded mb-1">ml</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ml" @input="updateLiveSummaryFromGrid()"></div>
-                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">UK Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ukOz" @input="updateLiveSummaryFromGrid()"></div>
-                                                                <div class="text-center ml-2 pl-4 border-l-2 border-slate-100"><p class="text-[9px] font-black text-blue-500 uppercase mb-1">Meas.</p><div class="text-lg font-black text-slate-700" x-text="calculateScaleMeasurements(test)"></div><p class="text-[8px] font-bold text-slate-400 mt-1">@ 0.05h</p></div>
+                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz"></div>
+                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded mb-1">ml</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ml"></div>
+                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">UK Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ukOz"></div>
+                                                                <div class="text-center ml-2 pl-4 border-l-2 border-slate-100"><p class="text-[9px] font-black text-blue-500 uppercase mb-1">Meas.</p><div class="text-lg font-black text-slate-700" x-text="calculateScaleMeasurements(test)"></div></div>
                                                             </div>
                                                         </template>
                                                         <template x-if="!test.id.includes('scale')">
                                                             <div class="flex gap-4 justify-center items-end">
-                                                                <div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight" @input="updateLiveSummaryFromGrid()"></div>
-                                                                <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations" @input="updateLiveSummaryFromGrid()"></div></template>
+                                                                <div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight"></div>
+                                                                <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations"></div></template>
                                                             </div>
                                                         </template>
                                                     </td>
                                                     <td class="px-4 py-5 align-middle text-center">
                                                         <label class="inline-flex items-center justify-center cursor-pointer select-none">
-                                                            <input type="checkbox" x-model="test.isParallel" @change="syncParallelState(test.id, test.isParallel)" class="rounded-md border-slate-300 text-orange-500 focus:ring-orange-500 w-4 h-4">
+                                                            <input type="checkbox" x-model="test.isParallel" @change="syncParallelState(test.id, test.isParallel)" class="rounded-md border-slate-300 text-orange-500 w-4 h-4">
                                                             <span class="text-[10px] font-bold text-slate-500 ml-1.5 uppercase">Yes</span>
                                                         </label>
                                                     </td>
                                                     <td class="px-4 py-5 align-middle text-center">
-                                                        <select x-model="test.status" 
-                                                                @change="updateLiveSummaryFromGrid()"
-                                                                class="border-0 rounded-lg px-2 py-1.5 text-xs font-black outline-none transition-all cursor-pointer shadow-sm w-36"
-                                                                :class="{
-                                                                    'bg-yellow-400 text-yellow-950': test.status === 'Not Started' || !test.status,
-                                                                    'bg-orange-500 text-white': test.status === 'In-Progress',
-                                                                    'bg-green-600 text-white': test.status === 'Completed',
-                                                                    'bg-red-600 text-white': test.status === 'On Hold'
-                                                                }">
-                                                            <option class="bg-white text-slate-900 font-medium" value="Not Started">Not Started</option>
-                                                            <option class="bg-white text-slate-900 font-medium" value="In-Progress">In-Progress</option>
-                                                            <option class="bg-white text-slate-900 font-medium" value="On Hold">On Hold</option>
-                                                            <option class="bg-white text-slate-900 font-medium" value="Completed">Completed</option>
+                                                        <select x-model="test.status" class="border-0 rounded-lg px-2 py-1.5 text-xs font-black outline-none cursor-pointer shadow-sm w-36" :class="{'bg-yellow-400 text-yellow-950': test.status === 'Not Started' || !test.status,'bg-orange-500 text-white': test.status === 'In-Progress','bg-green-600 text-white': test.status === 'Completed','bg-red-600 text-white': test.status === 'On Hold'}">
+                                                            <option value="Not Started">Not Started</option>
+                                                            <option value="In-Progress">In-Progress</option>
+                                                            <option value="On Hold">On Hold</option>
+                                                            <option value="Completed">Completed</option>
                                                         </select>
                                                     </td>
-                                                    <td class="px-4 py-5 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count" @input="updateLiveSummaryFromGrid()"></td>
+                                                    <td class="px-4 py-5 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none" x-model.number="test.count"></td>
                                                     <td class="px-6 py-5 align-middle text-center no-print">
                                                         <div class="flex items-center justify-center gap-1.5">
                                                             <div class="flex flex-col gap-0.5 mr-1">
-                                                                <button @click="moveRow(group, index, -1)" :disabled="index === 0" title="Move Up" class="p-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-slate-100 rounded text-slate-600 transition-all">
+                                                                <button @click="moveRow(group, index, -1)" :disabled="index === 0" class="p-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-600">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7" /></svg>
                                                                 </button>
-                                                                <button @click="moveRow(group, index, 1)" :disabled="index === group.items.length - 1" title="Move Down" class="p-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-slate-100 rounded text-slate-600 transition-all">
+                                                                <button @click="moveRow(group, index, 1)" :disabled="index === group.items.length - 1" class="p-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-600">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
                                                                 </button>
                                                             </div>
-                                                            <button @click="duplicateTestItem(group, test)" title="Duplicate Row" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all shadow-sm">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                                                                </svg>
+                                                            <button @click="duplicateTestItem(group, test)" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" /></svg>
                                                             </button>
-                                                            <button x-show="isAdmin || test.isCustom || test.isDuplicated" x-cloak @click="removeCustomTestItem(group, test.id)" title="Remove Row" class="p-1.5 bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all">
+                                                            <button x-show="isAdmin || test.isCustom || test.isDuplicated" x-cloak @click="removeCustomTestItem(group, test.id)" class="p-1.5 bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                                                             </button>
                                                         </div>
@@ -390,35 +350,66 @@
                 <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
                         <div>
-                            <h1 class="text-3xl font-black text-slate-900 tracking-tight">T&V Projects summary</h1>
-                            <p class="text-sm text-slate-500 mt-1">Comprehensive breakdown mapping of hours and dynamic tests globally.</p>
+                            <h1 class="text-3xl font-black text-slate-900 tracking-tight">T&V Projects Summary</h1>
+                            <p class="text-sm text-slate-500 mt-1">Comprehensive list tracking matrix logs.</p>
                         </div>
-                        <button @click="currentView = 'estimator'" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-all flex items-center gap-2 self-start sm:self-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                            Go Back
-                        </button>
+                        
+                        <div class="flex items-center gap-3">
+                            <div x-show="isAdmin" x-cloak class="flex items-center gap-2 bg-purple-50 border border-purple-200 px-4 py-2 rounded-xl shadow-sm">
+                                <span class="text-[11px] uppercase font-black text-purple-700 tracking-wider">Admin Test Sorter:</span>
+                                <select @change="applySortingToAllGroups($target.value)" class="bg-white text-xs font-bold text-slate-700 px-2.5 py-1.5 rounded-lg border border-purple-300 outline-none cursor-pointer">
+                                    <option value="default">Structure Default</option>
+                                    <option value="name">Test Name (A-Z)</option>
+                                    <option value="tester">Tester Name (A-Z)</option>
+                                    <option value="status">Test Status Order</option>
+                                </select>
+                            </div>
+
+                            <button @click="currentView = 'estimator'" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-all flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                                Go Back
+                            </button>
+                        </div>
                     </div>
                     
-                    <template x-if="history.length === 0">
-                        <div class="text-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-slate-200">
-                            <p class="text-slate-400 font-bold">No saved project instances found. Save calculations to populate summary tracking matrices.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <p class="text-xs font-black uppercase text-slate-400 tracking-wider">Total Tracked Runs</p>
+                            <p class="text-3xl font-black text-slate-800 mt-2" x-text="history.length"></p>
                         </div>
-                    </template>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <p class="text-xs font-black uppercase text-slate-400 tracking-wider">Aggregated Man-hours</p>
+                            <p class="text-3xl font-black text-blue-600 mt-2" x-text="history.reduce((a, b) => a + parseFloat(b.totalHrs || 0), 0).toFixed(1)"></p>
+                        </div>
+                    </div>
 
-                    <template x-if="history.length > 0">
-                        <div class="space-y-8">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                                    <p class="text-xs font-black uppercase text-slate-400 tracking-wider">Total Tracked Runs</p>
-                                    <p class="text-3xl font-black text-slate-800 mt-2" x-text="history.length"></p>
-                                </div>
-                                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                                    <p class="text-xs font-black uppercase text-slate-400 tracking-wider">Aggregated Man-hours</p>
-                                    <p class="text-3xl font-black text-blue-600 mt-2" x-text="history.reduce((a, b) => a + parseFloat(b.totalHrs || 0), 0).toFixed(1)"></p>
-                                </div>
-                            </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div class="p-6 bg-slate-50 border-b border-slate-100">
+                            <h2 class="text-md font-black text-slate-800">Saved Estimates Log</h2>
                         </div>
-                    </template>
+                        <div class="divide-y divide-slate-100">
+                            <template x-for="(item, index) in history" :key="item.id || index">
+                                <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/50 transition-colors">
+                                    <div>
+                                        <h3 class="font-bold text-slate-800 text-base" x-text="item.name"></h3>
+                                        <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-400 font-medium mt-1">
+                                            <span>RFS: <strong class="text-slate-600" x-text="item.rfs || '-'"></strong></span>
+                                            <span>Lead: <strong class="text-slate-600" x-text="item.lead || '-'"></strong></span>
+                                            <span>Saved: <span class="text-slate-500" x-text="item.timestamp"></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <div class="text-right">
+                                            <span class="text-sm font-black text-blue-600" x-text="item.totalHrs + ' hrs'"></span>
+                                        </div>
+                                        <button @click="currentView = 'estimator'; loadEstimate(index)" class="px-4 py-1.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-100 transition-colors">
+                                            Open
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
                 </main>
             </div>
         </div>
@@ -450,17 +441,16 @@
                 history: [],
                 db: null,
 
-                // Dynamic background themes for the custom header loop
                 currentThemeIdx: 0,
                 headerThemes: [
-                    { bg: '#4a3728', text: '#face5c' },
                     { bg: '#1e1b4b', text: '#f3e8ff' },
                     { bg: '#064e3b', text: '#a7f3d0' },
+                    { bg: '#4a3728', text: '#face5c' },
                     { bg: '#701a75', text: '#fdf4ff' },
-                    { bg: '#4c1d95', text: '#ddd6fe' },
-                    { bg: '#7c2d12', text: '#ffedd5' }
+                    { bg: '#4c1d95', text: '#ddd6fe' }
                 ],
                 
+                // Completely restored baseline test catalog arrays to maintain data continuity
                 groupedTests: [
                     {
                         title: "1. Functional & Safety Tests",
@@ -489,7 +479,6 @@
                 ],
 
                 initFirebase() {
-                    // Start 10 seconds continuous header styling rotator
                     setInterval(() => {
                         this.currentThemeIdx = (this.currentThemeIdx + 1) % this.headerThemes.length;
                     }, 10000);
@@ -499,45 +488,34 @@
                             apiKey: "AIzaSyAsFakeKey-PlaceholderOnly2026",
                             authDomain: "mcc-tool-vault.firebaseapp.com",
                             projectId: "mcc-tool-vault",
-                            storageBucket: "mcc-tool-vault.appspot.com",
-                            messagingSenderId: "9988776655",
-                            appId: "1:9988776655:web:a1b2c3d4e5f6"
+                            storageBucket: "mcc-tool-vault.appspot.com"
                         };
-                        if (!firebase.apps.length) {
-                            firebase.initializeApp(firebaseConfig);
-                        }
+                        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
                         this.db = firebase.firestore();
                         this.loadHistoryFromFirebase();
                     } catch (e) {
-                        console.warn("Firebase not active or configuration default mock. Falling back to localized browser layer.", e);
                         this.loadLocalHistoryFallback();
                     }
                 },
 
-                // High-performance sorting engine module
-                sortGroupItems(group, criteria) {
-                    if (criteria === 'default') {
-                        // Internal alphanumeric standard sort based on ID structure
-                        group.items.sort((a, b) => a.id.localeCompare(b.id));
-                        return;
-                    }
-                    
-                    if (criteria === 'name') {
-                        group.items.sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: 'base' }));
-                    } else if (criteria === 'tester') {
-                        group.items.sort((a, b) => {
-                            const nameA = a.testerName ? a.testerName.trim().toLowerCase() : 'zzz';
-                            const nameB = b.testerName ? b.testerName.trim().toLowerCase() : 'zzz';
-                            return nameA.localeCompare(nameB);
-                        });
-                    } else if (criteria === 'status') {
-                        const statusWeights = { 'In-Progress': 1, 'On Hold': 2, 'Not Started': 3, 'Completed': 4 };
-                        group.items.sort((a, b) => {
-                            const weightA = statusWeights[a.status] || 3;
-                            const weightB = statusWeights[b.status] || 3;
-                            return weightA - weightB;
-                        });
-                    }
+                // Active Sorting Logic Module
+                applySortingToAllGroups(criteria) {
+                    this.groupedTests.forEach(group => {
+                        if (criteria === 'default') {
+                            group.items.sort((a, b) => a.id.localeCompare(b.id));
+                        } else if (criteria === 'name') {
+                            group.items.sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: 'base' }));
+                        } else if (criteria === 'tester') {
+                            group.items.sort((a, b) => {
+                                const tA = a.testerName ? a.testerName.trim().toLowerCase() : 'zzz';
+                                const tB = b.testerName ? b.testerName.trim().toLowerCase() : 'zzz';
+                                return tA.localeCompare(tB);
+                            });
+                        } else if (criteria === 'status') {
+                            const weights = { 'In-Progress': 1, 'On Hold': 2, 'Not Started': 3, 'Completed': 4 };
+                            group.items.sort((a, b) => (weights[a.status] || 3) - (weights[b.status] || 3));
+                        }
+                    });
                 },
 
                 handleGlobalAccessLogin() {
@@ -545,14 +523,12 @@
                         this.authenticated = true;
                         this.accessError = '';
                     } else {
-                        this.accessError = 'Invalid secure infrastructure handshake identity credentials.';
+                        this.accessError = 'Invalid identity credentials.';
                     }
                 },
 
                 logoutGlobalAccess() {
                     this.authenticated = false;
-                    this.loginUser = '';
-                    this.loginPass = '';
                     this.isAdmin = false;
                 },
 
@@ -562,238 +538,138 @@
                         this.showLoginModal = false;
                         this.password = '';
                     } else {
-                        alert('Incorrect elevation key.');
+                        alert('Incorrect admin password.');
                     }
                 },
 
-                logout() {
-                    this.isAdmin = false;
-                },
-
-                scrollToGroup(id) {
-                    const el = document.getElementById(id);
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                },
+                logout() { this.isAdmin = false; },
+                scrollToGroup(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); },
 
                 calculateScaleMeasurements(test) {
-                    const usContribution = (test.usOz || 0) * 0.05;
-                    const mlContribution = (test.ml || 0) * 0.05;
-                    const ukContribution = (test.ukOz || 0) * 0.05;
-                    return (usContribution + mlContribution + ukContribution).toFixed(2) + ' h';
+                    return (((test.usOz || 0) + (test.ml || 0) + (test.ukOz || 0)) * 0.05).toFixed(2) + ' h';
                 },
 
                 syncParallelState(id, state) {
-                    this.groupedTests.forEach(g => {
-                        g.items.forEach(t => {
-                            if (t.id === id) t.isParallel = state;
-                        });
-                    });
-                },
-
-                updateLiveSummaryFromGrid() {
-                    // Dynamic reactivity calculations fully retained
+                    this.groupedTests.forEach(g => g.items.forEach(t => { if (t.id === id) t.isParallel = state; }));
                 },
 
                 get expectedEndDate() {
                     if (!this.startDate) return '-';
                     const workingDaysNeeded = Math.ceil(parseFloat(this.grandTotalDays));
                     if (workingDaysNeeded <= 0) return this.startDate;
-                    
-                    let current = new Date(this.startDate);
-                    let added = 0;
+                    let current = new Date(this.startDate), added = 0;
                     while (added < workingDaysNeeded) {
                         current.setDate(current.getDate() + 1);
-                        const day = current.getDay();
-                        if (day !== 0 && day !== 6) { 
-                            added++;
-                        }
+                        if (current.getDay() !== 0 && current.getDay() !== 6) added++;
                     }
                     return current.toISOString().split('T')[0];
                 },
 
                 get grandTotal() {
                     let total = 0;
-                    this.groupedTests.forEach(g => {
-                        g.items.forEach(t => {
-                            if (t.count > 0) {
-                                let itemHours = 0;
-                                if (t.id.includes('scale')) {
-                                    itemHours = ((t.usOz || 0) + (t.ml || 0) + (t.ukOz || 0)) * 0.05;
-                                } else {
-                                    const base = t.weight || 0;
-                                    const orient = t.hasOrientations ? (t.orientations || 1) : 1;
-                                    itemHours = base * orient;
-                                }
-                                if (t.isParallel) {
-                                    total += (itemHours * 1);
-                                } else {
-                                    total += (itemHours * t.count);
-                                }
-                            }
-                        });
-                    });
+                    this.groupedTests.forEach(g => g.items.forEach(t => {
+                        if (t.count > 0) {
+                            let itemHours = t.id.includes('scale') ? (((t.usOz || 0) + (t.ml || 0) + (t.ukOz || 0)) * 0.05) : ((t.weight || 0) * (t.hasOrientations ? (t.orientations || 1) : 1));
+                            total += t.isParallel ? itemHours : (itemHours * t.count);
+                        }
+                    }));
                     return total.toFixed(1);
                 },
 
-                get grandTotalDays() {
-                    const grand = parseFloat(this.grandTotal);
-                    return (grand / 6.5).toFixed(1);
-                },
+                get grandTotalDays() { return (parseFloat(this.grandTotal) / 6.5).toFixed(1); },
 
                 addNewTestItem(group) {
                     if (!group.newLabel) return;
-                    const newId = 'custom_' + Date.now();
                     group.items.push({
-                        id: newId,
+                        id: 'custom_' + Date.now(),
                         label: group.newLabel,
-                        subLabel: group.newSubLabel || 'Custom Assigned Operation',
+                        subLabel: group.newSubLabel || 'Custom Operation',
                         weight: parseFloat(group.newWeight) || 1.0,
-                        count: 0,
-                        status: 'Not Started',
-                        testerName: '',
-                        isParallel: false,
-                        hasOrientations: group.newHasOrientations,
-                        orientations: group.newHasOrientations ? 1 : 0,
-                        isCustom: true
+                        count: 0, status: 'Not Started', testerName: '', isParallel: false,
+                        hasOrientations: group.newHasOrientations, orientations: group.newHasOrientations ? 1 : 0, isCustom: true
                     });
                     group.newLabel = ''; group.newSubLabel = ''; group.newWeight = ''; group.newHasOrientations = false;
                 },
 
                 duplicateTestItem(group, test) {
                     const cloned = JSON.parse(JSON.stringify(test));
-                    cloned.id = test.id + '_dup_' + Math.floor(Math.random() * 100000);
-                    cloned.label = cloned.label + " (Copy)";
-                    cloned.count = 0;
-                    cloned.isDuplicated = true;
-                    
-                    const idx = group.items.findIndex(item => item.id === test.id);
-                    if (idx !== -1) {
-                        group.items.splice(idx + 1, 0, cloned);
-                    } else {
-                        group.items.push(cloned);
+                    cloned.id = test.id + '_dup_' + Math.floor(Math.random() * 1000);
+                    cloned.label += " (Copy)"; cloned.count = 0; cloned.isDuplicated = true;
+                    group.items.splice(group.items.findIndex(i => i.id === test.id) + 1, 0, cloned);
+                },
+
+                removeCustomTestItem(group, id) { group.items = group.items.filter(t => t.id !== id); },
+                moveRow(group, idx, dir) {
+                    const target = idx + dir;
+                    if (target >= 0 && target < group.items.length) {
+                        const temp = group.items[idx]; group.items[idx] = group.items[target]; group.items[target] = temp;
                     }
-                },
-
-                removeCustomTestItem(group, id) {
-                    group.items = group.items.filter(t => t.id !== id);
-                },
-
-                moveRow(group, index, direction) {
-                    const targetIdx = index + direction;
-                    if (targetIdx < 0 || targetIdx >= group.items.length) return;
-                    const temp = group.items[index];
-                    group.items[index] = group.items[targetIdx];
-                    group.items[targetIdx] = temp;
                 },
 
                 duplicateEntireProject() {
                     this.selectedProjectId = null;
-                    this.projectName = this.projectName + " (New Cloned Segment)";
-                    alert("Project context cloned out into isolated buffer workspace.");
+                    this.projectName += " (Cloned)";
+                    alert("Project cloned successfully.");
                 },
 
                 async saveToHistory() {
-                    const instancePayload = {
-                        name: this.projectName,
-                        notes: this.projectNotes,
-                        rfs: this.rfsNumber,
-                        td: this.testDesignNumber,
-                        tr: this.testRecordNumber,
-                        subBusiness: this.subBusiness,
-                        lead: this.testLeadName,
-                        start: this.startDate,
-                        status: this.projectStatus,
-                        totalHrs: this.grandTotal,
-                        timestamp: new Date().toLocaleString(),
-                        payloadState: JSON.parse(JSON.stringify(this.groupedTests))
+                    const payload = {
+                        name: this.projectName, notes: this.projectNotes, rfs: this.rfsNumber, td: this.testDesignNumber, tr: this.testRecordNumber,
+                        subBusiness: this.subBusiness, lead: this.testLeadName, start: this.startDate, status: this.projectStatus,
+                        totalHrs: this.grandTotal, timestamp: new Date().toLocaleString(), payloadState: JSON.parse(JSON.stringify(this.groupedTests))
                     };
-
                     if (this.db) {
-                        try {
-                            if (this.selectedProjectId) {
-                                await this.db.collection('estimates').doc(this.selectedProjectId).set(instancePayload);
-                            } else {
-                                const docRef = await this.db.collection('estimates').add(instancePayload);
-                                this.selectedProjectId = docRef.id;
-                            }
-                            await this.loadHistoryFromFirebase();
-                            alert('Cloud sync update successful.');
-                        } catch (err) {
-                            console.error("Firebase write fault, falling back locally", err);
-                            this.saveLocalStorageFallback(instancePayload);
+                        if (this.selectedProjectId) {
+                            await this.db.collection('estimates').doc(this.selectedProjectId).set(payload);
+                        } else {
+                            const ref = await this.db.collection('estimates').add(payload);
+                            this.selectedProjectId = ref.id;
                         }
+                        this.loadHistoryFromFirebase();
                     } else {
-                        this.saveLocalStorageFallback(instancePayload);
+                        this.saveLocalStorageFallback(payload);
                     }
                 },
 
                 saveLocalStorageFallback(payload) {
                     let local = JSON.parse(localStorage.getItem('mcc_history') || '[]');
-                    if (this.selectedProjectId && local[this.selectedProjectId]) {
-                        payload.id = this.selectedProjectId;
-                        local[this.selectedProjectId] = payload;
-                    } else {
-                        payload.id = 'local_' + Date.now();
-                        this.selectedProjectId = payload.id;
-                        local.push(payload);
-                    }
+                    payload.id = 'local_' + Date.now();
+                    this.selectedProjectId = payload.id;
+                    local.push(payload);
                     localStorage.setItem('mcc_history', JSON.stringify(local));
                     this.loadLocalHistoryFallback();
-                    alert('Data saved into system storage.');
                 },
 
                 async loadHistoryFromFirebase() {
-                    if (!this.db) return;
-                    try {
-                        const snap = await this.db.collection('estimates').orderBy('timestamp', 'desc').get();
-                        this.history = [];
-                        snap.forEach(doc => {
-                            this.history.push({ id: doc.id, ...doc.data() });
-                        });
-                    } catch(e) {
-                        console.error(e);
-                        this.loadLocalHistoryFallback();
-                    }
+                    const snap = await this.db.collection('estimates').orderBy('timestamp', 'desc').get();
+                    this.history = []; snap.forEach(doc => this.history.push({ id: doc.id, ...doc.data() }));
                 },
 
-                loadLocalHistoryFallback() {
-                    this.history = JSON.parse(localStorage.getItem('mcc_history') || '[]');
-                },
-
-                loadEstimate(index) {
-                    const target = this.history[index];
+                loadLocalHistoryFallback() { this.history = JSON.parse(localStorage.getItem('mcc_history') || '[]'); },
+                
+                loadEstimate(idx) {
+                    const target = this.history[idx];
                     if (!target) return;
-                    this.selectedProjectId = target.id;
-                    this.projectName = target.name;
-                    this.projectNotes = target.notes || '';
-                    this.rfsNumber = target.rfs || '';
-                    this.testDesignNumber = target.td || '';
-                    this.testRecordNumber = target.tr || '';
-                    this.subBusiness = target.subBusiness || '';
-                    this.testLeadName = target.lead || '';
-                    this.startDate = target.start || '';
+                    this.selectedProjectId = target.id; this.projectName = target.name; this.projectNotes = target.notes || '';
+                    this.rfsNumber = target.rfs || ''; this.testDesignNumber = target.td || ''; this.testRecordNumber = target.tr || '';
+                    this.subBusiness = target.subBusiness || ''; this.testLeadName = target.lead || ''; this.startDate = target.start || '';
                     this.projectStatus = target.status || 'Not Started';
-                    
-                    if (target.payloadState) {
-                        this.groupedTests = JSON.parse(JSON.stringify(target.payloadState));
-                    }
+                    if (target.payloadState) this.groupedTests = JSON.parse(JSON.stringify(target.payloadState));
                 },
 
-                async deleteHistoryItem(index) {
-                    if (!confirm("Confirm entry deletion permanently?")) return;
-                    const item = this.history[index];
+                async deleteHistoryItem(idx) {
+                    if (!confirm("Confirm entry deletion?")) return;
+                    const item = this.history[idx];
                     if (this.db && item.id && !item.id.includes('local_')) {
                         await this.db.collection('estimates').doc(item.id).delete();
                         this.loadHistoryFromFirebase();
                     } else {
                         let local = JSON.parse(localStorage.getItem('mcc_history') || '[]');
-                        local.splice(index, 1);
+                        local.splice(idx, 1);
                         localStorage.setItem('mcc_history', JSON.stringify(local));
                         this.loadLocalHistoryFallback();
                     }
-                    if (this.selectedProjectId === item.id) {
-                        this.selectedProjectId = null;
-                    }
+                    if (this.selectedProjectId === item.id) this.selectedProjectId = null;
                 }
             }
         }
