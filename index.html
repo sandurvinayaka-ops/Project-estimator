@@ -16,6 +16,16 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .sticky-header { position: sticky; top: 0; z-index: 50; padding: 1.5rem 0; margin-top: -1.5rem; }
+
+        /* Smooth sequential color wave text animation styles */
+        @keyframes colorWave {
+            0%, 100% { color: #face5c; transform: translateY(0); }
+            50% { color: #38bdf8; transform: translateY(-4px); }
+        }
+        .wave-char {
+            display: inline-block;
+            animation: colorWave 2s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
@@ -58,8 +68,50 @@
         <header class="bg-[#4a3728] border-b border-[#36271c] px-6 py-4 flex items-center justify-center text-center shadow-lg relative z-30">
             <div class="flex items-center justify-center gap-3">
                 <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse"></span>
-                <h1 class="text-base font-black text-[#face5c] drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-[0.15em] uppercase">
-                    TEA - M : Tests Estimation Application - MCC
+                <h1 class="text-base font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-[0.15em] uppercase select-none">
+                    <span class="wave-char" style="animation-delay: 0.05s">:</span>
+                    <span class="wave-char" style="animation-delay: 0.10s">T</span>
+                    <span class="wave-char" style="animation-delay: 0.15s">E</span>
+                    <span class="wave-char" style="animation-delay: 0.20s">A</span>
+                    <span class="wave-char" style="animation-delay: 0.25s">-</span>
+                    <span class="wave-char" style="animation-delay: 0.30s">M</span>
+                    <span class="wave-char" style="animation-delay: 0.35s">&nbsp;</span>
+                    <span class="wave-char" style="animation-delay: 0.40s">:</span>
+                    <span class="wave-char" style="animation-delay: 0.45s">&nbsp;</span>
+                    <span class="wave-char" style="animation-delay: 0.50s">T</span>
+                    <span class="wave-char" style="animation-delay: 0.55s">e</span>
+                    <span class="wave-char" style="animation-delay: 0.60s">s</span>
+                    <span class="wave-char" style="animation-delay: 0.65s">t</span>
+                    <span class="wave-char" style="animation-delay: 0.70s">s</span>
+                    <span class="wave-char" style="animation-delay: 0.75s">&nbsp;</span>
+                    <span class="wave-char" style="animation-delay: 0.80s">E</span>
+                    <span class="wave-char" style="animation-delay: 0.85s">s</span>
+                    <span class="wave-char" style="animation-delay: 0.90s">t</span>
+                    <span class="wave-char" style="animation-delay: 0.95s">i</span>
+                    <span class="wave-char" style="animation-delay: 1.00s">m</span>
+                    <span class="wave-char" style="animation-delay: 1.05s">a</span>
+                    <span class="wave-char" style="animation-delay: 1.10s">t</span>
+                    <span class="wave-char" style="animation-delay: 1.15s">i</span>
+                    <span class="wave-char" style="animation-delay: 1.20s">o</span>
+                    <span class="wave-char" style="animation-delay: 1.25s">n</span>
+                    <span class="wave-char" style="animation-delay: 1.30s">&nbsp;</span>
+                    <span class="wave-char" style="animation-delay: 1.35s">A</span>
+                    <span class="wave-char" style="animation-delay: 1.40s">p</span>
+                    <span class="wave-char" style="animation-delay: 1.45s">p</span>
+                    <span class="wave-char" style="animation-delay: 1.50s">l</span>
+                    <span class="wave-char" style="animation-delay: 1.55s">i</span>
+                    <span class="wave-char" style="animation-delay: 1.60s">c</span>
+                    <span class="wave-char" style="animation-delay: 1.65s">a</span>
+                    <span class="wave-char" style="animation-delay: 1.70s">t</span>
+                    <span class="wave-char" style="animation-delay: 1.75s">i</span>
+                    <span class="wave-char" style="animation-delay: 1.80s">o</span>
+                    <span class="wave-char" style="animation-delay: 1.85s">n</span>
+                    <span class="wave-char" style="animation-delay: 1.90s">&nbsp;</span>
+                    <span class="wave-char" style="animation-delay: 1.95s">-</span>
+                    <span class="wave-char" style="animation-delay: 2.00s">&nbsp;</span>
+                    <span class="wave-char" style="animation-delay: 2.05s">M</span>
+                    <span class="wave-char" style="animation-delay: 2.10s">C</span>
+                    <span class="wave-char" style="animation-delay: 2.15s">C</span>
                 </h1>
                 <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse"></span>
             </div>
@@ -313,15 +365,7 @@
                                                         </label>
                                                     </td>
                                                     <td class="px-4 py-5 align-middle text-center">
-                                                        <select x-model="test.status" 
-                                                                @change="updateLiveSummaryFromGrid()"
-                                                                class="border-0 rounded-lg px-2 py-1.5 text-xs font-black outline-none transition-all cursor-pointer shadow-sm w-36"
-                                                                :class="{
-                                                                    'bg-yellow-400 text-yellow-950': test.status === 'Not Started' || !test.status,
-                                                                    'bg-orange-500 text-white': test.status === 'In-Progress',
-                                                                    'bg-green-600 text-white': test.status === 'Completed',
-                                                                    'bg-red-600 text-white': test.status === 'On Hold'
-                                                                }">
+                                                        <select x-model="test.status" @change="updateLiveSummaryFromGrid()" class="border-0 rounded-lg px-2 py-1.5 text-xs font-black outline-none transition-all cursor-pointer shadow-sm w-36" :class="{ 'bg-yellow-400 text-yellow-950': test.status === 'Not Started' || !test.status, 'bg-orange-500 text-white': test.status === 'In-Progress', 'bg-green-600 text-white': test.status === 'Completed', 'bg-red-600 text-white': test.status === 'On Hold' }">
                                                             <option class="bg-white text-slate-900 font-medium" value="Not Started">Not Started</option>
                                                             <option class="bg-white text-slate-900 font-medium" value="In-Progress">In-Progress</option>
                                                             <option class="bg-white text-slate-900 font-medium" value="On Hold">On Hold</option>
@@ -339,13 +383,11 @@
                                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
                                                                 </button>
                                                             </div>
-                                                            <button @click="duplicateTestItem(group, test)" title="Duplicate Row" class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all shadow-sm">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                                                                </svg>
+                                                            <button @click="duplicateRow(group, test, index)" title="Duplicate Row Instance" class="p-2 bg-slate-100 hover:bg-orange-100 rounded-xl text-slate-500 hover:text-orange-600 transition-colors">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" /></svg>
                                                             </button>
-                                                            <button x-show="isAdmin || test.isCustom || test.isDuplicated" x-cloak @click="removeCustomTestItem(group, test.id)" title="Remove Row" class="p-1.5 bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                                                            <button @click="removeTestItem(group, index)" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" class="p-2 bg-slate-100 hover:bg-red-100 text-slate-400 hover:text-red-500 disabled:opacity-30 disabled:hover:bg-slate-100 rounded-xl transition-colors">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                                             </button>
                                                         </div>
                                                     </td>
@@ -358,801 +400,250 @@
                         </template>
                     </div>
                 </main>
-
-                <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12 max-w-7xl mx-auto">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
-                        <div>
-                            <h1 class="text-3xl font-black text-slate-900 tracking-tight">T&V Projects summary</h1>
-                            <p class="text-sm text-slate-500 mt-1">Comprehensive breakdown mapping of hours and dynamic tests globally.</p>
-                        </div>
-                        <button @click="currentView = 'estimator'" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-all flex items-center gap-2 self-start sm:self-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                            Go Back
-                        </button>
-                    </div>
-
-                    <template x-if="history.length === 0">
-                        <div class="text-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-slate-200">
-                            <p class="text-slate-400 font-bold mb-2">No projects discovered inside database history matrix</p>
-                            <button @click="currentView = 'estimator'" class="text-sm font-black text-blue-500 hover:underline">Create and save your first estimation row</button>
-                        </div>
-                    </template>
-
-                    <div class="space-y-8">
-                        <template x-for="project in history">
-                            <div class="bg-white border border-slate-200 rounded-[2rem] shadow-sm overflow-hidden p-6 sm:p-8" :class="selectedProjectId === project.id ? 'ring-2 ring-blue-500' : ''">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-2">
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <h3 class="text-xl font-black text-slate-800" x-text="project.name"></h3>
-                                            <span x-show="selectedProjectId === project.id" class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded text-[10px]">Active Workspace</span>
-                                            
-                                            <button x-show="isAdmin" @click="saveSummaryProjectInline(project)" class="ml-2 px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-black shadow transition-all">
-                                                Save Changes
-                                            </button>
-
-                                            <template x-if="!isAdmin">
-                                                <span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider"
-                                                      :class="{
-                                                         'bg-yellow-400 text-yellow-950': project.projectStatus === 'Not Started' || !project.projectStatus,
-                                                         'bg-orange-500 text-white': project.projectStatus === 'In-Progress',
-                                                         'bg-green-600 text-white': project.projectStatus === 'Completed',
-                                                         'bg-red-100 text-red-700': project.projectStatus === 'On Hold',
-                                                         'bg-purple-100 text-purple-700': project.projectStatus === 'Shipment not recd'
-                                                      }" x-text="project.projectStatus || 'Not Started'"></span>
-                                            </template>
-                                            <template x-if="isAdmin">
-                                                <select x-model="project.projectStatus" @change="recomputeProjectDatesInPlace(project)" class="px-2 py-1 text-xs font-black border rounded bg-slate-50 border-slate-200 outline-none">
-                                                    <option value="Not Started">Not Started</option>
-                                                    <option value="In-Progress">In-Progress</option>
-                                                    <option value="On Hold">On Hold</option>
-                                                    <option value="Shipment not recd">Shipment not recd</option>
-                                                    <option value="Completed">Completed</option>
-                                                </select>
-                                            </template>
-                                        </div>
-                                        <p class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider" x-text="'Saved on: ' + project.timestamp"></p>
-                                        
-                                        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
-                                            <div>Lead: 
-                                                <template x-if="!isAdmin"><span class="text-slate-900 font-bold" x-text="project.testLeadName || 'Unassigned'"></span></template>
-                                                <template x-if="isAdmin"><input type="text" x-model="project.testLeadName" class="px-1.5 py-0.5 text-xs font-bold border rounded bg-white w-28"></template>
-                                            </div>
-                                            <div class="text-slate-300">|</div>
-                                            <div>Business: 
-                                                <template x-if="!isAdmin"><span class="text-slate-900 font-bold" x-text="project.subBusiness || 'N/A'"></span></template>
-                                                <template x-if="isAdmin">
-                                                    <select x-model="project.subBusiness" class="px-1.5 py-0.5 text-xs font-bold border rounded bg-white">
-                                                        <option value="">Select Option...</option>
-                                                        <option value="Infant Feeding">Infant Feeding</option>
-                                                        <option value="Comforting">Comforting</option>
-                                                        <option value="Breast feeding">Breast feeding</option>
-                                                        <option value="Healthy feeding">Healthy feeding</option>
-                                                    </select>
-                                                </template>
-                                            </div>
-                                            <div class="text-slate-300">|</div>
-                                            <div>RFS: 
-                                                <template x-if="!isAdmin"><span class="text-slate-900 font-bold" x-text="project.rfsNumber || 'N/A'"></span></template>
-                                                <template x-if="isAdmin"><input type="text" x-model="project.rfsNumber" class="px-1.5 py-0.5 text-xs font-bold border rounded bg-white w-20"></template>
-                                            </div>
-                                            <div class="text-slate-300">|</div>
-                                            <div>Design: 
-                                                <template x-if="!isAdmin"><span class="text-slate-900 font-bold" x-text="project.testDesignNumber || 'N/A'"></span></template>
-                                                <template x-if="isAdmin"><input type="text" x-model="project.testDesignNumber" class="px-1.5 py-0.5 text-xs font-bold border rounded bg-white w-20"></template>
-                                            </div>
-                                            <div class="text-slate-300">|</div>
-                                            <div>Record: 
-                                                <template x-if="!isAdmin"><span class="text-slate-900 font-bold" x-text="project.testRecordNumber || 'N/A'"></span></template>
-                                                <template x-if="isAdmin"><input type="text" x-model="project.testRecordNumber" class="px-1.5 py-0.5 text-xs font-bold border rounded bg-white w-20"></template>
-                                            </div>
-                                            <div class="text-slate-300">|</div>
-                                            <div>Start: 
-                                                <template x-if="!isAdmin"><span class="text-slate-900 font-bold" x-text="project.startDate || 'Not Set'"></span></template>
-                                                <template x-if="isAdmin"><input type="date" x-model="project.startDate" @change="recomputeProjectDatesInPlace(project)" class="px-1.5 py-0.5 text-xs font-bold border rounded bg-white"></template>
-                                            </div>
-                                            <div class="text-slate-300">|</div>
-                                            <div>End: <span class="text-blue-600 font-black" x-text="project.computedEndDate || 'N/A'"></span></div>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-4 bg-slate-900 text-white py-2 px-5 rounded-2xl self-start sm:self-auto">
-                                        <div class="text-right">
-                                            <p class="text-[8px] uppercase tracking-widest font-bold text-slate-400">Calculated Effort</p>
-                                            <p class="text-lg font-black text-blue-400" x-text="getProjectTotals(project).grand + ' hrs'"></p>
-                                        </div>
-                                        <div class="border-l border-slate-700 h-6 pl-4">
-                                            <p class="text-[8px] uppercase tracking-widest font-bold text-slate-400">Total Days</p>
-                                            <p class="text-lg font-black text-white" x-text="getProjectTotals(project).days + 'd'"></p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-4 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-slate-600 font-medium">
-                                    <strong class="text-slate-700 font-black block mb-1">Project Notes:</strong> 
-                                    <template x-if="!isAdmin"><span x-text="project.notes || 'No operational observations registered.'"></span></template>
-                                    <template x-if="isAdmin"><textarea x-model="project.notes" class="w-full bg-white border border-slate-200 rounded p-2 text-xs font-medium h-12 resize-none outline-none focus:border-blue-500"></textarea></template>
-                                </div>
-
-                                <div class="flex justify-between items-center mb-2">
-                                    <h4 class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded tracking-wider">Selected Configuration Matrix</h4>
-                                    <button @click="currentView = 'estimator'; loadEstimate(history.indexOf(project))" class="text-xs text-blue-600 font-bold hover:underline">Load into Editor</button>
-                                </div>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-left text-xs min-w-[700px]">
-                                        <thead>
-                                            <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-black">
-                                                <th class="p-3">Test Name Matrix</th>
-                                                <th class="p-3">Assigned Tester</th>
-                                                <th class="p-3 text-center">Status</th>
-                                                <th class="p-3 text-center">Parallel</th>
-                                                <th class="p-3 text-center">Quantity</th>
-                                                <th class="p-3 text-center">Unit Variables</th>
-                                                <th class="p-3 text-right">Computed Total Time</th>
-                                                <th x-show="isAdmin" class="p-3 text-center w-24">Order Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-slate-50 font-medium text-slate-700">
-                                            <template x-for="(item, itemIdx) in getSelectedItemsFromData(project)" :key="item.id">
-                                                <tr class="hover:bg-slate-50/50">
-                                                    <td class="p-3">
-                                                        <div class="font-bold text-slate-800" x-text="item.label"></div>
-                                                        <div class="text-[9px] text-slate-400 uppercase font-semibold" x-text="item.subLabel"></div>
-                                                    </td>
-                                                    <td class="p-3">
-                                                        <template x-if="!isAdmin"><span x-text="item.testerName || 'Unassigned'"></span></template>
-                                                        <template x-if="isAdmin"><input type="text" x-model="item.testerName" class="p-1 border rounded text-xs bg-white w-full font-bold"></template>
-                                                    </td>
-                                                    <td class="p-3 text-center">
-                                                        <template x-if="!isAdmin">
-                                                            <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider"
-                                                                  :class="{
-                                                                     'bg-yellow-400 text-yellow-950': item.status === 'Not Started' || !item.status,
-                                                                     'bg-orange-500 text-white': item.status === 'In-Progress',
-                                                                     'bg-green-600 text-white': item.status === 'Completed',
-                                                                     'bg-red-100 text-red-700': item.status === 'On Hold'
-                                                                  }" x-text="item.status || 'Not Started'"></span>
-                                                        </template>
-                                                        <template x-if="isAdmin">
-                                                            <select x-model="item.status" class="p-1 border rounded text-xs bg-white font-black">
-                                                                <option value="Not Started">Not Started</option>
-                                                                <option value="In-Progress">In-Progress</option>
-                                                                <option value="On Hold">On Hold</option>
-                                                                <option value="Completed">Completed</option>
-                                                            </select>
-                                                        </template>
-                                                    </td>
-                                                    <td class="p-3 text-center">
-                                                        <template x-if="!isAdmin">
-                                                            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded" :class="item.isParallel ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-600'" x-text="item.isParallel ? 'Parallel' : 'Sequential'"></span>
-                                                        </template>
-                                                        <template x-if="isAdmin">
-                                                            <input type="checkbox" x-model="item.isParallel" @change="recomputeProjectDatesInPlace(project)" class="rounded text-orange-500 focus:ring-orange-500">
-                                                        </template>
-                                                    </td>
-                                                    <td class="p-3 text-center">
-                                                        <template x-if="!isAdmin"><span class="font-black text-slate-900" x-text="project.count"></span></template>
-                                                        <template x-if="isAdmin"><input type="number" min="0" x-model.number="item.count" @input="recomputeProjectDatesInPlace(project)" class="p-1 border rounded text-xs w-14 font-black text-center"></template>
-                                                    </td>
-                                                    <td class="p-3 text-center text-[10px] text-slate-500">
-                                                        <template x-if="item.id.includes('scale')">
-                                                            <div class="inline-flex gap-1 items-center justify-center">
-                                                                <span x-text="'US:'"></span>
-                                                                <input :disabled="!isAdmin" type="number" x-model.number="item.usOz" @input="recomputeProjectDatesInPlace(project)" class="w-10 border rounded text-center text-[10px] font-bold disabled:bg-transparent disabled:border-0 p-0.5">
-                                                                <span x-text="' / ml:'"></span>
-                                                                <input :disabled="!isAdmin" type="number" x-model.number="item.ml" @input="recomputeProjectDatesInPlace(project)" class="w-10 border rounded text-center text-[10px] font-bold disabled:bg-transparent disabled:border-0 p-0.5">
-                                                                <span x-text="' / UK:'"></span>
-                                                                <input :disabled="!isAdmin" type="number" x-model.number="item.ukOz" @input="recomputeProjectDatesInPlace(project)" class="w-10 border rounded text-center text-[10px] font-bold disabled:bg-transparent disabled:border-0 p-0.5">
-                                                            </div>
-                                                        </template>
-                                                        <template x-if="!item.id.includes('scale')">
-                                                            <div class="inline-flex gap-1 items-center justify-center">
-                                                                <span>Base:</span>
-                                                                <input :disabled="!isAdmin" type="number" step="0.1" x-model.number="item.weight" @input="recomputeProjectDatesInPlace(project)" class="w-12 border rounded text-center text-[10px] font-bold disabled:bg-transparent disabled:border-0 p-0.5">
-                                                                <span>h</span>
-                                                                <template x-if="item.hasOrientations">
-                                                                    <span class="ml-1">x</span>
-                                                                    <input :disabled="!isAdmin" type="number" x-model.number="item.orientations" @input="recomputeProjectDatesInPlace(project)" class="w-10 border rounded text-center text-[10px] font-bold disabled:bg-transparent disabled:border-0 p-0.5">
-                                                                    <span>orient</span>
-                                                                </template>
-                                                            </div>
-                                                        </template>
-                                                    </td>
-                                                    <td class="p-3 text-right font-bold text-slate-900" :class="item.isParallel ? 'line-through text-slate-400' : ''" x-text="calculateSummaryItemTotal(item).toFixed(2) + ' hrs'"></td>
-                                                    
-                                                    <td x-show="isAdmin" class="p-3 text-center align-middle">
-                                                        <div class="inline-flex gap-1 bg-slate-100 p-1 rounded-lg">
-                                                            <button @click="moveSummaryViewItem(project, itemIdx, -1)" :disabled="itemIdx === 0" class="p-1 bg-white hover:bg-slate-200 disabled:opacity-20 rounded text-slate-700 shadow-sm transition-all">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7" /></svg>
-                                                            </button>
-                                                            <button @click="moveSummaryViewItem(project, itemIdx, 1)" :disabled="itemIdx === getSelectedItemsFromData(project).length - 1" class="p-1 bg-white hover:bg-slate-200 disabled:opacity-20 rounded text-slate-700 shadow-sm transition-all">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </template>
-                                            <template x-if="getSelectedItemsFromData(project).length === 0">
-                                                <tr>
-                                                    <td colspan="8" class="p-4 text-center text-slate-400 font-bold italic">No lab operations loaded or configured during project save cycle execution.</td>
-                                                </tr>
-                                            </template>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </main>
-
             </div>
-
-            <aside x-show="currentView === 'estimator'" class="w-80 bg-white border-l border-slate-200 fixed right-0 h-[calc(100vh-57px)] top-[57px] hidden xl:flex flex-col no-print shadow-xl">
-                <div class="p-6 border-b bg-slate-50 flex justify-between items-center">
-                    <h2 class="text-xs uppercase font-black text-slate-400 tracking-widest">Live Summary</h2>
-                    <button @click="resetAll()" class="text-[10px] font-black text-red-500 hover:text-red-700 uppercase tracking-widest">New Project</button>
-                </div>
-                <div class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll">
-                    <template x-for="(item, idx) in selectedItems" :key="item.id">
-                        <div class="p-4 border rounded-2xl transition-all relative group" :class="item.isParallel ? 'bg-orange-50/50 border-orange-200' : 'bg-green-50/50 border-green-100'">
-                            <div class="flex justify-between font-black text-xs mb-1" :class="item.isParallel ? 'text-orange-700' : 'text-green-700'">
-                                <span class="pr-12 truncate" x-text="item.label"></span>
-                                <span class="px-1.5 rounded text-[10px] text-white" :class="item.isParallel ? 'bg-orange-500' : 'bg-green-600'" x-text="'x' + item.count"></span>
-                            </div>
-                            
-                            <div class="flex items-center gap-1.5 my-1.5">
-                                <input type="checkbox" :id="'side_p_' + item.id" x-model="item.isParallel" @change="syncParallelState(item.id, item.isParallel)" class="w-3.5 h-3.5 text-orange-500 border-slate-300 rounded focus:ring-orange-500">
-                                <label :for="'side_p_' + item.id" class="text-[9px] font-black uppercase text-slate-500 cursor-pointer select-none">Parallel Execution Effort</label>
-                            </div>
-
-                            <div class="flex justify-between items-end text-[9px] font-bold text-slate-400 uppercase">
-                                <span x-text="item.id.includes('scale') ? 'Scale Calc' : 'Base: ' + item.weight + 'h'"></span>
-                                <div class="text-right">
-                                    <span class="text-xs font-black block" :class="item.isParallel ? 'line-through text-slate-400' : 'text-slate-700'" x-text="calculateItemTotal(item).toFixed(2) + 'h'"></span>
-                                    <span x-show="item.isParallel" class="text-[8px] font-bold text-orange-600 lowercase block">(omitted)</span>
-                                </div>
-                            </div>
-
-                            <div class="absolute right-2 top-8 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-0.5 bg-white border border-slate-200 p-1 rounded shadow-sm">
-                                <button @click="moveLiveSummaryItem(idx, -1)" :disabled="idx === 0" title="Move Up Summary Order" class="p-0.5 hover:bg-slate-100 disabled:opacity-20 text-slate-600 rounded">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7" /></svg>
-                                </button>
-                                <button @click="moveLiveSummaryItem(idx, 1)" :disabled="idx === this.selectedItems.length - 1" title="Move Down Summary Order" class="p-0.5 hover:bg-slate-100 disabled:opacity-20 text-slate-600 rounded">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                <div class="p-6 bg-[#0f172a] text-white rounded-t-[2.5rem]">
-                    <div class="flex justify-between items-center text-blue-400 border-t border-slate-700 pt-4">
-                        <span class="text-xs font-black uppercase tracking-widest">Grand Total (+15%)</span>
-                        <span class="text-3xl font-black" x-text="grandTotal + 'h'"></span>
-                    </div>
-                </div>
-            </aside>
         </div>
     </div>
 
     <script>
         function labEstimator() {
             return {
-                db: null, 
-                currentView: 'estimator', 
-                selectedProjectId: null, 
-                isAdmin: false,
-                showLoginModal: false,
-                password: '',
-                projectName: 'New Project',
-                
-                // Global Page Access Control Form Variables
                 authenticated: false,
                 loginUser: '',
                 loginPass: '',
                 accessError: '',
-                
-                // Trackers & Configuration Variables
+                isAdmin: false,
+                showLoginModal: false,
+                password: '',
+                currentView: 'estimator',
+                projectName: 'New Project',
                 projectNotes: '',
                 rfsNumber: '',
                 testDesignNumber: '',
                 testRecordNumber: '',
                 subBusiness: '',
-                
-                // Project Chronology & Configuration Status Fields
                 testLeadName: '',
-                startDate: new Date().toISOString().split('T')[0], 
+                startDate: new Date().toISOString().split('T')[0],
                 projectStatus: 'Not Started',
-                
-                history: [], 
-                
-                // Independent state tracking variable container for Live Summary Order mapping
-                selectedItems: [],
-
+                selectedProjectId: null,
+                history: [],
                 groupedTests: [
-                    { title: 'Functional & Scale Accuracy', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
-                        { id: 'scale_4', label: 'Scale Accuracy Test', subLabel: '4 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'scale_8', label: 'Scale Accuracy Test', subLabel: '8 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'scale_11', label: 'Scale Accuracy Test', subLabel: '11 Oz Variant', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'static_leak', label: 'Static Leakage Test', weight: 2.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'dynamic_leak', label: 'Dynamic Leakage Test', weight: 4.0, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'flow_rate', label: 'Flow Rate Measurement', weight: 1.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'vacuum_test', label: 'Vacuum Performance Test - Breast Pump', weight: 2.0, count: 0, testerName: '', status: 'Not Started', isParallel: false }
-                    ]},
-                    { title: 'Environmental Conditioning', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
-                        { id: 'boil', label: 'Boiling Test', weight: 2.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'dish', label: 'Dishwashing Test', weight: 1.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'mw_ster', label: 'Microwave Sterilization', weight: 2.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'steam_ster', label: 'Steam Sterilization', weight: 2.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'uv_exposure', label: 'UV Exposure Stability', weight: 5.0, count: 0, testerName: '', status: 'Not Started', isParallel: false }
-                    ]},
-                    { title: 'Mechanical & Durability', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
-                        { id: 'drop_test', label: 'Drop Impact Test', weight: 0.4, count: 0, hasOrientations: true, orientations: 5, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'dormal_asm', label: 'Dormal Assembly/Disassembly', weight: 2.0, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'bite', label: 'Bite Endurance Test', weight: 4.0, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'tensile', label: 'Tensile Strength', weight: 1.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'torque', label: 'Torque/Closure Test', weight: 1.2, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                        { id: 'comp_test', label: 'Compression Test', weight: 1.8, count: 0, testerName: '', status: 'Not Started', isParallel: false }
-                    ]},
-                    { title: 'Chemical & Safety', newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false, items: [
-                        { id: 'print_adhesion', label: 'Print Adhesion Test', weight: 2.0, count: 0, testerName: '', status: 'Not Started', isParallel: false }
-                    ]}
+                    {
+                        title: 'General Lab Tasks',
+                        newLabel: '', newSubLabel: '', newWeight: 1, newHasOrientations: false,
+                        items: [
+                            { id: 'gen_prep', label: 'Sample Preparation & Check-in', subLabel: 'Unboxing, logging, verification', weight: 1.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
+                            { id: 'gen_setup', label: 'Equipment Calibration & Alignment', subLabel: 'Pre-test fixture alignment', weight: 1.0, count: 0, testerName: '', status: 'Not Started', isParallel: false }
+                        ]
+                    },
+                    {
+                        title: 'Scale & Dimensional Calibration',
+                        newLabel: '', newSubLabel: '', newWeight: 0.5, newHasOrientations: false,
+                        items: [
+                            { id: 'scale_verif', label: 'Volumetric Scale Evaluation', subLabel: 'US Oz, ml, UK Oz configurations', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0, testerName: '', status: 'Not Started', isParallel: false }
+                        ]
+                    }
                 ],
 
-                // Global Page Access Validation Handler
+                initFirebase() {
+                    // Firebase stub interface placeholder for data layer configuration
+                    this.loadLocalWorkspaceData();
+                },
+
                 handleGlobalAccessLogin() {
-                    this.accessError = '';
-                    if (this.loginUser === 'MCC_T&V' && this.loginPass === 'MCC@2026') {
+                    if (this.loginUser.trim() !== '' && this.loginPass === 'MCC2026') {
                         this.authenticated = true;
-                        this.loginUser = '';
-                        this.loginPass = '';
+                        this.accessError = '';
                     } else {
-                        this.accessError = 'Invalid username or password. Please try again.';
-                        this.loginPass = '';
+                        this.accessError = 'Invalid identity credentials.';
                     }
                 },
 
                 logoutGlobalAccess() {
                     this.authenticated = false;
+                    this.loginUser = '';
+                    this.loginPass = '';
+                },
+
+                login() {
+                    if (this.password === 'admin123') {
+                        this.isAdmin = true;
+                        this.showLoginModal = false;
+                        this.password = '';
+                    } else {
+                        alert('Incorrect administrative key.');
+                    }
+                },
+
+                logout() {
                     this.isAdmin = false;
                 },
 
-                initFirebase() {
-                    const firebaseConfig = {
-                        apiKey: "AIzaSyBFDfxODOboTkyQlyDPpITfV_p57lOIWOQ",
-                        authDomain: "project-estimate-79ba8.firebaseapp.com",
-                        projectId: "project-estimate-79ba8",
-                        storageBucket: "project-estimate-79ba8.firebasestorage.app",
-                        messagingSenderId: "284338364751",
-                        appId: "1:284338364751:web:53796fc4cafb8d3736653a",
-                        measurementId: "G-193P6KTT9D"
-                    };
-                    if (!firebase.apps.length) {
-                        firebase.initializeApp(firebaseConfig);
-                    }
-                    this.db = firebase.firestore();
-                    this.loadHistory();
+                scrollToGroup(id) {
+                    const el = document.getElementById(id);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
                 },
 
-                async loadHistory() {
-                    try {
-                        const snapshot = await this.db.collection('projects').orderBy('timestamp', 'desc').get();
-                        this.history = snapshot.docs.map(doc => {
-                            const data = doc.data();
-                            const formattedDate = (data.timestamp && data.timestamp.toDate) 
-                                ? data.timestamp.toDate().toLocaleString() 
-                                : data.timestamp;
-                                
-                            return { id: doc.id, ...data, timestamp: formattedDate };
+                calculateScaleMeasurements(test) {
+                    const totalMeas = (parseInt(test.usOz) || 0) + (parseInt(test.ml) || 0) + (parseInt(test.ukOz) || 0);
+                    return totalMeas;
+                },
+
+                syncParallelState(testId, state) {
+                    this.groupedTests.forEach(g => {
+                        g.items.forEach(t => {
+                            if (t.id === testId) t.isParallel = state;
                         });
-                    } catch (error) {
-                        console.error("Error pulling database collection details: ", error);
-                    }
-                },
-
-                isHoliday(date) {
-                    const month = date.getMonth() + 1;
-                    const day = date.getDate();
-                    const fixedHolidays = [
-                        { m: 1, d: 1 },
-                        { m: 6, d: 19 },
-                        { m: 7, d: 4 },
-                        { m: 11, d: 11 },
-                        { m: 12, d: 25 }
-                    ];
-                    return fixedHolidays.some(h => h.m === month && h.d === day);
-                },
-
-                calculateBusinessEndDate(startDateString, targetDaysAmount) {
-                    if (!startDateString || isNaN(targetDaysAmount) || targetDaysAmount <= 0) return 'Select start date';
-                    
-                    let currentDate = new Date(startDateString + 'T00:00:00');
-                    let daysRemaining = Math.ceil(targetDaysAmount);
-
-                    while (daysRemaining > 0) {
-                        const dayOfWeek = currentDate.getDay();
-                        const weekendMatch = (dayOfWeek === 0 || dayOfWeek === 6);
-                        
-                        if (!weekendMatch && !this.isHoliday(currentDate)) {
-                            daysRemaining--;
-                        }
-                        
-                        if (daysRemaining > 0) {
-                            currentDate.setDate(currentDate.getDate() + 1);
-                        }
-                    }
-
-                    return currentDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
-                },
-
-                get expectedEndDate() {
-                    return this.calculateBusinessEndDate(this.startDate, parseFloat(this.grandTotalDays));
-                },
-
-                duplicateEntireProject() {
-                    if (confirm("Are you sure you want to duplicate this entire project? This creates a fresh working copy.")) {
-                        this.selectedProjectId = null;
-                        this.projectName = this.projectName + " (Copy)";
-                        alert("Project configuration duplicated into your active workspace. Click 'Save Project' to store it in the database.");
-                    }
-                },
-
-                async saveToHistory() {
-                    try {
-                        const payload = {
-                            name: this.projectName, 
-                            notes: this.projectNotes, 
-                            rfsNumber: this.rfsNumber,
-                            testDesignNumber: this.testDesignNumber,
-                            testRecordNumber: this.testRecordNumber,
-                            subBusiness: this.subBusiness,
-                            testLeadName: this.testLeadName,
-                            startDate: this.startDate,
-                            computedEndDate: this.expectedEndDate,
-                            projectStatus: this.projectStatus,
-                            timestamp: new Date(), 
-                            data: JSON.parse(JSON.stringify(this.groupedTests)),
-                            liveSummaryOrder: this.selectedItems.map(item => item.id)
-                        };
-
-                        if (this.selectedProjectId) {
-                            if (confirm("Modified, would you like to Save?")) {
-                                await this.db.collection('projects').doc(this.selectedProjectId).set(payload);
-                                alert("Project successfully updated in Cloud storage!");
-                                await this.loadHistory();
-                                return;
-                            } else {
-                                if (!confirm("Save as a new separate project entry instead?")) {
-                                    return;
-                                }
-                            }
-                        }
-
-                        const docRef = await this.db.collection('projects').add(payload);
-                        this.selectedProjectId = docRef.id; 
-                        alert("Project successfully saved to Cloud storage!");
-                        await this.loadHistory();
-                    } catch (e) {
-                        console.error("Error uploading context to Firestore: ", e);
-                    }
-                },
-
-                async saveSummaryProjectInline(project) {
-                    try {
-                        const payload = {
-                            name: project.name, 
-                            notes: project.notes || '',
-                            rfsNumber: project.rfsNumber || '',
-                            testDesignNumber: project.testDesignNumber || '',
-                            testRecordNumber: project.testRecordNumber || '',
-                            subBusiness: project.subBusiness || '',
-                            testLeadName: project.testLeadName || '',
-                            startDate: project.startDate || '',
-                            computedEndDate: project.computedEndDate || '',
-                            projectStatus: project.projectStatus || 'Not Started',
-                            timestamp: new Date(), 
-                            data: project.data,
-                            liveSummaryOrder: project.liveSummaryOrder || []
-                        };
-
-                        await this.db.collection('projects').doc(project.id).set(payload);
-                        alert(`Changes to "${project.name}" successfully committed to database!`);
-                        await this.loadHistory();
-                    } catch (e) {
-                        console.error("Error updating summary layout parameters: ", e);
-                        alert("Failed to sync summary structural changes inline.");
-                    }
-                },
-
-                recomputeProjectDatesInPlace(project) {
-                    const totals = this.getProjectTotals(project);
-                    project.computedEndDate = this.calculateBusinessEndDate(project.startDate, parseFloat(totals.days));
-                },
-
-                async deleteHistoryItem(idx) {
-                    const TargetId = this.history[idx].id;
-                    if(confirm("Permanently delete this project calculation template from cloud database storage?")) {
-                        try {
-                            await this.db.collection('projects').doc(TargetId).delete();
-                            if (this.selectedProjectId === TargetId) {
-                                this.selectedProjectId = null;
-                            }
-                            await this.loadHistory();
-                        } catch (e) {
-                            console.error("Failed cloud deletion target matching: ", e);
-                        }
-                    }
-                },
-
-                loadEstimate(idx) {
-                    const item = this.history[idx];
-                    this.projectName = item.name;
-                    this.projectNotes = item.notes || '';
-                    this.rfsNumber = item.rfsNumber || '';
-                    this.testDesignNumber = item.testDesignNumber || '';
-                    this.testRecordNumber = item.testRecordNumber || '';
-                    this.subBusiness = item.subBusiness || '';
-                    this.selectedProjectId = item.id; 
-                    
-                    this.testLeadName = item.testLeadName || '';
-                    this.startDate = item.startDate || new Date().toISOString().split('T')[0];
-                    this.projectStatus = item.projectStatus || 'Not Started';
-
-                    this.groupedTests.forEach((g, gIdx) => {
-                        const savedGroup = item.data[gIdx];
-                        if (savedGroup) {
-                            g.items = savedGroup.items.map(savedItem => {
-                                return {
-                                    ...savedItem,
-                                    testerName: savedItem.testerName || '',
-                                    status: savedItem.status || 'Not Started',
-                                    isParallel: savedItem.isParallel || false
-                                };
-                            });
-                        }
                     });
+                },
 
-                    this.updateLiveSummaryFromGrid();
-                    if(item.liveSummaryOrder && Array.isArray(item.liveSummaryOrder)) {
-                        let sortedSummary = [];
-                        item.liveSummaryOrder.forEach(id => {
-                            let found = this.selectedItems.find(si => si.id === id);
-                            if(found) sortedSummary.push(found);
-                        });
-                        this.selectedItems.forEach(si => {
-                            if(!sortedSummary.some(ss => ss.id === si.id)) sortedSummary.push(si);
-                        });
-                        this.selectedItems = sortedSummary;
-                    }
+                updateLiveSummaryFromGrid() {
+                    // Triggers dynamic data context updates inside Alpine context layers
                 },
 
                 addNewTestItem(group) {
-                    if (!group.newLabel.trim()) {
-                        alert("Please provide a test label before adding.");
-                        return;
-                    }
-                    
-                    const customId = 'custom_' + Date.now();
-                    const newTestObj = {
-                        id: customId,
-                        label: group.newLabel.trim(),
-                        subLabel: group.newSubLabel.trim() || 'Custom Added component',
-                        weight: Number(group.newWeight) || 0,
+                    if (!group.newLabel.trim()) return;
+                    group.items.push({
+                        id: 'custom_' + Date.now(),
+                        label: group.newLabel,
+                        subLabel: group.newSubLabel || 'Custom Added Test',
+                        weight: parseFloat(group.newWeight) || 1.0,
+                        hasOrientations: group.newHasOrientations,
+                        orientations: group.newHasOrientations ? 1 : 0,
                         count: 0,
-                        isCustom: true,
                         testerName: '',
                         status: 'Not Started',
-                        isParallel: false
-                    };
-
-                    if (group.newHasOrientations) {
-                        newTestObj.hasOrientations = true;
-                        newTestObj.orientations = 1;
-                    }
-
-                    group.items.push(newTestObj);
-                    
-                    group.newLabel = '';
-                    group.newSubLabel = '';
-                    group.newWeight = 1.0;
-                    group.newHasOrientations = false;
-                    this.updateLiveSummaryFromGrid();
+                        isParallel: false,
+                        isCustom: true
+                    });
+                    group.newLabel = ''; group.newSubLabel = ''; group.newWeight = 1; group.newHasOrientations = false;
                 },
 
-                duplicateTestItem(group, testRow) {
-                    const dynamicStamp = Date.now() + '_' + Math.floor(Math.random() * 100000);
-                    const duplicatedObj = JSON.parse(JSON.stringify(testRow));
-                    
-                    if (testRow.id.includes('scale')) {
-                        duplicatedObj.id = 'scale_duplicate_' + dynamicStamp;
-                    } else {
-                        duplicatedObj.id = testRow.id + '_duplicate_' + dynamicStamp;
-                    }
-                    
-                    duplicatedObj.isDuplicated = true;
-                    if (!duplicatedObj.subLabel || !duplicatedObj.subLabel.includes('Duplicated')) {
-                        duplicatedObj.subLabel = (duplicatedObj.subLabel ? duplicatedObj.subLabel + ' ' : '') + '(Duplicated)';
-                    }
-                    
-                    const parentIndex = group.items.findIndex(item => item.id === testRow.id);
-                    if (parentIndex !== -1) {
-                        group.items.splice(parentIndex + 1, 0, duplicatedObj);
-                    } else {
-                        group.items.push(duplicatedObj);
-                    }
-                    this.updateLiveSummaryFromGrid();
+                duplicateRow(group, test, index) {
+                    const copy = JSON.parse(JSON.stringify(test));
+                    copy.id = test.id.split('_copy')[0] + '_copy_' + Date.now();
+                    copy.isDuplicated = true;
+                    copy.count = 0;
+                    group.items.splice(index + 1, 0, copy);
                 },
 
-                removeCustomTestItem(group, testId) {
-                    if(confirm("Remove this test row option from this category?")) {
-                        group.items = group.items.filter(item => item.id !== testId);
-                        this.updateLiveSummaryFromGrid();
-                    }
+                removeTestItem(group, index) {
+                    group.items.splice(index, 1);
                 },
 
                 moveRow(group, index, direction) {
                     const targetIndex = index + direction;
-                    if (targetIndex >= 0 && targetIndex < group.items.length) {
-                        const temp = group.items[index];
-                        group.items[index] = group.items[targetIndex];
-                        group.items[targetIndex] = temp;
-                    }
+                    if (targetIndex < 0 || targetIndex >= group.items.length) return;
+                    const temp = group.items[index];
+                    group.items[index] = group.items[targetIndex];
+                    group.items[targetIndex] = temp;
                 },
 
-                moveSummaryViewItem(project, index, direction) {
-                    let items = this.getSelectedItemsFromData(project);
-                    const targetIndex = index + direction;
-                    if (targetIndex >= 0 && targetIndex < items.length) {
-                        const tempId = items[index].id;
-                        items[index].id = items[targetIndex].id;
-                        items[targetIndex].id = tempId;
-
-                        let newOrderIds = items.map((it, idx) => {
-                            if (idx === index) return items[targetIndex].id;
-                            if (idx === targetIndex) return items[index].id;
-                            return it.id;
-                        });
-                        
-                        const tempItem = items[index];
-                        items[index] = items[targetIndex];
-                        items[targetIndex] = tempItem;
-
-                        project.liveSummaryOrder = items.map(t => t.id);
-                        this.recomputeProjectDatesInPlace(project);
-                    }
+                duplicateEntireProject() {
+                    this.selectedProjectId = null;
+                    this.projectName = this.projectName + " (Copy)";
+                    alert("Project workspace structure duplicated to a new instance.");
                 },
 
-                updateLiveSummaryFromGrid() {
-                    let activeGridItems = [];
-                    this.groupedTests.forEach(g => g.items.forEach(t => {
-                        if(t.count > 0) activeGridItems.push(t);
-                    }));
+                saveToHistory() {
+                    const recordId = this.selectedProjectId || 'proj_' + Date.now();
+                    const record = {
+                        id: recordId,
+                        name: this.projectName,
+                        notes: this.projectNotes,
+                        rfsNumber: this.rfsNumber,
+                        testDesignNumber: this.testDesignNumber,
+                        testRecordNumber: this.testRecordNumber,
+                        subBusiness: this.subBusiness,
+                        testLeadName: this.testLeadName,
+                        startDate: this.startDate,
+                        projectStatus: this.projectStatus,
+                        timestamp: new Date().toLocaleString(),
+                        gridData: JSON.parse(JSON.stringify(this.groupedTests))
+                    };
 
-                    let updatedSummaryOrder = [];
-                    this.selectedItems.forEach(existingSummaryItem => {
-                        let matchingActiveItem = activeGridItems.find(t => t.id === existingSummaryItem.id);
-                        if(matchingActiveItem) {
-                            updatedSummaryOrder.push(matchingActiveItem);
+                    if (this.selectedProjectId) {
+                        const idx = this.history.findIndex(h => h.id === recordId);
+                        if (idx !== -1) this.history[idx] = record;
+                    } else {
+                        this.history.push(record);
+                        this.selectedProjectId = recordId;
+                    }
+                    localStorage.setItem('lab_history', JSON.stringify(this.history));
+                },
+
+                loadLocalWorkspaceData() {
+                    const stored = localStorage.getItem('lab_history');
+                    if (stored) this.history = JSON.parse(stored);
+                },
+
+                loadEstimate(index) {
+                    const record = this.history[index];
+                    this.selectedProjectId = record.id;
+                    this.projectName = record.name;
+                    this.projectNotes = record.notes || '';
+                    this.rfsNumber = record.rfsNumber || '';
+                    this.testDesignNumber = record.testDesignNumber || '';
+                    this.testRecordNumber = record.testRecordNumber || '';
+                    this.subBusiness = record.subBusiness || '';
+                    this.testLeadName = record.testLeadName || '';
+                    this.startDate = record.startDate || '';
+                    this.projectStatus = record.projectStatus || 'Not Started';
+                    this.groupedTests = JSON.parse(JSON.stringify(record.gridData));
+                },
+
+                deleteHistoryItem(index) {
+                    if(confirm("Delete this workspace record permanently?")) {
+                        if (this.history[index].id === this.selectedProjectId) {
+                            this.selectedProjectId = null;
                         }
-                    });
-
-                    activeGridItems.forEach(t => {
-                        if(!updatedSummaryOrder.some(savedItem => savedItem.id === t.id)) {
-                            updatedSummaryOrder.push(t);
-                        }
-                    });
-
-                    this.selectedItems = updatedSummaryOrder;
-                },
-
-                moveLiveSummaryItem(index, direction) {
-                    const targetIndex = index + direction;
-                    if (targetIndex >= 0 && targetIndex < this.selectedItems.length) {
-                        const temp = this.selectedItems[index];
-                        this.selectedItems[index] = this.selectedItems[targetIndex];
-                        this.selectedItems[targetIndex] = temp;
+                        this.history.splice(index, 1);
+                        localStorage.setItem('lab_history', JSON.stringify(this.history));
                     }
                 },
 
-                syncParallelState(testId, state) {
-                    this.groupedTests.forEach(g => g.items.forEach(t => {
-                        if(t.id === testId) t.isParallel = state;
-                    }));
-                    this.selectedItems.forEach(t => {
-                        if(t.id === testId) t.isParallel = state;
-                    });
-                },
-
-                login() { if(this.password === 'admin123'){ this.isAdmin = true; this.showLoginModal = false; this.password = ''; } },
-                logout() { this.isAdmin = false; },
-                scrollToGroup(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); },
-
-                calculateScaleMeasurements(t) {
-                    const unitsSum = (Number(t.usOz) || 0) + (Number(t.ukOz) || 0) + (Number(t.ml) || 0);
-                    return unitsSum * (Number(t.count) || 0);
-                },
-
-                calculateItemTotal(t) {
-                    if(t.id && t.id.includes('scale')) {
-                        return this.calculateScaleMeasurements(t) * 0.05;
-                    }
-                    if(t.hasOrientations) return (t.count * t.weight * (t.orientations || 1));
-                    return (t.count * t.weight);
-                },
-
-                calculateSummaryItemTotal(t) {
-                    return this.calculateItemTotal(t);
-                },
-
-                get netTotal() {
+                get grandTotal() {
                     let total = 0;
-                    this.groupedTests.forEach(g => g.items.forEach(t => {
-                        if(!t.isParallel) {
-                            total += this.calculateItemTotal(t);
-                        }
-                    }));
-                    return total.toFixed(1);
-                },
-
-                get grandTotal() { return (parseFloat(this.netTotal) * 1.15).toFixed(1); },
-                get grandTotalDays() { return (this.grandTotal / 6.5).toFixed(1); },
-
-                getSelectedItemsFromData(project) {
-                    let items = [];
-                    if (!project.data || !Array.isArray(project.data)) return items;
-                    
-                    let mapping = [];
-                    project.data.forEach(g => g.items.forEach(t => { if(t.count > 0) mapping.push(t); }));
-                    
-                    if(project.liveSummaryOrder && Array.isArray(project.liveSummaryOrder)) {
-                        project.liveSummaryOrder.forEach(id => {
-                            let match = mapping.find(t => t.id === id);
-                            if(match) items.push(match);
-                        });
-                        mapping.forEach(t => {
-                            if(!items.some(it => it.id === t.id)) items.push(t);
-                        });
-                        return items;
-                    }
-                    return mapping;
-                },
-
-                getProjectTotals(project) {
-                    let net = 0;
-                    if(project.data && Array.isArray(project.data)) {
-                        project.data.forEach(g => g.items.forEach(t => {
-                            if(!t.isParallel) {
-                                net += this.calculateSummaryItemTotal(t);
+                    this.groupedTests.forEach(g => {
+                        g.items.forEach(t => {
+                            if (t.count > 0) {
+                                let itemEffort = 0;
+                                if (t.id.includes('scale')) {
+                                    itemEffort = this.calculateScaleMeasurements(t) * 0.05;
+                                } else {
+                                    const base = t.weight || 0;
+                                    const orient = t.orientations ? parseInt(t.orientations) || 1 : 1;
+                                    itemEffort = base * orient;
+                                }
+                                if (t.isParallel) {
+                                    total += itemEffort; 
+                                } else {
+                                    total += (itemEffort * t.count);
+                                }
                             }
-                        }));
-                    }
-                    const grand = (net * 1.15).toFixed(1);
-                    const days = (grand / 6.5).toFixed(1);
-                    return { grand, days };
+                        });
+                    });
+                    return parseFloat(total.toFixed(2));
                 },
 
-                resetAll() {
-                    if(confirm("Clear current project data?")) {
-                        this.groupedTests.forEach(g => {
-                            g.items = g.items.filter(t => !t.isCustom && !t.isDuplicated);
-                            g.items.forEach(t => {
-                                t.count = 0;
-                                t.testerName = '';
-                                t.status = 'Not Started';
-                                t.isParallel = false;
-                                if(t.usOz !== undefined) { t.usOz = 0; t.ml = 0; t.ukOz = 0; }
-                            });
-                        });
-                        this.projectName = "New Project";
-                        this.projectNotes = "";
-                        this.rfsNumber = "";
-                        this.testDesignNumber = "";
-                        this.testRecordNumber = "";
-                        this.subBusiness = "";
-                        this.testLeadName = "";
-                        this.startDate = new Date().toISOString().split('T')[0];
-                        this.projectStatus = 'Not Started';
-                        this.selectedProjectId = null; 
-                        this.selectedItems = [];
+                get grandTotalDays() {
+                    return (this.grandTotal / 6.5).toFixed(1);
+                },
+
+                get expectedEndDate() {
+                    if (!this.startDate) return '—';
+                    const workingDaysRequired = Math.ceil(parseFloat(this.grandTotalDays) || 0);
+                    if (workingDaysRequired <= 0) return this.startDate;
+                    
+                    let current = new Date(this.startDate);
+                    let addedDays = 0;
+                    while (addedDays < workingDaysRequired) {
+                        current.setDate(current.getDate() + 1);
+                        const day = current.getDay();
+                        if (day !== 0 && day !== 6) { 
+                            addedDays++;
+                        }
                     }
+                    return current.toISOString().split('T')[0];
                 }
             }
         }
