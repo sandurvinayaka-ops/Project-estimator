@@ -16,16 +16,6 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .sticky-header { position: sticky; top: 0; z-index: 50; padding: 1.5rem 0; margin-top: -1.5rem; }
-
-        /* Smooth sequential color wave text animation styles */
-        @keyframes colorWave {
-            0%, 100% { color: #face5c; transform: translateY(0); }
-            50% { color: #38bdf8; transform: translateY(-4px); }
-        }
-        .wave-char {
-            display: inline-block;
-            animation: colorWave 2s ease-in-out infinite;
-        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans" x-data="labEstimator()" x-init="initFirebase()">
@@ -68,50 +58,8 @@
         <header class="bg-[#4a3728] border-b border-[#36271c] px-6 py-4 flex items-center justify-center text-center shadow-lg relative z-30">
             <div class="flex items-center justify-center gap-3">
                 <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse"></span>
-                <h1 class="text-base font-black drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-[0.15em] uppercase select-none">
-                    <span class="wave-char" style="animation-delay: 0.05s">:</span>
-                    <span class="wave-char" style="animation-delay: 0.10s">T</span>
-                    <span class="wave-char" style="animation-delay: 0.15s">E</span>
-                    <span class="wave-char" style="animation-delay: 0.20s">A</span>
-                    <span class="wave-char" style="animation-delay: 0.25s">-</span>
-                    <span class="wave-char" style="animation-delay: 0.30s">M</span>
-                    <span class="wave-char" style="animation-delay: 0.35s">&nbsp;</span>
-                    <span class="wave-char" style="animation-delay: 0.40s">:</span>
-                    <span class="wave-char" style="animation-delay: 0.45s">&nbsp;</span>
-                    <span class="wave-char" style="animation-delay: 0.50s">T</span>
-                    <span class="wave-char" style="animation-delay: 0.55s">e</span>
-                    <span class="wave-char" style="animation-delay: 0.60s">s</span>
-                    <span class="wave-char" style="animation-delay: 0.65s">t</span>
-                    <span class="wave-char" style="animation-delay: 0.70s">s</span>
-                    <span class="wave-char" style="animation-delay: 0.75s">&nbsp;</span>
-                    <span class="wave-char" style="animation-delay: 0.80s">E</span>
-                    <span class="wave-char" style="animation-delay: 0.85s">s</span>
-                    <span class="wave-char" style="animation-delay: 0.90s">t</span>
-                    <span class="wave-char" style="animation-delay: 0.95s">i</span>
-                    <span class="wave-char" style="animation-delay: 1.00s">m</span>
-                    <span class="wave-char" style="animation-delay: 1.05s">a</span>
-                    <span class="wave-char" style="animation-delay: 1.10s">t</span>
-                    <span class="wave-char" style="animation-delay: 1.15s">i</span>
-                    <span class="wave-char" style="animation-delay: 1.20s">o</span>
-                    <span class="wave-char" style="animation-delay: 1.25s">n</span>
-                    <span class="wave-char" style="animation-delay: 1.30s">&nbsp;</span>
-                    <span class="wave-char" style="animation-delay: 1.35s">A</span>
-                    <span class="wave-char" style="animation-delay: 1.40s">p</span>
-                    <span class="wave-char" style="animation-delay: 1.45s">p</span>
-                    <span class="wave-char" style="animation-delay: 1.50s">l</span>
-                    <span class="wave-char" style="animation-delay: 1.55s">i</span>
-                    <span class="wave-char" style="animation-delay: 1.60s">c</span>
-                    <span class="wave-char" style="animation-delay: 1.65s">a</span>
-                    <span class="wave-char" style="animation-delay: 1.70s">t</span>
-                    <span class="wave-char" style="animation-delay: 1.75s">i</span>
-                    <span class="wave-char" style="animation-delay: 1.80s">o</span>
-                    <span class="wave-char" style="animation-delay: 1.85s">n</span>
-                    <span class="wave-char" style="animation-delay: 1.90s">&nbsp;</span>
-                    <span class="wave-char" style="animation-delay: 1.95s">-</span>
-                    <span class="wave-char" style="animation-delay: 2.00s">&nbsp;</span>
-                    <span class="wave-char" style="animation-delay: 2.05s">M</span>
-                    <span class="wave-char" style="animation-delay: 2.10s">C</span>
-                    <span class="wave-char" style="animation-delay: 2.15s">C</span>
+                <h1 class="text-base font-black text-[#face5c] drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-[0.15em] uppercase">
+                    MTAT - MCC Tests Application Tool
                 </h1>
                 <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse"></span>
             </div>
@@ -130,6 +78,17 @@
                     </button>
                 </div>
                 
+                <div class="mb-6">
+                    <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
+                            class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+                            :class="currentView === 'summary' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-900 text-white hover:bg-slate-800'">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span x-text="currentView === 'estimator' ? 'View Projects Summary' : 'Back to Calculator'"></span>
+                    </button>
+                </div>
+
                 <template x-if="currentView === 'estimator'">
                     <div>
                         <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
@@ -142,17 +101,6 @@
                         </div>
                     </div>
                 </template>
-
-                <div class="mb-6">
-                    <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
-                            class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
-                            :class="currentView === 'summary' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-900 text-white hover:bg-slate-800'">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span x-text="currentView === 'estimator' ? 'View Projects Summary' : 'Back to Calculator'"></span>
-                    </button>
-                </div>
                 
                 <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Projects List</h2>
                 <div class="space-y-3">
@@ -185,7 +133,7 @@
 
             <div class="flex-1 lg:ml-72 min-w-0">
                 
-                <main x-show="currentView === 'estimator'" class="p-6 md:p-12 lg:mr-80">
+                <main x-show="currentView === 'estimator'" class="p-6 md:p-12">
                     <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
                         <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
                             <div class="flex-1 space-y-1">
@@ -353,8 +301,16 @@
                                                         </template>
                                                         <template x-if="!test.id.includes('scale')">
                                                             <div class="flex gap-4 justify-center items-end">
-                                                                <div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Base (h)</p><input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight" @input="updateLiveSummaryFromGrid()"></div>
-                                                                <template x-if="test.hasOrientations"><div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Orient.</p><input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations" @input="updateLiveSummaryFromGrid()"></div></template>
+                                                                <div class="text-center">
+                                                                    <p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Base (h)</p>
+                                                                    <input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight" @input="updateLiveSummaryFromGrid()">
+                                                                </div>
+                                                                <template x-if="test.hasOrientations">
+                                                                    <div class="text-center">
+                                                                        <p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Orient.</p>
+                                                                        <input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations" @input="updateLiveSummaryFromGrid()">
+                                                                    </div>
+                                                                </template>
                                                             </div>
                                                         </template>
                                                     </td>
@@ -372,7 +328,9 @@
                                                             <option class="bg-white text-slate-900 font-medium" value="Completed">Completed</option>
                                                         </select>
                                                     </td>
-                                                    <td class="px-4 py-5 text-right"><input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count" @input="updateLiveSummaryFromGrid()"></td>
+                                                    <td class="px-4 py-5 text-right">
+                                                        <input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count" @input="updateLiveSummaryFromGrid()">
+                                                    </td>
                                                     <td class="px-6 py-5 align-middle text-center no-print">
                                                         <div class="flex items-center justify-center gap-1.5">
                                                             <div class="flex flex-col gap-0.5 mr-1">
@@ -383,10 +341,10 @@
                                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
                                                                 </button>
                                                             </div>
-                                                            <button @click="duplicateRow(group, test, index)" title="Duplicate Row Instance" class="p-2 bg-slate-100 hover:bg-orange-100 rounded-xl text-slate-500 hover:text-orange-600 transition-colors">
+                                                            <button @click="duplicateTestItem(group, test)" title="Duplicate item entry" class="p-2 bg-slate-100 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" /></svg>
                                                             </button>
-                                                            <button @click="removeTestItem(group, index)" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" class="p-2 bg-slate-100 hover:bg-red-100 text-slate-400 hover:text-red-500 disabled:opacity-30 disabled:hover:bg-slate-100 rounded-xl transition-colors">
+                                                            <button @click="removeTestItem(group, index)" :disabled="!test.isCustom && !test.isDuplicated" :title="(!test.isCustom && !test.isDuplicated) ? 'Standard item cannot be deleted' : 'Delete item entry'" class="p-2 bg-slate-100 text-slate-400 hover:text-red-500 rounded-xl transition-all disabled:opacity-30 disabled:hover:text-slate-400 disabled:hover:bg-slate-100">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                                             </button>
                                                         </div>
@@ -400,6 +358,107 @@
                         </template>
                     </div>
                 </main>
+
+                <main x-show="currentView === 'summary'" x-cloak class="p-6 md:p-12">
+                    <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Active Projects Dashboard</h2>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Live Execution Summary across all loaded instances</p>
+                        </div>
+                        <button @click="window.print()" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-slate-800 shadow transition-all no-print flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                            Print Summary Report
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left min-w-[1000px]">
+                                <thead class="bg-slate-50 text-[10px] uppercase font-black text-slate-400 border-b">
+                                    <tr>
+                                        <th class="px-8 py-4">Project Workspace Info</th>
+                                        <th class="px-4 py-4">Identifiers</th>
+                                        <th class="px-4 py-4">Lead Owner</th>
+                                        <th class="px-4 py-4 text-center">Timelines</th>
+                                        <th class="px-4 py-4 text-center">Status</th>
+                                        <th class="px-6 py-4 text-right">Metrics & Effort</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-sm">
+                                    <tr class="bg-blue-50/20 font-medium">
+                                        <td class="px-8 py-5">
+                                            <div class="font-black text-blue-600 flex items-center gap-1.5">
+                                                <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                                                <span x-text="projectName"></span>
+                                            </div>
+                                            <div class="text-[10px] text-slate-400 font-bold uppercase mt-0.5" x-text="subBusiness || 'No Sub_Business Selected'"></div>
+                                            <p class="text-[11px] text-slate-500 italic mt-1 max-w-xs truncate" x-text="projectNotes"></p>
+                                        </td>
+                                        <td class="px-4 py-5 align-middle">
+                                            <div class="text-xs font-bold text-slate-700">RFS: <span class="font-black" x-text="rfsNumber || '-'"></span></div>
+                                            <div class="text-[11px] text-slate-400">TD: <span x-text="testDesignNumber || '-'"></span></div>
+                                            <div class="text-[11px] text-slate-400">TR: <span x-text="testRecordNumber || '-'"></span></div>
+                                        </td>
+                                        <td class="px-4 py-5 align-middle font-bold text-slate-700" x-text="testLeadName || 'Unassigned'"></td>
+                                        <td class="px-4 py-5 align-middle text-center">
+                                            <div class="text-xs font-bold text-slate-600">Start: <span x-text="startDate"></span></div>
+                                            <div class="text-xs font-black text-blue-600 mt-0.5">End: <span x-text="expectedEndDate"></span></div>
+                                        </td>
+                                        <td class="px-4 py-5 align-middle text-center">
+                                            <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider inline-block"
+                                                  :class="{
+                                                      'bg-yellow-100 text-yellow-800': projectStatus === 'Not Started',
+                                                      'bg-orange-100 text-orange-800': projectStatus === 'In-Progress',
+                                                      'bg-green-100 text-green-800': projectStatus === 'Completed',
+                                                      'bg-red-100 text-red-800': projectStatus === 'On Hold',
+                                                      'bg-purple-100 text-purple-800': projectStatus === 'Shipment not recd'
+                                                  }" x-text="projectStatus"></span>
+                                        </td>
+                                        <td class="px-6 py-5 align-middle text-right">
+                                            <div class="text-base font-black text-slate-800" x-text="grandTotal + ' Hrs'"></div>
+                                            <div class="text-xs font-bold text-slate-400 mt-0.5" x-text="grandTotalDays + ' Days'"></div>
+                                        </td>
+                                    </tr>
+
+                                    <template x-for="item in history" :key="item.id">
+                                        <tr class="hover:bg-slate-50/60 transition-colors">
+                                            <td class="px-8 py-5">
+                                                <div class="font-bold text-slate-700" x-text="item.name"></div>
+                                                <div class="text-[10px] text-slate-400 font-bold uppercase mt-0.5" x-text="item.subBusiness || '-'"></div>
+                                                <p class="text-[11px] text-slate-500 italic mt-1 max-w-xs truncate" x-text="item.notes"></p>
+                                            </td>
+                                            <td class="px-4 py-5 align-middle">
+                                                <div class="text-xs font-bold text-slate-700">RFS: <span class="font-black" x-text="item.rfsNumber || '-'"></span></div>
+                                                <div class="text-[11px] text-slate-400">TD: <span x-text="item.testDesignNumber || '-'"></span></div>
+                                                <div class="text-[11px] text-slate-400">TR: <span x-text="item.testRecordNumber || '-'"></span></div>
+                                            </td>
+                                            <td class="px-4 py-5 align-middle font-bold text-slate-600" x-text="item.testLeadName || 'Unassigned'"></td>
+                                            <td class="px-4 py-5 align-middle text-center">
+                                                <div class="text-xs font-bold text-slate-500">Start: <span x-text="item.startDate"></span></div>
+                                                <div class="text-xs font-black text-slate-700 mt-0.5">End: <span x-text="calculateExternalEndDate(item.startDate, item.totalHours)"></span></div>
+                                            </td>
+                                            <td class="px-4 py-5 align-middle text-center">
+                                                <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider inline-block"
+                                                      :class="{
+                                                          'bg-yellow-100 text-yellow-800': item.projectStatus === 'Not Started' || !item.projectStatus,
+                                                          'bg-orange-100 text-orange-800': item.projectStatus === 'In-Progress',
+                                                          'bg-green-100 text-green-800': item.projectStatus === 'Completed',
+                                                          'bg-red-100 text-red-800': item.projectStatus === 'On Hold',
+                                                          'bg-purple-100 text-purple-800': item.projectStatus === 'Shipment not recd'
+                                                      }" x-text="item.projectStatus || 'Not Started'"></span>
+                                            </td>
+                                            <td class="px-6 py-5 align-middle text-right">
+                                                <div class="text-base font-bold text-slate-700" x-text="item.totalHours + ' Hrs'"></div>
+                                                <div class="text-xs font-medium text-slate-400 mt-0.5" x-text="(item.totalHours / 6.5).toFixed(1) + ' Days'"></div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
+
             </div>
         </div>
     </div>
@@ -411,11 +470,13 @@
                 loginUser: '',
                 loginPass: '',
                 accessError: '',
+                
                 isAdmin: false,
                 showLoginModal: false,
                 password: '',
                 currentView: 'estimator',
-                projectName: 'New Project',
+                
+                projectName: 'New Project Estimation Suite',
                 projectNotes: '',
                 rfsNumber: '',
                 testDesignNumber: '',
@@ -424,37 +485,75 @@
                 testLeadName: '',
                 startDate: new Date().toISOString().split('T')[0],
                 projectStatus: 'Not Started',
+                
                 selectedProjectId: null,
                 history: [],
+                db: null,
+
+                // Comprehensive Standard Baseline Tests Payload Data
                 groupedTests: [
                     {
-                        title: 'General Lab Tasks',
-                        newLabel: '', newSubLabel: '', newWeight: 1, newHasOrientations: false,
+                        title: "1. Basic & Physical Characterization",
+                        newLabel: '', newSubLabel: '', newWeight: 0.5, newHasOrientations: false,
                         items: [
-                            { id: 'gen_prep', label: 'Sample Preparation & Check-in', subLabel: 'Unboxing, logging, verification', weight: 1.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
-                            { id: 'gen_setup', label: 'Equipment Calibration & Alignment', subLabel: 'Pre-test fixture alignment', weight: 1.0, count: 0, testerName: '', status: 'Not Started', isParallel: false }
+                            { id: "visual_inspection", label: "Visual & Physical Inspection", subLabel: "General layout, verification, mapping profiles", weight: 0.5, count: 0, testerName: '', status: 'Not Started', isParallel: false },
+                            { id: "dimensional_analysis", label: "Dimensional Measurements", subLabel: "Caliper profiles, micrometer checks, structural gauge", weight: 1.0, count: 0, testerName: '', status: 'Not Started', isParallel: false },
+                            { id: "weight_distribution", label: "Weight Distribution Analysis", subLabel: "Component balancing, localized structural metrics", weight: 0.75, count: 0, testerName: '', status: 'Not Started', isParallel: false }
                         ]
                     },
                     {
-                        title: 'Scale & Dimensional Calibration',
-                        newLabel: '', newSubLabel: '', newWeight: 0.5, newHasOrientations: false,
+                        title: "2. Scale Accuracy and Measurements Calibration",
+                        newLabel: '', newSubLabel: '', newWeight: 1.0, newHasOrientations: false,
                         items: [
-                            { id: 'scale_verif', label: 'Volumetric Scale Evaluation', subLabel: 'US Oz, ml, UK Oz configurations', weight: 0.05, count: 0, usOz: 0, ml: 0, ukOz: 0, testerName: '', status: 'Not Started', isParallel: false }
+                            { id: "scale_calibration_us", label: "Scale Fluid Calibration (US Oz / ml / UK Oz)", subLabel: "Multi-increment fluid-weight cross mapping matrix", weight: 0.05, count: 0, testerName: '', status: 'Not Started', isParallel: false, usOz: 0, ml: 0, ukOz: 0 }
+                        ]
+                    },
+                    {
+                        title: "3. Thermal & Environmental Durability",
+                        newLabel: '', newSubLabel: '', newWeight: 1.5, newHasOrientations: true,
+                        items: [
+                            { id: "thermal_cycling", label: "Thermal Cycling Stress Matrix", subLabel: "Alternating hot/cold chamber soak profiles", weight: 2.0, count: 0, testerName: '', status: 'Not Started', isParallel: false, hasOrientations: true, orientations: 1 },
+                            { id: "humidity_exposure", label: "Humidity Chamber Incubation", subLabel: "High-vapor steady state testing protocol", weight: 1.5, count: 0, testerName: '', status: 'Not Started', isParallel: false, hasOrientations: true, orientations: 1 }
+                        ]
+                    },
+                    {
+                        title: "4. Mechanical Integrity & Stress Testing",
+                        newLabel: '', newSubLabel: '', newWeight: 1.25, newHasOrientations: false,
+                        items: [
+                            { id: "tensile_strength", label: "Tensile Strength Characterization", subLabel: "Load-cell separation pull/push threshold profiling", weight: 1.25, count: 0, testerName: '', status: 'Not Started', isParallel: false },
+                            { id: "drop_impact", label: "Drop Force Impact Matrix", subLabel: "Multi-angle kinetic shock verification mapping", weight: 1.75, count: 0, testerName: '', status: 'Not Started', isParallel: false }
                         ]
                     }
                 ],
 
                 initFirebase() {
-                    // Firebase stub interface placeholder for data layer configuration
-                    this.loadLocalWorkspaceData();
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyAsFakeKey_MTAT_MCC_Estimator_2026",
+                        authDomain: "lab-test-estimator-mcc.firebaseapp.com",
+                        projectId: "lab-test-estimator-mcc",
+                        storageBucket: "lab-test-estimator-mcc.appspot.com",
+                        messagingSenderId: "889900112233",
+                        appId: "1:889900112233:web:abcd1234efgh5678"
+                    };
+
+                    try {
+                        if (!firebase.apps.length) {
+                            firebase.initializeApp(firebaseConfig);
+                        }
+                        this.db = firebase.firestore();
+                        this.loadHistoryFromFirestore();
+                    } catch (e) {
+                        console.warn("Firestore initialize fallback triggered. Running operations local-first.");
+                        this.loadLocalBackupHistory();
+                    }
                 },
 
                 handleGlobalAccessLogin() {
-                    if (this.loginUser.trim() !== '' && this.loginPass === 'MCC2026') {
+                    if (this.loginUser.trim().toLowerCase() === 'mcc_ops' && this.loginPass === 'mcc_labs_2026') {
                         this.authenticated = true;
                         this.accessError = '';
                     } else {
-                        this.accessError = 'Invalid identity credentials.';
+                        this.accessError = 'Access Denied. Verification Credentials Code Invalid.';
                     }
                 },
 
@@ -465,12 +564,12 @@
                 },
 
                 login() {
-                    if (this.password === 'admin123') {
+                    if (this.password === "mccadmin2026") {
                         this.isAdmin = true;
                         this.showLoginModal = false;
                         this.password = '';
                     } else {
-                        alert('Incorrect administrative key.');
+                        alert("Access Denied. Security Key Code Incorrect.");
                     }
                 },
 
@@ -479,75 +578,135 @@
                 },
 
                 scrollToGroup(id) {
-                    const el = document.getElementById(id);
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
                 },
 
                 calculateScaleMeasurements(test) {
-                    const totalMeas = (parseInt(test.usOz) || 0) + (parseInt(test.ml) || 0) + (parseInt(test.ukOz) || 0);
-                    return totalMeas;
+                    if (test.usOz === undefined) return 0;
+                    const computed = (Number(test.usOz || 0) * 0.1) + (Number(test.ml || 0) * 0.05) + (Number(test.ukOz || 0) * 0.15);
+                    return computed > 0 ? computed.toFixed(2) : 0;
                 },
 
-                syncParallelState(testId, state) {
-                    this.groupedTests.forEach(g => {
-                        g.items.forEach(t => {
-                            if (t.id === testId) t.isParallel = state;
+                get grandTotal() {
+                    let total = 0;
+                    this.groupedTests.forEach(group => {
+                        group.items.forEach(item => {
+                            if (item.count && item.count > 0) {
+                                if (item.id.includes('scale')) {
+                                    total += Number(this.calculateScaleMeasurements(item)) * item.count;
+                                } else {
+                                    const baseWeight = Number(item.weight || 0);
+                                    const orientMultiplier = item.hasOrientations ? Number(item.orientations || 1) : 1;
+                                    total += baseWeight * orientMultiplier * item.count;
+                                }
+                            }
                         });
                     });
+                    return Number(total.toFixed(2));
+                },
+
+                get grandTotalDays() {
+                    return (this.grandTotal / 6.5).toFixed(1);
+                },
+
+                get expectedEndDate() {
+                    return this.calculateExternalEndDate(this.startDate, this.grandTotal);
+                },
+
+                calculateExternalEndDate(startStr, hoursTotal) {
+                    if (!startStr) return '-';
+                    let totalDaysNeeded = Math.ceil(hoursTotal / 6.5);
+                    if (totalDaysNeeded < 1) totalDaysNeeded = 1;
+                    
+                    let currentDate = new Date(startStr);
+                    let daysAdded = 0;
+                    
+                    while (daysAdded < totalDaysNeeded - 1) {
+                        currentDate.setDate(currentDate.getDate() + 1);
+                        let dayOfWeek = currentDate.getDay();
+                        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                            daysAdded++;
+                        }
+                    }
+                    return currentDate.toISOString().split('T')[0];
+                },
+
+                syncParallelState(itemId, state) {
+                    this.groupedTests.forEach(g => {
+                        g.items.forEach(t => {
+                            if (t.id === itemId) t.isParallel = state;
+                        });
+                    });
+                    this.updateLiveSummaryFromGrid();
                 },
 
                 updateLiveSummaryFromGrid() {
-                    // Triggers dynamic data context updates inside Alpine context layers
+                    // Force reactivity refresh computation triggers across UI bindings
                 },
 
                 addNewTestItem(group) {
-                    if (!group.newLabel.trim()) return;
+                    if (!group.newLabel.trim()) return alert("Label cannot be left blank.");
+                    const uniqueId = "custom_" + Date.now();
                     group.items.push({
-                        id: 'custom_' + Date.now(),
-                        label: group.newLabel,
-                        subLabel: group.newSubLabel || 'Custom Added Test',
-                        weight: parseFloat(group.newWeight) || 1.0,
-                        hasOrientations: group.newHasOrientations,
-                        orientations: group.newHasOrientations ? 1 : 0,
+                        id: uniqueId,
+                        label: group.newLabel.trim(),
+                        subLabel: group.newSubLabel.trim() || "Manually appended test track sequence",
+                        weight: Number(group.newWeight) || 1.0,
                         count: 0,
                         testerName: '',
                         status: 'Not Started',
                         isParallel: false,
+                        hasOrientations: group.newHasOrientations,
+                        orientations: group.newHasOrientations ? 1 : undefined,
                         isCustom: true
                     });
-                    group.newLabel = ''; group.newSubLabel = ''; group.newWeight = 1; group.newHasOrientations = false;
+                    group.newLabel = ''; group.newSubLabel = ''; group.newWeight = 1.0; group.newHasOrientations = false;
+                    this.updateLiveSummaryFromGrid();
                 },
 
-                duplicateRow(group, test, index) {
-                    const copy = JSON.parse(JSON.stringify(test));
-                    copy.id = test.id.split('_copy')[0] + '_copy_' + Date.now();
-                    copy.isDuplicated = true;
-                    copy.count = 0;
-                    group.items.splice(index + 1, 0, copy);
+                duplicateTestItem(group, item) {
+                    const duplicateInstance = JSON.parse(JSON.stringify(item));
+                    duplicateInstance.id = item.id + "_dup_" + Math.random().toString(36).substr(2, 5);
+                    duplicateInstance.label = "[Copy] " + duplicateInstance.label;
+                    duplicateInstance.isDuplicated = true;
+                    
+                    const currentIndex = group.items.findIndex(t => t.id === item.id);
+                    if (currentIndex !== -1) {
+                        group.items.splice(currentIndex + 1, 0, duplicateInstance);
+                    } else {
+                        group.items.push(duplicateInstance);
+                    }
+                    this.updateLiveSummaryFromGrid();
                 },
 
                 removeTestItem(group, index) {
-                    group.items.splice(index, 1);
+                    if (confirm("Remove this entry matrix line row item completely?")) {
+                        group.items.splice(index, 1);
+                        this.updateLiveSummaryFromGrid();
+                    }
                 },
 
                 moveRow(group, index, direction) {
                     const targetIndex = index + direction;
                     if (targetIndex < 0 || targetIndex >= group.items.length) return;
-                    const temp = group.items[index];
-                    group.items[index] = group.items[targetIndex];
-                    group.items[targetIndex] = temp;
+                    const movingElement = group.items.splice(index, 1)[0];
+                    group.items.splice(targetIndex, 0, movingElement);
+                    this.updateLiveSummaryFromGrid();
                 },
 
                 duplicateEntireProject() {
+                    if (!this.selectedProjectId) return;
                     this.selectedProjectId = null;
-                    this.projectName = this.projectName + " (Copy)";
-                    alert("Project workspace structure duplicated to a new instance.");
+                    this.projectName = "[Duplicated Workspace] " + this.projectName;
+                    alert("Project structure layout copied into a standalone un-saved session workspace.");
                 },
 
                 saveToHistory() {
-                    const recordId = this.selectedProjectId || 'proj_' + Date.now();
-                    const record = {
-                        id: recordId,
+                    const structuredPayload = {
+                        id: this.selectedProjectId || "proj_" + Date.now(),
                         name: this.projectName,
                         notes: this.projectNotes,
                         rfsNumber: this.rfsNumber,
@@ -557,93 +716,73 @@
                         testLeadName: this.testLeadName,
                         startDate: this.startDate,
                         projectStatus: this.projectStatus,
+                        totalHours: this.grandTotal,
                         timestamp: new Date().toLocaleString(),
-                        gridData: JSON.parse(JSON.stringify(this.groupedTests))
+                        payloadState: JSON.parse(JSON.stringify(this.groupedTests))
                     };
 
-                    if (this.selectedProjectId) {
-                        const idx = this.history.findIndex(h => h.id === recordId);
-                        if (idx !== -1) this.history[idx] = record;
+                    if (this.db) {
+                        this.db.collection("estimates").doc(structuredPayload.id).set(structuredPayload)
+                            .then(() => {
+                                alert("Project successfully synced to persistence server cloud database layer.");
+                                this.loadHistoryFromFirestore();
+                            });
                     } else {
-                        this.history.push(record);
-                        this.selectedProjectId = recordId;
+                        const targetIdx = this.history.findIndex(h => h.id === structuredPayload.id);
+                        if (targetIdx !== -1) this.history[targetIdx] = structuredPayload;
+                        else this.history.unshift(structuredPayload);
+                        localStorage.setItem("mcc_local_history", JSON.stringify(this.history));
+                        alert("Saved locally inside internal cache framework backup store.");
                     }
-                    localStorage.setItem('lab_history', JSON.stringify(this.history));
-                },
-
-                loadLocalWorkspaceData() {
-                    const stored = localStorage.getItem('lab_history');
-                    if (stored) this.history = JSON.parse(stored);
+                    this.selectedProjectId = structuredPayload.id;
                 },
 
                 loadEstimate(index) {
-                    const record = this.history[index];
-                    this.selectedProjectId = record.id;
-                    this.projectName = record.name;
-                    this.projectNotes = record.notes || '';
-                    this.rfsNumber = record.rfsNumber || '';
-                    this.testDesignNumber = record.testDesignNumber || '';
-                    this.testRecordNumber = record.testRecordNumber || '';
-                    this.subBusiness = record.subBusiness || '';
-                    this.testLeadName = record.testLeadName || '';
-                    this.startDate = record.startDate || '';
-                    this.projectStatus = record.projectStatus || 'Not Started';
-                    this.groupedTests = JSON.parse(JSON.stringify(record.gridData));
+                    const targetedModel = this.history[index];
+                    this.selectedProjectId = targetedModel.id;
+                    this.projectName = targetedModel.name;
+                    this.projectNotes = targetedModel.notes || '';
+                    this.rfsNumber = targetedModel.rfsNumber || '';
+                    this.testDesignNumber = targetedModel.testDesignNumber || '';
+                    this.testRecordNumber = targetedModel.testRecordNumber || '';
+                    this.subBusiness = targetedModel.subBusiness || '';
+                    this.testLeadName = targetedModel.testLeadName || '';
+                    this.startDate = targetedModel.startDate;
+                    this.projectStatus = targetedModel.projectStatus || 'Not Started';
+                    
+                    if (targetedModel.payloadState) {
+                        this.groupedTests = JSON.parse(JSON.stringify(targetedModel.payloadState));
+                    }
                 },
 
                 deleteHistoryItem(index) {
-                    if(confirm("Delete this workspace record permanently?")) {
-                        if (this.history[index].id === this.selectedProjectId) {
+                    if (confirm("Permanently wipe out this instance record matrix from server?")) {
+                        const targetedModel = this.history[index];
+                        if (this.db) {
+                            this.db.collection("estimates").doc(targetedModel.id).delete()
+                                .then(() => { this.loadHistoryFromFirestore(); });
+                        } else {
+                            this.history.splice(index, 1);
+                            localStorage.setItem("mcc_local_history", JSON.stringify(this.history));
+                        }
+                        if (this.selectedProjectId === targetedModel.id) {
                             this.selectedProjectId = null;
                         }
-                        this.history.splice(index, 1);
-                        localStorage.setItem('lab_history', JSON.stringify(this.history));
                     }
                 },
 
-                get grandTotal() {
-                    let total = 0;
-                    this.groupedTests.forEach(g => {
-                        g.items.forEach(t => {
-                            if (t.count > 0) {
-                                let itemEffort = 0;
-                                if (t.id.includes('scale')) {
-                                    itemEffort = this.calculateScaleMeasurements(t) * 0.05;
-                                } else {
-                                    const base = t.weight || 0;
-                                    const orient = t.orientations ? parseInt(t.orientations) || 1 : 1;
-                                    itemEffort = base * orient;
-                                }
-                                if (t.isParallel) {
-                                    total += itemEffort; 
-                                } else {
-                                    total += (itemEffort * t.count);
-                                }
-                            }
-                        });
-                    });
-                    return parseFloat(total.toFixed(2));
+                loadHistoryFromFirestore() {
+                    if (!this.db) return;
+                    this.db.collection("estimates").orderBy("timestamp", "desc").get()
+                        .then(snapshot => {
+                            this.history = [];
+                            snapshot.forEach(doc => { this.history.push(doc.data()); });
+                        }).catch(() => { this.loadLocalBackupHistory(); });
                 },
 
-                get grandTotalDays() {
-                    return (this.grandTotal / 6.5).toFixed(1);
-                },
-
-                get expectedEndDate() {
-                    if (!this.startDate) return '—';
-                    const workingDaysRequired = Math.ceil(parseFloat(this.grandTotalDays) || 0);
-                    if (workingDaysRequired <= 0) return this.startDate;
-                    
-                    let current = new Date(this.startDate);
-                    let addedDays = 0;
-                    while (addedDays < workingDaysRequired) {
-                        current.setDate(current.getDate() + 1);
-                        const day = current.getDay();
-                        if (day !== 0 && day !== 6) { 
-                            addedDays++;
-                        }
-                    }
-                    return current.toISOString().split('T')[0];
+                loadLocalBackupHistory() {
+                    const cached = localStorage.getItem("mcc_local_history");
+                    if (cached) this.history = JSON.parse(cached);
                 }
             }
         }
