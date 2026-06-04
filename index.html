@@ -78,55 +78,73 @@
                     </button>
                 </div>
                 
-                <div class="mb-6">
-                    <button @click="currentView = (currentView === 'estimator' ? 'summary' : 'estimator')" 
+                <div class="mb-6 flex flex-col gap-2">
+                    <button @click="currentView = 'estimator'" 
                             class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
-                            :class="currentView === 'summary' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-900 text-white hover:bg-slate-800'">
+                            :class="currentView === 'estimator' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        Effort Estimator
+                    </button>
+                    <button @click="currentView = 'summary'" 
+                            class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm"
+                            :class="currentView === 'summary' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <span x-text="currentView === 'estimator' ? 'View Projects Summary' : 'Back to Calculator'"></span>
+                        Live Projects Summary
                     </button>
                 </div>
 
                 <template x-if="currentView === 'estimator'">
                     <div>
-                        <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Test Categories</h2>
-                        <div class="space-y-1 mb-10">
+                        <h2 class="text-[10px] uppercase tracking-widest font-black text-slate-400 mb-3">Test Categories</h2>
+                        <div class="space-y-1 mb-6">
                             <template x-for="group in groupedTests" :key="group.title">
                                 <button @click="scrollToGroup(group.title)" 
-                                        class="w-full text-left px-4 py-2 rounded-lg font-bold text-sm transition-all text-slate-600 hover:bg-blue-50 hover:text-blue-600" 
+                                        class="w-full text-left px-3 py-1.5 rounded-lg font-bold text-xs transition-all text-slate-600 hover:bg-blue-50 hover:text-blue-600 truncate" 
                                         x-text="group.title"></button>
                             </template>
                         </div>
                     </div>
                 </template>
                 
-                <h2 class="text-xs uppercase tracking-widest font-black text-slate-400 mb-4">Projects List</h2>
-                <div class="space-y-3">
-                    <template x-for="(item, index) in history" :key="index">
-                        <div class="flex items-center gap-2 group">
-                            <div class="flex-1 p-3 bg-slate-50 rounded-xl border border-transparent hover:border-blue-300 cursor-pointer transition-all" 
-                                 :class="selectedProjectId === item.id ? 'border-blue-500 bg-blue-50/30' : ''"
-                                 @click="currentView = 'estimator'; loadEstimate(index)">
-                                <p class="text-[9px] font-black text-blue-500 uppercase flex justify-between items-center">
-                                    <span x-text="item.timestamp"></span>
-                                    <span x-show="selectedProjectId === item.id" class="text-[8px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full lowercase font-normal">editing</span>
-                                </p>
-                                <p class="font-bold text-slate-700 text-sm truncate" x-text="item.name"></p>
+                <div class="flex-1 flex flex-col min-h-0">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-[10px] uppercase tracking-widest font-black text-slate-400">Projects History</h2>
+                        <button @click="createNewProjectWorkspace()" class="text-[10px] font-black text-blue-600 uppercase tracking-wider hover:underline">+ New</button>
+                    </div>
+                    <div class="space-y-2 overflow-y-auto flex-1 pr-1 custom-scroll">
+                        <template x-for="(item, index) in history" :key="item.id || index">
+                            <div class="flex items-center gap-1.5 group">
+                                <div class="flex-1 p-2.5 bg-slate-50 rounded-xl border border-transparent hover:border-slate-300 cursor-pointer transition-all min-w-0" 
+                                     :class="selectedProjectId === item.id ? 'border-blue-500 bg-blue-50/40' : ''"
+                                     @click="currentView = 'estimator'; loadEstimate(index)">
+                                    <p class="text-[8px] font-black text-blue-500 uppercase flex justify-between items-center mb-0.5">
+                                        <span x-text="item.timestamp ? item.timestamp.split(',')[0] : ''"></span>
+                                        <span x-show="selectedProjectId === item.id" class="text-[7px] bg-blue-600 text-white px-1 rounded-full lowercase font-normal">active</span>
+                                    </p>
+                                    <p class="font-bold text-slate-700 text-xs truncate" x-text="item.name"></p>
+                                    <div class="flex items-center justify-between text-[9px] text-slate-400 font-medium mt-1">
+                                        <span x-text="item.rfsNumber || 'No RFS'"></span>
+                                        <span class="font-black text-slate-500" x-text="item.totalHours + 'h'"></span>
+                                    </div>
+                                </div>
+                                <button @click.stop="deleteHistoryItem(index)" class="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-red-500 transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                </button>
                             </div>
-                            <button @click.stop="deleteHistoryItem(index)" class="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-red-500 transition-all">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                            </button>
-                        </div>
-                    </template>
+                        </template>
+                    </div>
                 </div>
             </aside>
 
             <div x-show="showLoginModal" x-cloak x-transition class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm no-print">
                 <div @click.away="showLoginModal = false" class="bg-white w-full max-w-sm rounded-[2rem] p-8 shadow-2xl text-center">
-                    <h3 class="text-xl font-black text-slate-800 mb-6">Admin Access</h3>
-                    <input type="password" x-model="password" @keyup.enter="login()" placeholder="Password" class="w-full px-5 py-3 bg-slate-100 border-2 border-transparent focus:border-blue-500 rounded-xl outline-none font-bold text-center mb-4">
+                    <h3 class="text-xl font-black text-slate-800 mb-2">Admin Access Access</h3>
+                    <p class="text-xs text-slate-400 mb-6 font-medium">Elevate credentials to configure baseline standard items settings</p>
+                    <input type="password" x-model="password" @keyup.enter="login()" placeholder="Enter security passphrase" class="w-full px-5 py-3 bg-slate-100 border-2 border-transparent focus:border-blue-500 rounded-xl outline-none font-bold text-center mb-4">
                     <button @click="login()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors">Unlock Admin</button>
                 </div>
             </div>
@@ -136,11 +154,11 @@
                 <main x-show="currentView === 'estimator'" class="p-6 md:p-12">
                     <div class="sticky-header bg-slate-50/90 backdrop-blur-md no-print">
                         <div class="bg-[#0f172a] rounded-[2.5rem] p-8 flex items-center justify-between shadow-2xl text-white">
-                            <div class="flex-1 space-y-1">
-                                <p class="text-2xl font-black text-blue-400 tracking-wide uppercase truncate max-w-xl" x-text="projectName"></p>
-                                <p class="text-2xl font-black text-white tracking-tight">Grand Total Effort</p>
+                            <div class="flex-1 space-y-1 min-w-0 mr-4">
+                                <p class="text-2xl font-black text-blue-400 tracking-wide uppercase truncate" x-text="projectName || 'Untitled Estimate Workspace'"></p>
+                                <p class="text-sm font-bold text-slate-400">MTAT Platform Grand Total Calculation Suite</p>
                             </div>
-                            <div class="flex items-center gap-8 border-l border-slate-700 pl-8">
+                            <div class="flex items-center gap-6 border-l border-slate-700 pl-6 shrink-0">
                                 <div class="text-center">
                                     <div class="text-3xl font-black text-blue-400" x-text="grandTotal"></div>
                                     <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Total Hrs</p>
@@ -159,26 +177,25 @@
                             <div class="flex flex-col md:flex-row justify-between items-end gap-4">
                                 <input type="text" x-model="projectName" class="bg-transparent text-3xl font-black text-slate-800 border-b-2 border-slate-200 focus:border-blue-500 pb-1 w-full outline-none transition-colors">
                                 
-                                <div class="flex items-center gap-2 no-print">
+                                <div class="flex items-center gap-2 no-print shrink-0">
                                     <button @click="duplicateEntireProject()" 
                                             x-show="selectedProjectId" 
                                             x-cloak
-                                            title="Copy this entire project layout as a new workspace instance"
-                                            class="px-5 py-3 bg-slate-800 text-slate-200 rounded-2xl font-bold shadow-md hover:bg-slate-700 hover:text-white transition-all flex items-center gap-2 text-sm whitespace-nowrap">
+                                            class="px-4 py-3 bg-slate-800 text-slate-200 rounded-2xl font-bold shadow-md hover:bg-slate-700 hover:text-white transition-all flex items-center gap-2 text-sm whitespace-nowrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
                                         </svg>
                                         Duplicate Project
                                     </button>
-                                    <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all whitespace-nowrap" x-text="selectedProjectId ? 'Update Project' : 'Save Project'"></button>
+                                    <button @click="saveToHistory()" class="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all whitespace-nowrap" x-text="selectedProjectId ? 'Update Estimate Instance' : 'Save New Estimate Record'"></button>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm">
                             <div class="xl:col-span-5">
-                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Project Notes</label>
-                                <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, or observations..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none h-[88px] resize-none"></textarea>
+                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-1.5 inline-block">Project Notes / Directives</label>
+                                <textarea x-model="projectNotes" placeholder="Enter specific constraints, equipment IDs, sample configurations, or engineering notes..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium focus:ring-2 focus:ring-blue-500 outline-none h-[88px] resize-none"></textarea>
                             </div>
                             
                             <div class="xl:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -224,7 +241,7 @@
                                 <div class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-black text-blue-600 h-[46px] flex items-center" x-text="expectedEndDate"></div>
                             </div>
                             <div>
-                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Project Status</label>
+                                <label class="text-[10px] font-black uppercase text-purple-700 bg-slate-100 px-2 py-0.5 rounded mb-2 inline-block">Project Execution Status</label>
                                 <select x-model="projectStatus" 
                                         class="w-full border-0 rounded-xl px-4 py-2.5 text-sm font-black outline-none transition-all cursor-pointer shadow-sm"
                                         :class="{
@@ -247,17 +264,17 @@
                     <div class="space-y-12 pb-32">
                         <template x-for="group in groupedTests" :key="group.title">
                             <div :id="group.title" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden">
-                                <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
+                                <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                                     <h3 class="text-xl font-black text-slate-800" x-text="group.title"></h3>
                                     
-                                    <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md">
-                                        <input type="text" placeholder="Test Label" class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
-                                        <input type="text" placeholder="Sub-label" class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
+                                    <div x-show="isAdmin" x-cloak class="no-print flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-xl shadow-sm max-w-md w-full sm:w-auto">
+                                        <input type="text" placeholder="Custom Label..." class="px-2 py-1 bg-slate-50 rounded text-xs font-bold w-full sm:w-32 outline-none border border-transparent focus:border-blue-500" x-model="group.newLabel">
+                                        <input type="text" placeholder="Details..." class="px-2 py-1 bg-slate-50 rounded text-xs font-medium w-full sm:w-24 outline-none border border-transparent focus:border-blue-500" x-model="group.newSubLabel">
                                         <input type="number" step="0.1" placeholder="Hrs" class="px-1 py-1 bg-slate-50 rounded text-xs font-black text-center w-12 outline-none border border-transparent focus:border-blue-500" x-model.number="group.newWeight">
-                                        <label class="flex items-center gap-1 text-[10px] font-bold text-slate-500 cursor-pointer select-none">
+                                        <label class="flex items-center gap-1 text-[10px] font-bold text-slate-500 cursor-pointer select-none whitespace-nowrap">
                                             <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500" x-model="group.newHasOrientations"> Orient
                                         </label>
-                                        <button @click="addNewTestItem(group)" class="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                        <button @click="addNewTestItem(group)" class="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors shrink-0">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/></svg>
                                         </button>
                                     </div>
@@ -266,49 +283,49 @@
                                     <table class="w-full text-left min-w-[850px]">
                                         <thead class="bg-slate-50/30 text-[10px] uppercase font-black text-slate-400 border-b">
                                             <tr>
-                                                <th class="px-8 py-4 w-1/4">Test Name</th>
-                                                <th class="px-4 py-4 w-1/5">Tester</th>
-                                                <th class="px-4 py-4 text-center">Multipliers & Calibration</th>
-                                                <th class="px-4 py-4 text-center w-32">Parallel?</th>
-                                                <th class="px-4 py-4 text-center w-36">Test Status</th>
-                                                <th class="px-4 py-4 text-right w-20">Qty</th>
+                                                <th class="px-8 py-4 w-1/4">Test Definition Property</th>
+                                                <th class="px-4 py-4 w-1/5">Assigned Tester</th>
+                                                <th class="px-4 py-4 text-center">Multipliers / Bench Weight</th>
+                                                <th class="px-4 py-4 text-center w-28">Parallel Track</th>
+                                                <th class="px-4 py-4 text-center w-36">Status</th>
+                                                <th class="px-4 py-4 text-right w-24">Sample Qty</th>
                                                 <th class="px-6 py-4 text-center w-36 no-print">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="divide-y divide-slate-50">
+                                        <tbody class="divide-y divide-slate-100">
                                             <template x-for="(test, index) in group.items" :key="test.id">
-                                                <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/40' : 'hover:bg-slate-50/30'">
+                                                <tr class="transition-colors" :class="test.count > 0 ? 'bg-green-50/30' : 'hover:bg-slate-50/30'">
                                                     <td class="px-8 py-5">
                                                         <template x-if="test.isCustom || test.isDuplicated">
                                                             <input type="text" x-model="test.label" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-black text-slate-800 outline-none focus:border-blue-500 w-full shadow-sm" @input="updateLiveSummaryFromGrid()">
                                                         </template>
                                                         <template x-if="!test.isCustom && !test.isDuplicated">
-                                                            <div :class="test.count > 0 ? 'text-green-700 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
+                                                            <div :class="test.count > 0 ? 'text-slate-900 font-black' : 'text-slate-700 font-bold'" x-text="test.label"></div>
                                                         </template>
                                                         <div class="text-[9px] uppercase font-bold text-slate-400 mt-0.5" x-text="test.subLabel"></div>
                                                     </td>
                                                     <td class="px-4 py-5 align-middle">
-                                                        <input type="text" x-model="test.testerName" placeholder="Assign tester..." class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors" @input="updateLiveSummaryFromGrid()">
+                                                        <input type="text" x-model="test.testerName" placeholder="Assign specialist..." class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-700 outline-none focus:border-blue-500 transition-colors" @input="updateLiveSummaryFromGrid()">
                                                     </td>
                                                     <td class="px-4 py-5 align-middle text-center">
                                                         <template x-if="test.id.includes('scale')">
-                                                            <div class="flex gap-3 justify-center items-center">
-                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">US Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.usOz" @input="updateLiveSummaryFromGrid()"></div>
-                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded mb-1">ml</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ml" @input="updateLiveSummaryFromGrid()"></div>
-                                                                <div class="text-center"><p class="text-[9px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">UK Oz</p><input type="number" class="w-14 p-2 border border-slate-200 rounded-xl text-center text-sm font-bold" x-model.number="test.ukOz" @input="updateLiveSummaryFromGrid()"></div>
-                                                                <div class="text-center ml-2 pl-4 border-l-2 border-slate-100"><p class="text-[9px] font-black text-blue-500 uppercase mb-1">Meas.</p><div class="text-lg font-black text-slate-700" x-text="calculateScaleMeasurements(test)"></div><p class="text-[8px] font-bold text-slate-400 mt-1">@ 0.05h</p></div>
+                                                            <div class="flex gap-2 justify-center items-center">
+                                                                <div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1 py-0.5 rounded uppercase mb-0.5">US Oz</p><input type="number" class="w-12 p-1.5 border border-slate-200 rounded-lg text-center text-xs font-bold" x-model.number="test.usOz" @input="updateLiveSummaryFromGrid()"></div>
+                                                                <div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1 py-0.5 rounded mb-0.5">ml</p><input type="number" class="w-12 p-1.5 border border-slate-200 rounded-lg text-center text-xs font-bold" x-model.number="test.ml" @input="updateLiveSummaryFromGrid()"></div>
+                                                                <div class="text-center"><p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1 py-0.5 rounded uppercase mb-0.5">UK Oz</p><input type="number" class="w-12 p-1.5 border border-slate-200 rounded-lg text-center text-xs font-bold" x-model.number="test.ukOz" @input="updateLiveSummaryFromGrid()"></div>
+                                                                <div class="text-center ml-1 pl-2 border-l border-slate-200"><p class="text-[8px] font-black text-blue-500 uppercase mb-0.5">Calculated</p><div class="text-sm font-black text-slate-800" x-text="calculateScaleMeasurements(test)"></div></div>
                                                             </div>
                                                         </template>
                                                         <template x-if="!test.id.includes('scale')">
-                                                            <div class="flex gap-4 justify-center items-end">
+                                                            <div class="flex gap-3 justify-center items-end">
                                                                 <div class="text-center">
                                                                     <p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Base (h)</p>
-                                                                    <input type="number" step="0.1" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight" @input="updateLiveSummaryFromGrid()">
+                                                                    <input type="number" step="0.1" class="w-14 p-1.5 border border-slate-200 rounded-lg text-center text-xs font-black text-blue-600 bg-slate-50" :disabled="!isAdmin && !test.isCustom && !test.isDuplicated" x-model.number="test.weight" @input="updateLiveSummaryFromGrid()">
                                                                 </div>
                                                                 <template x-if="test.hasOrientations">
                                                                     <div class="text-center">
                                                                         <p class="text-[8px] font-black text-purple-700 bg-slate-100 px-1.5 py-0.5 rounded uppercase mb-1">Orient.</p>
-                                                                        <input type="number" class="w-16 p-2 border border-slate-200 rounded-lg text-center font-black text-blue-600" x-model.number="test.orientations" @input="updateLiveSummaryFromGrid()">
+                                                                        <input type="number" class="w-12 p-1.5 border border-slate-200 rounded-lg text-center text-xs font-black text-slate-800" x-model.number="test.orientations" @input="updateLiveSummaryFromGrid()">
                                                                     </div>
                                                                 </template>
                                                             </div>
@@ -316,12 +333,11 @@
                                                     </td>
                                                     <td class="px-4 py-5 align-middle text-center">
                                                         <label class="inline-flex items-center justify-center cursor-pointer select-none">
-                                                            <input type="checkbox" x-model="test.isParallel" @change="syncParallelState(test.id, test.isParallel)" class="rounded-md border-slate-300 text-orange-500 focus:ring-orange-500 w-4 h-4">
-                                                            <span class="text-[10px] font-bold text-slate-500 ml-1.5 uppercase">Yes</span>
+                                                            <input type="checkbox" x-model="test.isParallel" @change="syncParallelState(test.id, test.isParallel)" class="rounded border-slate-300 text-orange-500 focus:ring-orange-500 w-4 h-4">
                                                         </label>
                                                     </td>
                                                     <td class="px-4 py-5 align-middle text-center">
-                                                        <select x-model="test.status" @change="updateLiveSummaryFromGrid()" class="border-0 rounded-lg px-2 py-1.5 text-xs font-black outline-none transition-all cursor-pointer shadow-sm w-36" :class="{ 'bg-yellow-400 text-yellow-950': test.status === 'Not Started' || !test.status, 'bg-orange-500 text-white': test.status === 'In-Progress', 'bg-green-600 text-white': test.status === 'Completed', 'bg-red-600 text-white': test.status === 'On Hold' }">
+                                                        <select x-model="test.status" @change="updateLiveSummaryFromGrid()" class="border border-slate-200 bg-white rounded-lg px-2 py-1.5 text-xs font-black outline-none transition-all cursor-pointer shadow-sm w-36" :class="{ 'bg-yellow-400 border-yellow-400 text-yellow-950': test.status === 'Not Started' || !test.status, 'bg-orange-500 border-orange-500 text-white': test.status === 'In-Progress', 'bg-green-600 border-green-600 text-white': test.status === 'Completed', 'bg-red-600 border-red-600 text-white': test.status === 'On Hold' }">
                                                             <option class="bg-white text-slate-900 font-medium" value="Not Started">Not Started</option>
                                                             <option class="bg-white text-slate-900 font-medium" value="In-Progress">In-Progress</option>
                                                             <option class="bg-white text-slate-900 font-medium" value="On Hold">On Hold</option>
@@ -329,22 +345,22 @@
                                                         </select>
                                                     </td>
                                                     <td class="px-4 py-5 text-right">
-                                                        <input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-100 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count" @input="updateLiveSummaryFromGrid()">
+                                                        <input type="number" min="0" class="w-16 p-2 rounded-xl text-right font-black bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500" x-model.number="test.count" @input="updateLiveSummaryFromGrid()">
                                                     </td>
                                                     <td class="px-6 py-5 align-middle text-center no-print">
-                                                        <div class="flex items-center justify-center gap-1.5">
-                                                            <div class="flex flex-col gap-0.5 mr-1">
-                                                                <button @click="moveRow(group, index, -1)" :disabled="index === 0" title="Move Up" class="p-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-slate-100 rounded text-slate-600 transition-all">
+                                                        <div class="flex items-center justify-center gap-1">
+                                                            <div class="flex flex-col gap-0.5">
+                                                                <button @click="moveRow(group, index, -1)" :disabled="index === 0" class="p-0.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 rounded text-slate-600">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7" /></svg>
                                                                 </button>
-                                                                <button @click="moveRow(group, index, 1)" :disabled="index === group.items.length - 1" title="Move Down" class="p-1 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-slate-100 rounded text-slate-600 transition-all">
+                                                                <button @click="moveRow(group, index, 1)" :disabled="index === group.items.length - 1" class="p-0.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 rounded text-slate-600">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" /></svg>
                                                                 </button>
                                                             </div>
-                                                            <button @click="duplicateTestItem(group, test)" title="Duplicate item entry" class="p-2 bg-slate-100 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all">
+                                                            <button @click="duplicateTestItem(group, test)" title="Copy Item" class="p-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" /></svg>
                                                             </button>
-                                                            <button @click="removeTestItem(group, index)" :disabled="!test.isCustom && !test.isDuplicated" :title="(!test.isCustom && !test.isDuplicated) ? 'Standard item cannot be deleted' : 'Delete item entry'" class="p-2 bg-slate-100 text-slate-400 hover:text-red-500 rounded-xl transition-all disabled:opacity-30 disabled:hover:text-slate-400 disabled:hover:bg-slate-100">
+                                                            <button @click="removeTestItem(group, index)" :disabled="!test.isCustom && !test.isDuplicated" class="p-1.5 bg-slate-100 text-slate-400 hover:text-red-500 rounded-lg transition-all disabled:opacity-30">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                                             </button>
                                                         </div>
@@ -363,7 +379,7 @@
                     <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
                             <h2 class="text-3xl font-black text-slate-800 tracking-tight">Active Projects Dashboard</h2>
-                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Live Execution Summary across all loaded instances</p>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Live Execution Summary across all historical and current records</p>
                         </div>
                         <button @click="window.print()" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-slate-800 shadow transition-all no-print flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
@@ -376,8 +392,8 @@
                             <table class="w-full text-left min-w-[1000px]">
                                 <thead class="bg-slate-50 text-[10px] uppercase font-black text-slate-400 border-b">
                                     <tr>
-                                        <th class="px-8 py-4">Project Workspace Info</th>
-                                        <th class="px-4 py-4">Identifiers</th>
+                                        <th class="px-8 py-4">Project Workspace Name</th>
+                                        <th class="px-4 py-4">Track Numbers</th>
                                         <th class="px-4 py-4">Lead Owner</th>
                                         <th class="px-4 py-4 text-center">Timelines</th>
                                         <th class="px-4 py-4 text-center">Status</th>
@@ -389,10 +405,10 @@
                                         <td class="px-8 py-5">
                                             <div class="font-black text-blue-600 flex items-center gap-1.5">
                                                 <span class="inline-block w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-                                                <span x-text="projectName"></span>
+                                                <span x-text="projectName || 'Untitled Active Workspace'"></span>
                                             </div>
                                             <div class="text-[10px] text-slate-400 font-bold uppercase mt-0.5" x-text="subBusiness || 'No Sub_Business Selected'"></div>
-                                            <p class="text-[11px] text-slate-500 italic mt-1 max-w-xs truncate" x-text="projectNotes"></p>
+                                            <p class="text-[11px] text-slate-500 italic mt-1 max-w-xs truncate" x-text="projectNotes || 'No notes defined...'"></p>
                                         </td>
                                         <td class="px-4 py-5 align-middle">
                                             <div class="text-xs font-bold text-slate-700">RFS: <span class="font-black" x-text="rfsNumber || '-'"></span></div>
@@ -425,7 +441,7 @@
                                             <td class="px-8 py-5">
                                                 <div class="font-bold text-slate-700" x-text="item.name"></div>
                                                 <div class="text-[10px] text-slate-400 font-bold uppercase mt-0.5" x-text="item.subBusiness || '-'"></div>
-                                                <p class="text-[11px] text-slate-500 italic mt-1 max-w-xs truncate" x-text="item.notes"></p>
+                                                <p class="text-[11px] text-slate-500 italic mt-1 max-w-xs truncate" x-text="item.notes || 'No notes...'"></p>
                                             </td>
                                             <td class="px-4 py-5 align-middle">
                                                 <div class="text-xs font-bold text-slate-700">RFS: <span class="font-black" x-text="item.rfsNumber || '-'"></span></div>
@@ -543,7 +559,7 @@
                         this.db = firebase.firestore();
                         this.loadHistoryFromFirestore();
                     } catch (e) {
-                        console.warn("Firestore initialize fallback triggered. Running operations local-first.");
+                        console.warn("Firestore initialization fallback triggered. Running operations local-first.");
                         this.loadLocalBackupHistory();
                     }
                 },
@@ -644,7 +660,7 @@
                 },
 
                 updateLiveSummaryFromGrid() {
-                    // Force reactivity refresh computation triggers across UI bindings
+                    // Force state reactivity
                 },
 
                 addNewTestItem(group) {
@@ -697,6 +713,31 @@
                     this.updateLiveSummaryFromGrid();
                 },
 
+                createNewProjectWorkspace() {
+                    this.selectedProjectId = null;
+                    this.projectName = 'New Project Estimation Suite';
+                    this.projectNotes = '';
+                    this.rfsNumber = '';
+                    this.testDesignNumber = '';
+                    this.testRecordNumber = '';
+                    this.subBusiness = '';
+                    this.testLeadName = '';
+                    this.startDate = new Date().toISOString().split('T')[0];
+                    this.projectStatus = 'Not Started';
+                    
+                    this.groupedTests.forEach(group => {
+                        group.items = group.items.filter(t => !t.isCustom && !t.isDuplicated);
+                        group.items.forEach(item => {
+                            item.count = 0;
+                            item.testerName = '';
+                            item.status = 'Not Started';
+                            item.isParallel = false;
+                            if (item.usOz !== undefined) { item.usOz = 0; item.ml = 0; item.ukOz = 0; }
+                            if (item.hasOrientations) { item.orientations = 1; }
+                        });
+                    });
+                },
+
                 duplicateEntireProject() {
                     if (!this.selectedProjectId) return;
                     this.selectedProjectId = null;
@@ -724,7 +765,7 @@
                     if (this.db) {
                         this.db.collection("estimates").doc(structuredPayload.id).set(structuredPayload)
                             .then(() => {
-                                alert("Project successfully synced to persistence server cloud database layer.");
+                                alert("Project saved successfully.");
                                 this.loadHistoryFromFirestore();
                             });
                     } else {
@@ -732,7 +773,7 @@
                         if (targetIdx !== -1) this.history[targetIdx] = structuredPayload;
                         else this.history.unshift(structuredPayload);
                         localStorage.setItem("mcc_local_history", JSON.stringify(this.history));
-                        alert("Saved locally inside internal cache framework backup store.");
+                        alert("Saved to localized storage framework store.");
                     }
                     this.selectedProjectId = structuredPayload.id;
                 },
@@ -756,7 +797,7 @@
                 },
 
                 deleteHistoryItem(index) {
-                    if (confirm("Permanently wipe out this instance record matrix from server?")) {
+                    if (confirm("Permanently delete this instance record?")) {
                         const targetedModel = this.history[index];
                         if (this.db) {
                             this.db.collection("estimates").doc(targetedModel.id).delete()
@@ -766,7 +807,7 @@
                             localStorage.setItem("mcc_local_history", JSON.stringify(this.history));
                         }
                         if (this.selectedProjectId === targetedModel.id) {
-                            this.selectedProjectId = null;
+                            this.createNewProjectWorkspace();
                         }
                     }
                 },
